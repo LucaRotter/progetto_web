@@ -30,8 +30,8 @@ name varchar(30) not null,
 image_url text
 );
 
-create table products(
-product_id varchar(5) primary key,
+create table items(
+item_id varchar(5) primary key,
 name varchar(30) not null,
 prezzo DECIMAL(10, 2) not null,
 description text,
@@ -43,10 +43,10 @@ user_id varchar(5) references users(user_id) on delete cascade on update cascade
 
 create table orders(
 order_id varchar(5),
-product_id varchar(5) references products(product_id),
-primary key(order_id, product_id),
+item_id varchar(5) references items(item_id),
+primary key(order_id, item_id),
 customer_id varchar(5) references users(user_id),
-artigian_id varchar(5) references users(user_id),
+artisan_id varchar(5) references users(user_id),
 quantity int not null,
 day date not null,
 time TIME not null,
@@ -55,7 +55,7 @@ state varchar(30) not null
 
 create table carts(
 quantity int not null,
-product_id varchar(5) references products(product_id) on delete cascade on update cascade,
+item_id varchar(5) references items(item_id) on delete cascade on update cascade,
 user_id varchar(5) references users(user_id)on delete cascade on update cascade
 );
 
@@ -64,28 +64,16 @@ report_id varchar(5) primary key,
 category varchar(30) not null, 
 description text,
 customer_id varchar(5) references users(user_id),
-artigian_id varchar(5) references users(user_id),
+artisan_id varchar(5) references users(user_id),
 admin_id varchar(5) references users(user_id)
 );
 
 create table reviews(
-product_id varchar(5) references products(product_id) on delete cascade on update cascade,
+item_id varchar(5) references items(item_id) on delete cascade on update cascade,
 user_id varchar(5) references users(user_id)on delete cascade on update cascade,
 evaulation int not null,
 description text
 );
---manca l'aggiunta della carta bancaria per gli utenti e ricevere pagamenti con stripe per l'artigiano
-ALTER TABLE products
-RENAME TO items;
-
-ALTER TABLE products
-RENAME COLUMN product_id TO item_id;
-
-ALTER TABLE orders
-RENAME COLUMN artigian_id TO artisan_id;
-
-ALTER TABLE reports
-RENAME COLUMN artigian_id TO artisan_id;
 
 --INSERT DI DEFAULT
 --roles
@@ -144,7 +132,7 @@ INSERT INTO roles_permissions(role_id, permission_id) VALUES
 --admin
 --DA MODIFICARE EMAIL E PWD
 INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
-(ad001, Alessandro, Grassi, marketrader69@gmail.com, admin1, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746795022/https___images.genius.com_00fec6153b63522d6896275b0aedf9e3.1000x1000x1_snyln4.png, 3),
+(ad001, Alessandro, Grassi, alessandro.grassi24062003@gmail.com, admin1, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746795022/https___images.genius.com_00fec6153b63522d6896275b0aedf9e3.1000x1000x1_snyln4.png, 3),
 (ad002, Aleksandar, Kastratovic, marketrader69@gmail.com, admin2, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794932/Screenshot_2025-05-09_144831_ufynui.png, 3),
 (ad003, Luca, Rotter, marketrader69@gmail.com, admin3, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg, 3),
-(ad004, Davide, Bilora, marketrader69@gmail.com, admin4, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794973/Screenshot_2025-05-09_144923_efkeg7.png, 3);
+(ad004, Davide, Bilora, davidebilora03pc@gmail.com, admin4, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794973/Screenshot_2025-05-09_144923_efkeg7.png, 3);
