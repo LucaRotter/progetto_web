@@ -63,8 +63,8 @@ create table reports(
 report_id varchar(5) primary key,
 category varchar(30) not null, 
 description text,
-customer_id varchar(5) references users(user_id),
-artisan_id varchar(5) references users(user_id),
+customer_id varchar(5) references users(user_id) on delete cascade on update cascade,
+artisan_id varchar(5) references users(user_id) on delete cascade on update cascade,
 admin_id varchar(5) references users(user_id)
 );
 
@@ -105,7 +105,6 @@ INSERT INTO permission(permission_id, name) VALUES
 --for customer and artisan
 (18, 'manage-report');
 
---da aggiungere permission sulla carta bancaria e ricevere pagamenti per artigiani
 
 --roles_permissions
 INSERT INTO roles_permissions(role_id, permission_id) VALUES
@@ -133,6 +132,17 @@ INSERT INTO roles_permissions(role_id, permission_id) VALUES
 --DA MODIFICARE EMAIL E PWD
 INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 (ad001, Alessandro, Grassi, alessandro.grassi24062003@gmail.com, admin1, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746795022/https___images.genius.com_00fec6153b63522d6896275b0aedf9e3.1000x1000x1_snyln4.png, 3),
-(ad002, Aleksandar, Kastratovic, marketrader69@gmail.com, admin2, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794932/Screenshot_2025-05-09_144831_ufynui.png, 3),
+(ad002, Aleksandar, Kastratovic, aleks.kastratovic@gmail.com, admin2, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794932/Screenshot_2025-05-09_144831_ufynui.png, 3),
 (ad003, Luca, Rotter, marketrader69@gmail.com, admin3, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg, 3),
 (ad004, Davide, Bilora, davidebilora03pc@gmail.com, admin4, https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794973/Screenshot_2025-05-09_144923_efkeg7.png, 3);
+
+--CATEGORIE
+INSERT INTO categories(category_id, name, image_url) VALUES
+(cat01, libri, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat02, elettronica, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat03, abbigliamento, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat04, casa, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat05, giardino, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat06, informatica, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat07, sport, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
+(cat08, bellezza, https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg),
