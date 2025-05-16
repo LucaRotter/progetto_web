@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(cors());
 const port = 5432;
 
+
 //connessione a PostgreSQL
 const pool = new Pool({
   user: process.env.PG_USER,              
@@ -472,19 +473,76 @@ app.get('/item/:id', async (req, res) => {
 });
 
 //ricevi un elenco di articoli casuali con il numero di articoli specificato nel body della richiesta
+let list_items = [];
+let shuffledItems = [];
+
 app.get('/random-items', async (req, res) => {
-    const { nItems } = req.body;
+    const nItems = parseInt(req.query.nItems, 10);
     if (!nItems || isNaN(nItems)) {
         return res.status(400).json({ error: "Invalid or missing 'nItems' parameter" });
     }
 
     try {
-        const result = await pool.query('SELECT * FROM items');
-        const shuffledItems = result.rows.sort(() => 0.5 - Math.random()); // Mescola gli articoli
-        const selectedItems = shuffledItems.slice(0, parseInt(nItems)); // Seleziona il numero richiesto di articoli
+        if (shuffledItems.length === 0) {
+            const result = await pool.query('SELECT * FROM items');
+            shuffledItems = result.rows.sort(() => 0.5 - Math.random());
+        }
+        let start = list_items.length;
+        let end = start + nItems;
+        if (end > shuffledItems.length) {
+            end = shuffledItems.length;
+        }
+        const selectedItems = shuffledItems.slice(start, end);
+        list_items.push(...selectedItems);
+
+        if (list_items.length === shuffledItems.length) {
+            list_items = [];
+            shuffledItems = [];
+        }
+
         res.json(selectedItems);
+
     } catch (err) {
         console.error("Errore durante il recupero degli articoli:", err);
+        res.status(500).json({ error: "Errore interno del server" });
+    }
+});
+
+//recupera articoli appartenenti ad una categoria
+// Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
+const categoryItemsCache = {};
+
+app.get('/category/:name', async (req, res) => {
+    const category_name = req.params.name;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (limit * (page - 1));
+
+    try {
+        const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
+        if (categoryResult.rows.length === 0) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+        const category_id = categoryResult.rows[0].category_id;
+
+        // Usa una chiave per ogni categoria per mantenere la lista mescolata
+        if (!categoryItemsCache[category_id]) {
+            const allItemsResult = await pool.query('SELECT * FROM items WHERE category_id = $1', [category_id]);
+            // Mescola gli articoli
+            categoryItemsCache[category_id] = allItemsResult.rows.sort(() => 0.5 - Math.random());
+        }
+
+        const items = categoryItemsCache[category_id];
+        const selectedItems = items.slice(offset, offset + limit);
+
+        // Se abbiamo raggiunto la fine, resetta la cache per questa categoria
+        if (offset + limit >= items.length) {
+            delete categoryItemsCache[category_id];
+        }
+
+        res.json(selectedItems);
+    } catch (err) {
+        console.error("Errore durante il recupero degli articoli per categoria:", err);
         res.status(500).json({ error: "Errore interno del server" });
     }
 });
