@@ -63,6 +63,7 @@ const protect = async (req, res, next) => {
             token = token.split(" ")[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.id]);
+            req.permessions = decoded.permessions;
             req.user = userResult.rows[0];
             next();
         } catch (error) {
@@ -119,10 +120,10 @@ const sendEmail = async (to, subject, text) => {
 async function hasPermission(Permission_name) {
     return async (req, res, next) => {
       // Se i permessi non sono presenti nel token, li recuperiamo dal database
-      if (!req.user.permissions) {
+      if (!req.permissions) {
         try {
           const permissions = await getUserPermissions(req.user.id);  
-          req.user.permessiions = permissions;  
+          req.permessions = permissions;  
   
           
           if (!permissions.includes(Permission_name)) {
@@ -137,7 +138,7 @@ async function hasPermission(Permission_name) {
         }
       } else {
         // Se i permessi sono già presenti nel token
-        if (!req.user.permissions.includes(Permission_name)) {
+        if (!req.permissions.includes(Permission_name)) {
           return res.status(403).json({ message: 'Permission denied' });
         }
         return next();  // Se l'utente ha il permesso, passa al prossimo middleware o alla route
@@ -244,9 +245,7 @@ app.post('/login', async (req, res) => {
         if (await bcrypt.compare(pwd, user.pwd)) {
             if(role_id != 3){
                 const permissions = await getUserPermissions(user.id);
-                res.json({ token: generateToken(user.id), user: { id: user.id, name: user.name, surname: user.surname, email: user.email,
-                    permissions : permissions
-                 } });
+                res.json({ token: generateToken(user.id, permissions) });
             } else {
                 const randomCode = Math.floor(10 + Math.random() * 90); // genera un numero casuale intero tra 10 e 99
                 
@@ -268,7 +267,7 @@ app.post('/login', async (req, res) => {
 });
 
 //aggiungi foto profilo utente
-app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, async (req, res) => {
+app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPermission('update_profile'), async (req, res) => {
     const url = await uploadToCloudinary(req.file.path);
     const user_id = req.user.id;
     const result = await pool.query('UPDATE users SET image_url = $1 WHERE id = $2', [url, user_id]);
@@ -320,7 +319,7 @@ app.post('/reset-password', async (req, res) => {
 //CRUD PER LA GESTIONE DEL CARRELLO
 
 //inserimento articolo nel carrello
-app.post('/cart', protect, async (req, res) => {
+app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
     const { item_id, quantity } = req.body;
     const user_id = req.user.id;
     const result = await pool.query('INSERT INTO cart (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
@@ -335,7 +334,7 @@ app.get('/cart', protect, async (req, res) => {
 });
 
 //modifica quantità articolo nel carrello
-app.put('/cart/:id', protect, async (req, res) => {
+app.put('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
     const { quantity } = req.body;
     const user_id = req.user.id;
     const result = await pool.query('UPDATE cart SET quantity = $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, req.params.id]);
@@ -347,7 +346,7 @@ app.put('/cart/:id', protect, async (req, res) => {
 });
 
 //rimozione articolo con id passato per parametro dal carrello dell'utente passato come token
-app.delete('/cart/:id', protect, async (req, res) => {
+app.delete('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.id;
     const result = await pool.query('DELETE FROM cart WHERE user_id = $1 AND item_id = $2', [user_id, req.params.id]);
     if (result.rowCount > 0) {
@@ -358,7 +357,7 @@ app.delete('/cart/:id', protect, async (req, res) => {
 });
 
 //rimozione di tutti gli articoli dal carrello dell'utente con id passato per parametro
-app.delete('/delete-cart', protect, async (req, res) => {
+app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.id;
     const result = await pool.query('DELETE FROM cart WHERE user_id = $1', [user_id]);
     if (result.rowCount > 0) {
@@ -372,7 +371,7 @@ app.delete('/delete-cart', protect, async (req, res) => {
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
 //aggiungi articolo
-app.post('/add-item', protect, async (req, res) => {
+app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
     const { item_id, name, category, description, price, quantity, image_url } = req.body;
     const user_id = req.user.id;
     const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
@@ -383,7 +382,7 @@ app.post('/add-item', protect, async (req, res) => {
 });
 
 //modifica prezzo articolo
-app.put('/update-price/:id', async (req, res) => {
+app.put('/update-price/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { price } = req.body;
     const item_id = req.params.id;
     const result = await pool.query('UPDATE items SET price = $1 WHERE item_id = $2', [price, item_id]);
@@ -395,7 +394,7 @@ app.put('/update-price/:id', async (req, res) => {
 });
 
 //modifica quantità articolo
-app.put('/update-quantity/:id', async (req, res) => {
+app.put('/update-quantity/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { quantity } = req.body;
     const item_id = req.params.id;
     const result = await pool.query('UPDATE items SET quantity = $1 WHERE item_id = $2', [quantity, item_id]);
@@ -407,7 +406,7 @@ app.put('/update-quantity/:id', async (req, res) => {
 });
 
 //modifica immagine articolo
-app.put('/update-image/:id', uploadMiddleware.single('immagine'), async (req, res) => {
+app.put('/update-image/:id', protect, hasPermission('update_item'), uploadMiddleware.single('immagine'), async (req, res) => {
     const item_id = req.params.id;
     const url = await uploadToCloudinary(req.file.path);
     const result = await pool.query('UPDATE items SET image_url = $1 WHERE item_id = $2', [url, item_id]);
@@ -419,7 +418,7 @@ app.put('/update-image/:id', uploadMiddleware.single('immagine'), async (req, re
 });
 
 //modifica nome articolo
-app.put('/update-name/:id', async (req, res) => {
+app.put('/update-name/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { name } = req.body;
     const item_id = req.params.id;
     const result = await pool.query('UPDATE items SET name = $1 WHERE item_id = $2', [name, item_id]);
@@ -431,7 +430,7 @@ app.put('/update-name/:id', async (req, res) => {
 });
 
 //modifica categoria articolo
-app.put('/update-category/:id', async (req, res) => {
+app.put('/update-category/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { category } = req.body;
     const item_id = req.params.id;
     const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
@@ -444,7 +443,7 @@ app.put('/update-category/:id', async (req, res) => {
 });
 
 //modifica descrizione articolo
-app.put('/update-description/:id', async (req, res) => {
+app.put('/update-description/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { description } = req.body;
     const item_id = req.params.id;
     const result = await pool.query('UPDATE items SET description = $1 WHERE item_id = $2', [description, item_id]);
@@ -456,7 +455,7 @@ app.put('/update-description/:id', async (req, res) => {
 });
 
 //elimina articolo
-app.delete('/delete-item/:id', async (req, res) => {
+app.delete('/delete-item/:id', protect, hasPermission('delete_item'), async (req, res) => {
     const item_id = req.params.id;
     const result = await pool.query('DELETE FROM items WHERE item_id = $1', [item_id]);
     if (result.rowCount > 0) {
@@ -551,7 +550,7 @@ app.get('/category/:name', async (req, res) => {
 //gestione pagamenti
 
 //crea il link per il pagamento su stripe e alla fine reindirizza il client automaticamente sul link succes_url
-app.post("/create-checkout-session", async (req, res) => {
+app.post("/create-checkout-session", protect, hasPermission('place-order'), async (req, res) => {
   try {
     const items = req.body.items;
 
