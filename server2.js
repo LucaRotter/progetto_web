@@ -315,6 +315,65 @@ app.post('/reset-password', async (req, res) => {
     }
 });
 
+//CRUD PER LA GESTIONE DELLE RECENSIONI
+
+//aggiungi recensione
+app.post('/add-review', protect, hasPermission('add_review'), async (req, res) => {
+    const { item_id, description, evaluation } = req.body;
+    const user_id = req.user.id;
+    const count = await pool.query('SELECT COUNT(*) FROM reviews WHERE item_id = $1 && user_id = $2', [item_id, user_id]);
+    if (count.rows.length > 0) {
+        return res.status(400).json({ message: "Review already exists" });
+    }
+    count = await pool.query('SELECT COUNT(*) FROM reviews');
+    const review_id = parseInt(count.rows[0].count) + 1;
+    const result = await pool.query(
+        'INSERT INTO reviews (review_id, user_id, item_id, description, evaluation) VALUES ($1, $2, $3, $4, $5)',
+        [review_id, user_id, item_id, description, evaluation]);
+    res.json({ message: "Review added" });
+});
+
+//elimina recensione
+app.delete('/delete-review/:id', protect, hasPermission('delete_review'), async (req, res) => {
+    const review_id = req.params.id;
+    const result = await pool.query('DELETE FROM reviews WHERE review_id = $1', [review_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Review deleted" });
+    } else {
+        res.status(400).json({ message: "Review not found" });
+    }
+});
+
+//recensioni relative ad un articolo
+app.get('/reviews/:id', async (req, res) => {
+    const item_id = req.params.id;
+    const result = await pool.query(
+        'SELECT u.name, r.description, r.evaluation, r.review_id FROM users u JOIN reviews r ON u.user_id = r.user_id WHERE r.item_id = $1',
+         [item_id]);
+    res.json(result.rows);
+});
+
+//valuazione media di un articolo
+app.get('/average-rating/:id', async (req, res) => {
+    const item_id = req.params.id;
+    const result = await pool.query('SELECT AVG(evaluation) AS average FROM reviews WHERE item_id = $1', [item_id]);
+    if (result.rows.length > 0) {
+        res.json({ average: result.rows[0].average });
+    } else {
+        res.status(400).json({ message: "No reviews found" });
+    }
+});
+
+//recupera recensione per id
+app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, res) => {
+    const review_id = req.params.id;
+    const result = await pool.query('SELECT * FROM reviews WHERE review_id = $1', [review_id]);
+    if (result.rows.length > 0) {
+        res.json(result.rows[0]);
+    } else {
+        res.status(400).json({ message: "Review not found" });
+    }
+});
 
 //CRUD PER LA GESTIONE DEL CARRELLO
 
@@ -372,8 +431,10 @@ app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, re
 
 //aggiungi articolo
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
-    const { item_id, name, category, description, price, quantity, image_url } = req.body;
+    const { name, category, description, price, quantity, image_url } = req.body;
     const user_id = req.user.id;
+    const count = await pool.query('SELECT COUNT(*) FROM items');
+    const item_id = parseInt(count.rows[0].count) + 1;
     const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
     const result = await pool.query(
         'INSERT INTO items (item_id, user_id, name, category, description, price, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
@@ -547,6 +608,40 @@ app.get('/category/:name', async (req, res) => {
     }
 });
 
+//articoli con i filtri
+app.get('/items', async (req, res) => {
+    const { name, category, minPrice, maxPrice, minEvaluation } = req.query;
+    let query = 'SELECT * FROM items WHERE name LIKE $1';
+    name = `%${name}%`;
+    const params = [name];
+    let count = 1;
+
+    if (category) {
+        query += ' AND category = $', ++count;
+        params.push(category);
+    }
+    if (minPrice) {
+        query += ' AND price >= $', ++count;
+        params.push(minPrice);
+    }
+    if (maxPrice) {
+        query += ' AND price <= $', ++count;
+        params.push(maxPrice);
+    }
+    if(minEvaluation) {
+        query += ' AND evaluation >= $', ++count;
+        params.push(minEvaluation);
+    }
+
+    try {
+        const result = await pool.query(query, params);
+        res.json(result.rows);
+    } catch (err) {
+        console.error("Errore durante il recupero degli articoli:", err);
+        res.status(500).json({ error: "Errore interno del server" });
+    }
+});
+
 //gestione pagamenti
 
 //crea il link per il pagamento su stripe e alla fine reindirizza il client automaticamente sul link succes_url
@@ -587,8 +682,39 @@ app.get("/checkout-session/:id", async (req, res) => {
   res.json(session); // contiene anche payment_status
 });//se il pagamento va a buon fine il front deve fare un sendmail
 
+// Invia un'email di conferma al cliente
+app.post('/send-confirmation-email', protect, async (req, res) => {
+    const { orderDetails } = req.body;
+    const email = req.user.email;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Conferma Ordine',
+        text: `Grazie per il tuo ordine! Dettagli:\n${orderDetails}`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ message: 'Email di conferma inviata' });
+    } catch (error) {
+        console.error('Errore nell\'invio dell\'email:', error);
+        res.status(500).json({ error: 'Errore nell\'invio dell\'email' });
+    }
+});
 
 //listen server
 app.listen(port, () => {
     console.log(`server running on http://localhost:${port}`)
 });
+
+//chiusura connessione al database quando il server viene chiuso
+process.on('SIGINT', () => {
+    pool.end(() => {
+        console.log('Pool chiuso');
+        process.exit(0);
+    });
+});
+
+//da aggiungere -> gestione ordini (cliente visualizza i fatti, artigiano i ricevuti, admin tutti gli ordini)
+//                 gestione segnalazioni (cliente segnala, artigiano segnala, admin gestisce)
