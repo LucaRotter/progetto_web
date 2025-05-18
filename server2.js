@@ -328,8 +328,8 @@ app.post('/cart', protect, async (req, res) => {
 });
 
 //articoli dal carrello
-app.get('/cart/:id', protect, async (req, res) => {
-    const user_id = req.params.id;
+app.get('/cart', protect, async (req, res) => {
+    const user_id = req.user.id;
     const result = await pool.query('SELECT * FROM cart WHERE user_id = $1', [user_id]);
     res.json(result.rows);
 });
@@ -358,8 +358,8 @@ app.delete('/cart/:id', protect, async (req, res) => {
 });
 
 //rimozione di tutti gli articoli dal carrello dell'utente con id passato per parametro
-app.delete('/delete-cart/:id', protect, async (req, res) => {
-    const user_id = req.params.id;
+app.delete('/delete-cart', protect, async (req, res) => {
+    const user_id = req.user.id;
     const result = await pool.query('DELETE FROM cart WHERE user_id = $1', [user_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Items removed from cart" });
@@ -372,8 +372,9 @@ app.delete('/delete-cart/:id', protect, async (req, res) => {
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
 //aggiungi articolo
-app.post('/add-item', async (req, res) => {
-    const { item_id, user_id, name, category, description, price, quantity, image_url } = req.body;
+app.post('/add-item', protect, async (req, res) => {
+    const { item_id, name, category, description, price, quantity, image_url } = req.body;
+    const user_id = req.user.id;
     const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
     const result = await pool.query(
         'INSERT INTO items (item_id, user_id, name, category, description, price, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
