@@ -89,44 +89,32 @@ INSERT INTO permissions(permission_id, name) VALUES
 (4, 'update_profile_customer'),
 (5, 'review_item'),
 --for the artisan
-(6, 'create_item'),
-(7, 'update_item'),
-(8, 'delete_item'),
-(9, 'view_orders_received'),
-(10, 'update_profile_artisan'),
+(6, 'update_item'),
+(7, 'view_orders_received'),
+(8, 'update_profile_artisan'),
 --for the admin
-(11, 'manage_users'),
-(12, 'manage_permissions'),
-(13, 'view_all_orders'),
-(14, 'delete_user'),
-(15, 'moderate_reviews'),
-(16, 'modarate-reports'),
-(17, 'manage-categories'),
+(9, 'manage_users'),
+(10, 'manage_permissions'),
+(11, 'view_all_orders'),
+(12, 'delete_user'),
+(13, 'moderate_reviews'),
+(14, 'modarate_reports'),
+(15, 'manage_categories'),
+--(for artisan and admin)
+(16, 'delete_item'),
 --for customer and artisan
-(18, 'manage-report');
+(17, 'manage_report'),
+(18, 'update_profile');
 
 
 --roles_permissions
 INSERT INTO roles_permissions(role_id, permission_id) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(1, 5),
-(2, 6),
-(2, 7),
-(2, 8),
-(2, 9),
-(2, 10),
-(3, 11),
-(3, 12),
-(3, 13),
-(3, 14),
-(3, 15),
-(3, 16),
-(3, 17),
-(1, 18),
-(2, 18);
+(1,1),(1,2),(1,3),(1,4),(1,5),
+(2,6),(2,7),(2,8),
+(3,9),(3,10),(3,11),(3,12),(3,13),(3,14),(3,15),
+(2,16),(3,16),
+(1,17),(2,17),(3,17),
+(1,18),(2,18),(3,18);
 
 --admin
 --DA MODIFICARE EMAIL E PWD
