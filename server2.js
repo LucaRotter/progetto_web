@@ -426,6 +426,13 @@ app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, re
     }
 });
 
+//numero articoli nel carrello
+app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) => {
+    const user_id = req.user.id;
+    const result = await pool.query('SELECT COUNT(*) AS count FROM cart WHERE user_id = $1', [user_id]);
+    res.json({ count: result.rows[0].count });
+});
+
 
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
