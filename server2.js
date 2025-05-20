@@ -671,6 +671,114 @@ app.post('/add-order', protect, hasPermission('place-order'), async (req, res) =
     res.json({ message: "Order added" });
 });
 
+//aggiorna stato ordine
+app.put('/update-order/:id', protect, hasPermission('manage_orders'), async (req, res) => {
+    const order_id = req.params.id;
+    const result = await pool.query('UPDATE orders SET state = $1 WHERE order_id = $2', ['shipped', order_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Order updated" });
+    } else {
+        res.status(400).json({ message: "Order not found" });
+    }
+});
+
+//recupera ordini per id utente del cliente
+app.get('/customer-orders', protect, hasPermission('view_orders'), async (req, res) => {
+    const user_id = req.user.id;
+    const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [user_id]);
+    res.json(result.rows);
+});
+
+//recupera ordini per id utente dell'artigiano
+app.get('/artisan-orders', protect, hasPermission('manage_orders'), async (req, res) => {
+    const user_id = req.user.id;
+    const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1', [user_id]);
+    res.json(result.rows);
+});
+
+//recupera ordini per id ordine per amministratore
+app.get('/admin-orders/:id', protect, hasPermission('view_manage_orders'), async (req, res) => {
+    const order_id = req.params.id;
+    const result = await pool.query('SELECT * FROM orders WHERE order_id = $1', [order_id]);
+    if (result.rows.length > 0) {
+        res.json(result.rows[0]);
+    } else {
+        res.status(400).json({ message: "Order not found" });
+    }
+});
+
+//elimina ordine da parte dell'amministratore
+app.delete('/admin-orders/:id', protect, hasPermission('view_manage_orders'), async (req, res) => {
+    const order_id = req.params.id;
+    const result = await pool.query('DELETE FROM orders WHERE order_id = $1', [order_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Order deleted" });
+    } else {
+        res.status(400).json({ message: "Order not found" });
+    }
+});
+
+
+//gestione segnalazioni
+
+//crea una segnalazione
+app.post('/create-report', protect, hasPermission('manage_report'), async (req, res) => {
+    const { item_id, category, description } = req.body;
+    const user_id = req.user.id;
+    const count = await pool.query('SELECT COUNT(*) FROM reports');
+    const report_id = parseInt(count.rows[0].count) + 1;
+
+    let artisan_id = null;
+    let customer_id = null;
+
+    if (req.user.role_id == 1) {
+        customer_id = user_id;
+    } else {
+        artisan_id = user_id;
+    } 
+
+    const result = await pool.query(
+        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6)',
+        [report_id, customer_id, artisan_id, item_id, category, description]);
+    res.json({ message: "Report created" });
+});
+
+//aggiunta admin nella segnalazione
+app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), async (req, res) => {
+    const report_id = req.params.id;
+    const admin_id = req.user.id;
+    const result = await pool.query('UPDATE reports SET admin_id = $1 WHERE report_id = $2', [admin_id, report_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Admin added to report" });
+    } else {
+        res.status(400).json({ message: "Report not found" });
+    }
+});
+
+//recupera segnalazioni per id admin
+app.get('/admin-reports', protect, hasPermission('moderate_reports'), async (req, res) => {
+    const admin_id = req.user.id;
+    const result = await pool.query('SELECT * FROM reports WHERE admin_id = $1', [admin_id]);
+    res.json(result.rows);
+});
+
+//recupera segnalazioni senza id admin
+app.get('/free-reports', async (req, res) => {
+    const result = await pool.query('SELECT * FROM reports WHERE admin_id IS NULL');
+    res.json(result.rows);
+});
+
+//elimina segnalazione
+app.delete('/delete-report/:id', protect, hasPermission('moderate_report'), async (req, res) => {
+    const report_id = req.params.id;
+    const result = await pool.query('DELETE FROM reports WHERE report_id = $1', [report_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Report deleted" });
+    } else {
+        res.status(400).json({ message: "Report not found" });
+    }
+});
+
 
 //gestione pagamenti
 
@@ -745,6 +853,3 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
-
-//da aggiungere -> gestione ordini (cliente visualizza i fatti, artigiano i ricevuti, admin tutti gli ordini)
-//                 gestione segnalazioni (cliente segnala, artigiano segnala, admin gestisce)
