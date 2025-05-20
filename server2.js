@@ -11,15 +11,12 @@ const multer = require('multer'); // Includi multer per la gestione dei file
 const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);//include stripe per i pagamenti
 
 
-
-
-
 // INIZIALIZZAZIONE DEL SERVER E CONFIGURAZIONE DELLE VARIABILI DA USARE
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = 5432;
+const port = 8000;
 
 
 //connessione a PostgreSQL
@@ -648,6 +645,32 @@ app.get('/items', async (req, res) => {
         res.status(500).json({ error: "Errore interno del server" });
     }
 });
+
+//gestione ordini
+//aggiungi ordine
+app.post('/add-order', protect, hasPermission('place-order'), async (req, res) => {
+    const { items } = req.body;
+    const user_id = req.user.id;
+    const orderNumber = await pool.query('SELECT COUNT(*) FROM orders');
+    const order_id = parseInt(orderNumber.rows[0].count) + 1;
+
+    const now = new Date();
+    const day = now.toISOString().split('T')[0]; // formato YYYY-MM-DD
+    const time = now.toTimeString().split(' ')[0]; // formato HH:MM:SS
+
+    for (const item of items) {
+
+        let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
+        artisan_id = artisan_id.rows[0].user_id;
+
+        await pool.query(
+            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed']
+        );
+    }
+    res.json({ message: "Order added" });
+});
+
 
 //gestione pagamenti
 
