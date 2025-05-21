@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: progetto_web
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🛠️ Build and start containers
+        run: docker-compose -f docker-compose.yml up -d --build
+
+      - name: ⏳ Aspetta che il backend sia pronto
+        run: |
+          echo "Aspetto che il backend risponda..."
+          sleep 10
+          curl --fail http://localhost:8000 || (echo "❌ Il backend non risponde!" && exit 1)
+
+      - name: 🧪 Esegui test backend CRUD
+        run: |
+          cd backend
+          npm install
+          npm test
+        env:
+          PG_USER: postgres
+          PG_HOST: localhost
+          PG_DATABASE: progetto_web
+          PG_PASSWORD: postgres
+          PG_PORT: 5432
+
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+
+      - name: 🧹 Ferma i container
+        run: docker-compose down
