@@ -50,7 +50,7 @@ jobs:
           PG_USER: postgres
           PG_HOST: localhost
           PG_DATABASE: progetto_web
-          PG_PASSWORD: postgres
+          PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           PG_PORT: 5432
 
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -63,4 +63,4 @@ jobs:
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
 
       - name: 🧹 Ferma i container
-        run: docker-compose down
+        run: docker-compose down --volumes --remove-orphans
