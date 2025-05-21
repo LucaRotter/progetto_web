@@ -649,7 +649,7 @@ app.get('/items', async (req, res) => {
 //gestione ordini
 //aggiungi ordine
 app.post('/add-order', protect, hasPermission('place-order'), async (req, res) => {
-    const { items } = req.body;
+    const { items, address, civic_number, postal_code, province, country, phone_number  } = req.body;
     const user_id = req.user.id;
     const orderNumber = await pool.query('SELECT COUNT(*) FROM orders');
     const order_id = parseInt(orderNumber.rows[0].count) + 1;
@@ -664,8 +664,8 @@ app.post('/add-order', protect, hasPermission('place-order'), async (req, res) =
         artisan_id = artisan_id.rows[0].user_id;
 
         await pool.query(
-            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed']
+            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
+            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, province, country, phone_number]
         );
     }
     res.json({ message: "Order added" });
