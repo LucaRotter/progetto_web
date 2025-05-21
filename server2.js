@@ -9,6 +9,7 @@ const nodemailer = require('nodemailer');// Includi nodemailer per l'invio di em
 const cloudinary = require('cloudinary').v2; // Includi cloudinary per il caricamento delle immagini
 const multer = require('multer'); // Includi multer per la gestione dei file
 const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);//include stripe per i pagamenti
+const fs = require('fs');
 
 
 // INIZIALIZZAZIONE DEL SERVER E CONFIGURAZIONE DELLE VARIABILI DA USARE
@@ -81,9 +82,14 @@ const protect = async (req, res, next) => {
 
 //funzione per l'upload delle immagini su Cloudinary
 async function uploadToCloudinary(filePath, folder = 'prodotti') {
-    const result = await cloudinary.uploader.upload(filePath, { folder });
-    fs.unlinkSync(filePath); // elimina il file temporaneo
-    return result.secure_url;
+    try{
+        const result = await cloudinary.uploader.upload(filePath, { folder });
+        fs.unlinkSync(filePath); // elimina il file temporaneo
+        return result.secure_url;
+    }catch (error) {
+    console.error('Errore in uploadToCloudinary:', error);
+    throw error; // rilancia per essere gestito nel catch del route handler
+  }
 };
 
 //funzione per rimuovere le immagini da Cloudinary
@@ -114,13 +120,13 @@ const sendEmail = async (to, subject, text) => {
 };
 
 //verifica permission, DA INSERIRE NEI PARAMETRI DELLA CRUD ES: hasPermission(inserisci_articolo)
-async function hasPermission(Permission_name) {
+function hasPermission(Permission_name) {
     return async (req, res, next) => {
       // Se i permessi non sono presenti nel token, li recuperiamo dal database
       if (!req.permissions) {
         try {
           const permissions = await getUserPermissions(req.user.id);  
-          req.permessions = permissions;  
+          req.permissions = permissions;  
   
           
           if (!permissions.includes(Permission_name)) {
@@ -175,6 +181,7 @@ async function getUserPermissions(user_Id) {
 //upload immagine
 app.post('/upload', uploadMiddleware.single('immagine'), async (req, res) => {
     try {
+      console.log('File ricevuto:', req.file.path);
       const url = await uploadToCloudinary(req.file.path);
       res.json({ message: 'Upload riuscito!', url });
     } catch (err) {
@@ -840,6 +847,9 @@ app.post('/send-confirmation-email', protect, async (req, res) => {
         res.status(500).json({ error: 'Errore nell\'invio dell\'email' });
     }
 });
+
+
+module.exports = app;
 
 //listen server
 app.listen(port, () => {

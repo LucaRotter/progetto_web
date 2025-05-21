@@ -1,40 +1,17 @@
+
 const request = require('supertest');
-const app = require('../server'); // il tuo server Express
+const path = require('path');
+const app = require('../server2.js');  // Importa la tua app Express
 
-describe('Test API CRUD', () => {
-  let createdId;
-
-  // CREATE
-  test('POST /items crea un nuovo item', async () => {
+describe('POST /upload', () => {
+  test('dovrebbe caricare un file e restituire una URL', async () => {
     const response = await request(app)
-      .post('/items')
-      .send({ name: 'Test Item', description: 'Descrizione' });
-    expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty('id');
-    createdId = response.body.id; // salva id per altri test
-  });
+      .post('/upload')
+      .attach('immagine', path.join(__dirname, 'test.jpeg'));  // assicurati che test.jpeg esista
 
-  // READ
-  test('GET /items/:id legge un item', async () => {
-    const response = await request(app)
-      .get(`/items/${createdId}`);
     expect(response.statusCode).toBe(200);
-    expect(response.body.name).toBe('Test Item');
-  });
-
-  // UPDATE
-  test('PUT /items/:id aggiorna un item', async () => {
-    const response = await request(app)
-      .put(`/items/${createdId}`)
-      .send({ name: 'Test Item Aggiornato' });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.name).toBe('Test Item Aggiornato');
-  });
-
-  // DELETE
-  test('DELETE /items/:id elimina un item', async () => {
-    const response = await request(app)
-      .delete(`/items/${createdId}`);
-    expect(response.statusCode).toBe(204);
+    expect(response.body).toHaveProperty('message', 'Upload riuscito!');
+    expect(response.body).toHaveProperty('url');
+    console.log('URL caricata:', response.body.url);
   });
 });
