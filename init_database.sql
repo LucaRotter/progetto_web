@@ -51,6 +51,13 @@ quantity int not null,
 day date not null,
 time TIME not null,
 state varchar(100) not null
+address varchar(255),
+civic_number varchar(100),
+city varchar(100),
+postal_code VARCHAR(20),
+province VARCHAR(100),
+country VARCHAR(100),
+phone_number varchar(30)
 );
 
 create table carts(
