@@ -8,24 +8,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      PG_USER: postgres
-      PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      PG_HOST: db
-      PG_PORT: 5432
-      PG_DATABASE: progetto_web
-
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-
-      STRIPE_SECRET_KEY:${{ secrets.STRIPE_SECRET_KEY }}
-
-      EMAIL_USER: ${{ secrets.EMAIL_USER }}
-      APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-
+    env_file:
+      - .env
     volumes:
       - ./backend:/app
 
@@ -33,12 +17,10 @@ services:
     image: postgres:15
     container_name: progetto_db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: progetto_web
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
