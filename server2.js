@@ -82,11 +82,14 @@ const protect = async (req, res, next) => {
 
 //funzione per l'upload delle immagini su Cloudinary
 async function uploadToCloudinary(filePath, folder = 'prodotti') {
-    try{
-        const result = await cloudinary.uploader.upload(filePath, { folder });
-        fs.unlinkSync(filePath); // elimina il file temporaneo
-        return result.secure_url;
-    }catch (error) {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, { folder });
+    fs.unlinkSync(filePath); // elimina il file temporaneo
+    return {
+      url: result.secure_url,
+      public_id: result.public_id//serve solo per il test
+    };
+  } catch (error) {
     console.error('Errore in uploadToCloudinary:', error);
     throw error; // rilancia per essere gestito nel catch del route handler
   }
@@ -182,8 +185,8 @@ async function getUserPermissions(user_Id) {
 app.post('/upload', uploadMiddleware.single('immagine'), async (req, res) => {
     try {
       console.log('File ricevuto:', req.file.path);
-      const url = await uploadToCloudinary(req.file.path);
-      res.json({ message: 'Upload riuscito!', url });
+      const { public_id, url } = await uploadToCloudinary(req.file.path);
+      res.json({ message: 'Upload riuscito!',public_id, url });
     } catch (err) {
       res.status(500).json({ error: 'Errore upload', details: err.message });
     }
@@ -206,26 +209,30 @@ app.delete('/delete-image', async (req, res) => {
 //registrazione utente
 app.post('/register', async (req, res) => {
     const { name, surname, email, pwd, role } = req.body;
-    role_id = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const role_id = result1.rows[0]?.role_id;
     const hashedPassword = await bcrypt.hash(pwd, 10);
 
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
+    if (!role_id) {
+        return res.status(400).json({ message: "Ruolo non valido" });
+    }
     if (userResult.rows.length > 0) {
-        res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "User already exists" });
     }
 
     //creazione id utente
-    const user_id = "";
+    let user_id = "";
     if(role_id == 1){
-        const number = await pool.query('SELECT COUNT(*) FROM users WHERE role_id = 1');
+        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '1'");
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "C" + usersNumber.toString().padStart(4, '0');
     } else if(role_id == 2){
-        const number = await pool.query('SELECT COUNT(*) FROM users WHERE role_id = 2');
+        const number = await pool.query("'SELECT COUNT(*) FROM users WHERE role_id = '2'");
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "A" + usersNumber.toString().padStart(4, '0');
     } else if(role_id == 3){
-        const number = await pool.query('SELECT COUNT(*) FROM users WHERE role_id = 3');
+        const number = await pool.query("'SELECT COUNT(*) FROM users WHERE role_id = '3'");
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "Ad" + usersNumber.toString().padStart(3, '0');
     }
@@ -235,7 +242,7 @@ app.post('/register', async (req, res) => {
         [user_id, name, surname, email, hashedPassword, role_id]
     );
     const newUser = result.rows[0];
-    res.json({ token: generateToken(newUser.id), user: newUser });
+    res.json({ token: generateToken(newUser.user_id), user: newUser });
 });
 
 //login utente
@@ -249,7 +256,7 @@ app.post('/login', async (req, res) => {
         if (await bcrypt.compare(pwd, user.pwd)) {
             if(role_id != 3){
                 const permissions = await getUserPermissions(user.id);
-                res.json({ token: generateToken(user.id, permissions) });
+                res.json({ token: generateToken(user.user_id, permissions) });
             } else {
                 const randomCode = Math.floor(10 + Math.random() * 90); // genera un numero casuale intero tra 10 e 99
                 
@@ -849,7 +856,7 @@ app.post('/send-confirmation-email', protect, async (req, res) => {
 });
 
 
-module.exports = app;
+module.exports = { app, pool };
 
 //listen server
 app.listen(port, () => {
