@@ -19,7 +19,7 @@ user_id varchar(5) primary key,
 name varchar(100) not null, 
 surname varchar(100) not null,
 email varchar(100) not null, 
-pwd varchar(100) not null,
+pwd varchar(120) not null,
 image_url text,
 role_id varchar(5) references roles(role_id)
 );
@@ -50,7 +50,7 @@ artisan_id varchar(5) references users(user_id),
 quantity int not null,
 day date not null,
 time TIME not null,
-state varchar(100) not null
+state varchar(100) not null,
 address varchar(255),
 civic_number varchar(100),
 city varchar(100),
