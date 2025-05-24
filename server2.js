@@ -10,6 +10,7 @@ const cloudinary = require('cloudinary').v2; // Includi cloudinary per il carica
 const multer = require('multer'); // Includi multer per la gestione dei file
 const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);//include stripe per i pagamenti
 const fs = require('fs');
+const { get } = require('http');
 
 
 // INIZIALIZZAZIONE DEL SERVER E CONFIGURAZIONE DELLE VARIABILI DA USARE
@@ -53,15 +54,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Middleware verifica token
+// Middleware verifica token e recupera permessi utente
 const protect = async (req, res, next) => {
     let token = req.headers.authorization;
     if (token && token.startsWith("Bearer ")) {
         try {
             token = token.split(" ")[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.id]);
-            req.permessions = decoded.permessions;
+            const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [decoded.id]);
+            req.permissions = await getUserPermissions(decoded.id);
             req.user = userResult.rows[0];
             next();
         } catch (error) {
@@ -154,18 +155,19 @@ function hasPermission(Permission_name) {
 
 //recupera permessi subito dopo aver effettuato il login
 async function getUserPermissions(user_Id) {
+    
     const query = `
       SELECT p.name AS permission
       FROM users u
       JOIN roles r ON u.role_id = r.role_id
-      JOIN roles_permission rp ON r.role_id = rp.role_id
-      JOIN permission p ON rp.permission_id = p.permission_id
-      WHERE u.id = $1
+      JOIN roles_permissions rp ON r.role_id = rp.role_id
+      JOIN permissions p ON rp.permission_id = p.permission_id
+      WHERE u.user_id = $1
     `;
-  
+    
     try {
       const result = await pool.query(query, [user_Id]);
-      return result.rows.map(row => row.permission);
+      return result.rows.map(row => row.permission);// restituisce un array di stringhe con i nomi dei permessi
     } catch (err) {
       console.error('Errore nel recupero dei permessi:', err);
       throw err;
@@ -210,7 +212,7 @@ app.delete('/delete-image', async (req, res) => {
 app.post('/register', async (req, res) => {
     const { name, surname, email, pwd, role } = req.body;
     const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
-    const role_id = result1.rows[0]?.role_id;
+    const role_id = result1.rows[0].role_id;
     const hashedPassword = await bcrypt.hash(pwd, 10);
 
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
@@ -228,17 +230,17 @@ app.post('/register', async (req, res) => {
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "C" + usersNumber.toString().padStart(4, '0');
     } else if(role_id == 2){
-        const number = await pool.query("'SELECT COUNT(*) FROM users WHERE role_id = '2'");
+        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '2'");
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "A" + usersNumber.toString().padStart(4, '0');
     } else if(role_id == 3){
-        const number = await pool.query("'SELECT COUNT(*) FROM users WHERE role_id = '3'");
+        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '3'");
         const usersNumber = parseInt(number.rows[0].count) + 1;
         user_id = "Ad" + usersNumber.toString().padStart(3, '0');
     }
-
+    
     const result = await pool.query(
-        'INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id, name, email',
+        'INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id, name, email, role_id',
         [user_id, name, surname, email, hashedPassword, role_id]
     );
     const newUser = result.rows[0];
@@ -248,15 +250,17 @@ app.post('/register', async (req, res) => {
 //login utente
 app.post('/login', async (req, res) => {
     const { email, pwd, role } = req.body;
-    role_id = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const result = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const role_id = result.rows[0]?.role_id;
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
 
     if (userResult.rows.length > 0) {
         const user = userResult.rows[0];
         if (await bcrypt.compare(pwd, user.pwd)) {
             if(role_id != 3){
-                const permissions = await getUserPermissions(user.id);
-                res.json({ token: generateToken(user.user_id, permissions) });
+                const token= generateToken(user.user_id);
+                res.json({ token });
+
             } else {
                 const randomCode = Math.floor(10 + Math.random() * 90); // genera un numero casuale intero tra 10 e 99
                 
