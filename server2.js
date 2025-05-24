@@ -107,7 +107,7 @@ async function deleteFromCloudinary(publicId) {
 }
 
 // Funzione per inviare email
-const sendEmail = async (to, subject, text) => {
+async function sendEmail(to, subject, text){
     try {
         const mailOptions = {
             from: process.env.EMAIL_USER, // Mittente
@@ -118,6 +118,7 @@ const sendEmail = async (to, subject, text) => {
 
         const info = await transporter.sendMail(mailOptions);
         console.log('Email inviata: ' + info.response);
+        return info;
     } catch (error) {
         console.error('Errore nell\'invio dell\'email:', error);
     }
@@ -253,6 +254,7 @@ app.post('/login', async (req, res) => {
     const result = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
     const role_id = result.rows[0]?.role_id;
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
+    
 
     if (userResult.rows.length > 0) {
         const user = userResult.rows[0];
@@ -263,9 +265,8 @@ app.post('/login', async (req, res) => {
 
             } else {
                 const randomCode = Math.floor(10 + Math.random() * 90); // genera un numero casuale intero tra 10 e 99
-                
                 // genera e invia mail con il codice
-                sendEmail(
+                await sendEmail(
                     email,
                     'Codice di accesso',
                     `Ciao ${user.name},\n\nIl tuo codice di accesso è: ${randomCode}\n\nBuon Lavoro!`

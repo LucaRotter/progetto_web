@@ -5,6 +5,7 @@ const { app, pool } = require('../server2.js');  // Importa la tua app Express
 
 let uploadedPublicId;  // variabile globale per salvare il publicId
 
+//TEST INSERIMENTO E RIMOZIONE STESSA IMMAGINE
 describe('upload and delete image', () => {
   describe('POST /upload', () => {
     test('dovrebbe caricare un file e restituire una URL e publicId', async () => {
@@ -37,6 +38,7 @@ describe('upload and delete image', () => {
   });
 });
 
+//TEST REGISTRAZIONE UTENTE
 describe('POST /register', () => {
   // Pulizia: elimina utenti creati durante i test
   afterEach(async () => {
@@ -89,6 +91,8 @@ describe('POST /register', () => {
     expect(res.body).toEqual({ message: "User already exists" });
   });
 });
+
+//TEST REGISTRAZIONE E LOGIN PER RUOLO C o A
 describe('Register and Login for role C or A', () => {
   const testUser = {
     name: 'Test',
@@ -100,9 +104,8 @@ describe('Register and Login for role C or A', () => {
 
   // Pulizia prima o dopo i test se necessario
   afterAll(async () => {
-    await pool.query('DELETE FROM users WHERE email = $1', [testUser.email]);
-    await pool.end(); // Chiudi connessione al DB
-  });
+  await pool.query('DELETE FROM users WHERE email = $1', [testUser.email]);
+});
 
   it('should register and then login a user with role C', async () => {
     // 1. REGISTRAZIONE
@@ -135,4 +138,33 @@ describe('Register and Login for role C or A', () => {
   });
 });
 
-//FARE TEST PER LOGIN DI ADMIN
+//TEST LOGIN PER ADMIN, se lancia un warning, perché manda l'email dopo la fine del test, ma funziona lo stesso
+describe('Login for role Ad', () => {
+  const testAdmin = {
+    email: 'marketrader69@gmail.com',
+    pwd: 'admin3',
+    role: 'Ad',
+  };
+  it('should login as admin and return user info', async () => {
+    const loginRes = await request(app)
+      .post('/login')
+      .send({
+        email: testAdmin.email,
+        pwd: testAdmin.pwd,
+        role: testAdmin.role
+      });
+
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.body).toHaveProperty('number');
+    expect(loginRes.body).toHaveProperty('user');
+    console.log('user:', loginRes.body.number);
+    console.log('token:', loginRes.body.user);
+
+    // Verifica che l'email corrisponda
+    expect(loginRes.body.user.email).toBe(testAdmin.email);
+  });
+});
+
+afterAll(async () => {
+    await pool.end(); // Chiudi connessione al DB
+  });
