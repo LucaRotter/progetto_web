@@ -157,14 +157,7 @@ function hasPermission(Permission_name) {
 //recupera permessi subito dopo aver effettuato il login
 async function getUserPermissions(user_Id) {
     
-    const query = `
-      SELECT p.name AS permission
-      FROM users u
-      JOIN roles r ON u.role_id = r.role_id
-      JOIN roles_permissions rp ON r.role_id = rp.role_id
-      JOIN permissions p ON rp.permission_id = p.permission_id
-      WHERE u.user_id = $1
-    `;
+    const query = 'SELECT p.name AS permission FROM users u JOIN roles r ON u.role_id = r.role_id JOIN roles_permissions rp ON r.role_id = rp.role_id JOIN permissions p ON rp.permission_id = p.permission_id WHERE u.user_id = $1';
     
     try {
       const result = await pool.query(query, [user_Id]);
