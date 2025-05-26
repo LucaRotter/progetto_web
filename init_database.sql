@@ -33,7 +33,7 @@ image_url text
 create table items(
 item_id varchar(5) primary key,
 name varchar(100) not null,
-prezzo DECIMAL(10, 2) not null,
+price DECIMAL(10, 2) not null,
 description text,
 quantity int not null,
 image_url text,
@@ -135,12 +135,12 @@ INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 
 --CATEGORIE
 INSERT INTO categories(category_id, name, image_url) VALUES
-('cat01', 'libri', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat02', 'elettronica', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat03', 'abbigliamento', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat04', 'casa', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat05', 'giardino', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat06', 'informatica', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat07', 'sport', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat08', 'bellezza', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat09', 'cibo', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg');
+('cat01', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat02', 'eletronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat03', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat04', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat05', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat06', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat07', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat08', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('cat09', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg');
