@@ -130,10 +130,9 @@ function hasPermission(Permission_name) {
       // Se i permessi non sono presenti nel token, li recuperiamo dal database
       if (!req.permissions) {
         try {
-          const permissions = await getUserPermissions(req.user.id);  
+          const permissions = await getUserPermissions(req.user.user_id);  
           req.permissions = permissions;  
   
-          
           if (!permissions.includes(Permission_name)) {
             return res.status(403).json({ message: 'Permission denied' });
           }
@@ -156,11 +155,20 @@ function hasPermission(Permission_name) {
 
 //recupera permessi subito dopo aver effettuato il login
 async function getUserPermissions(user_Id) {
-    
-    const query = 'SELECT p.name AS permission FROM users u JOIN roles r ON u.role_id = r.role_id JOIN roles_permissions rp ON r.role_id = rp.role_id JOIN permissions p ON rp.permission_id = p.permission_id WHERE u.user_id = $1';
-    
+
+    user_Id = `${user_Id}`;
+   
+    const query = (`
+      SELECT p.name AS permission
+      FROM users u
+      JOIN roles r ON u.role_id = r.role_id
+      JOIN roles_permissions rp ON r.role_id = rp.role_id
+      JOIN permissions p ON rp.permission_id = p.permission_id
+      WHERE u.user_id = $1
+    `);
+
     try {
-      const result = await pool.query(query, [user_Id]);
+      const result = await pool.query(query, [user_id]);
       return result.rows.map(row => row.permission);// restituisce un array di stringhe con i nomi dei permessi
     } catch (err) {
       console.error('Errore nel recupero dei permessi:', err);
@@ -278,7 +286,7 @@ app.post('/login', async (req, res) => {
 //aggiungi foto profilo utente
 app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPermission('update_profile'), async (req, res) => {
     const url = await uploadToCloudinary(req.file.path);
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('UPDATE users SET image_url = $1 WHERE id = $2', [url, user_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Profile picture updated" });
@@ -329,7 +337,7 @@ app.post('/reset-password', async (req, res) => {
 //aggiungi recensione
 app.post('/add-review', protect, hasPermission('add_review'), async (req, res) => {
     const { item_id, description, evaluation } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const count = await pool.query('SELECT COUNT(*) FROM reviews WHERE item_id = $1 && user_id = $2', [item_id, user_id]);
     if (count.rows.length > 0) {
         return res.status(400).json({ message: "Review already exists" });
@@ -389,14 +397,14 @@ app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, r
 //inserimento articolo nel carrello
 app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
     const { item_id, quantity } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('INSERT INTO cart (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
     res.json({ message: "Item added to cart" });
 });
 
 //articoli dal carrello
 app.get('/cart', protect, async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM cart WHERE user_id = $1', [user_id]);
     res.json(result.rows);
 });
@@ -404,7 +412,7 @@ app.get('/cart', protect, async (req, res) => {
 //modifica quantità articolo nel carrello
 app.put('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
     const { quantity } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('UPDATE cart SET quantity = $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, req.params.id]);
     if (result.rowCount > 0) {
         res.json({ message: "Item updated in cart" });
@@ -415,7 +423,7 @@ app.put('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => 
 
 //rimozione articolo con id passato per parametro dal carrello dell'utente passato come token
 app.delete('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('DELETE FROM cart WHERE user_id = $1 AND item_id = $2', [user_id, req.params.id]);
     if (result.rowCount > 0) {
         res.json({ message: "Item removed from cart" });
@@ -426,7 +434,7 @@ app.delete('/cart/:id', protect, hasPermission('update_cart'), async (req, res) 
 
 //rimozione di tutti gli articoli dal carrello dell'utente con id passato per parametro
 app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('DELETE FROM cart WHERE user_id = $1', [user_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Items removed from cart" });
@@ -437,7 +445,7 @@ app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, re
 
 //numero articoli nel carrello
 app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('SELECT COUNT(*) AS count FROM cart WHERE user_id = $1', [user_id]);
     res.json({ count: result.rows[0].count });
 });
@@ -445,15 +453,17 @@ app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) =
 
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
-//aggiungi articolo
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
+
     const { name, category, description, price, quantity, image_url } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const count = await pool.query('SELECT COUNT(*) FROM items');
     const item_id = parseInt(count.rows[0].count) + 1;
-    const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+    const tmp = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+    const category_id = tmp.rows[0].category_id;
+
     const result = await pool.query(
-        'INSERT INTO items (item_id, user_id, name, category, description, price, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+        'INSERT INTO items (item_id, user_id, name, category_id, description, prezzo, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
         [item_id, user_id, name, category_id, description, price, quantity, image_url]);
     res.json({ message: "Item added" });
 });
@@ -662,7 +672,7 @@ app.get('/items', async (req, res) => {
 //aggiungi ordine
 app.post('/add-order', protect, hasPermission('place-order'), async (req, res) => {
     const { items, address, civic_number, postal_code, province, country, phone_number  } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const orderNumber = await pool.query('SELECT COUNT(*) FROM orders');
     const order_id = parseInt(orderNumber.rows[0].count) + 1;
 
@@ -696,14 +706,14 @@ app.put('/update-order/:id', protect, hasPermission('manage_orders'), async (req
 
 //recupera ordini per id utente del cliente
 app.get('/customer-orders', protect, hasPermission('view_orders'), async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [user_id]);
     res.json(result.rows);
 });
 
 //recupera ordini per id utente dell'artigiano
 app.get('/artisan-orders', protect, hasPermission('manage_orders'), async (req, res) => {
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1', [user_id]);
     res.json(result.rows);
 });
@@ -736,7 +746,7 @@ app.delete('/admin-orders/:id', protect, hasPermission('view_manage_orders'), as
 //crea una segnalazione
 app.post('/create-report', protect, hasPermission('manage_report'), async (req, res) => {
     const { item_id, category, description } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user.user_id;
     const count = await pool.query('SELECT COUNT(*) FROM reports');
     const report_id = parseInt(count.rows[0].count) + 1;
 
@@ -758,7 +768,7 @@ app.post('/create-report', protect, hasPermission('manage_report'), async (req, 
 //aggiunta admin nella segnalazione
 app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), async (req, res) => {
     const report_id = req.params.id;
-    const admin_id = req.user.id;
+    const admin_id = req.user.user_id;
     const result = await pool.query('UPDATE reports SET admin_id = $1 WHERE report_id = $2', [admin_id, report_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Admin added to report" });
@@ -769,7 +779,7 @@ app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), asy
 
 //recupera segnalazioni per id admin
 app.get('/admin-reports', protect, hasPermission('moderate_reports'), async (req, res) => {
-    const admin_id = req.user.id;
+    const admin_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM reports WHERE admin_id = $1', [admin_id]);
     res.json(result.rows);
 });
