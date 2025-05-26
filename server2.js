@@ -154,9 +154,8 @@ function hasPermission(Permission_name) {
 }
 
 //recupera permessi subito dopo aver effettuato il login
-async function getUserPermissions(user_Id) {
-
-    user_Id = `${user_Id}`;
+async function getUserPermissions(user_id) {
+    user_id = `${user_id}`;
    
     const query = (`
       SELECT p.name AS permission
@@ -285,9 +284,11 @@ app.post('/login', async (req, res) => {
 
 //aggiungi foto profilo utente
 app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPermission('update_profile'), async (req, res) => {
-    const url = await uploadToCloudinary(req.file.path);
+    console.log('File ricevuto:', req.file.path);
+    const response = await uploadToCloudinary(req.file.path);
+    const url = response.url;
     const user_id = req.user.user_id;
-    const result = await pool.query('UPDATE users SET image_url = $1 WHERE id = $2', [url, user_id]);
+    const result = await pool.query('UPDATE users SET image_url = $1 WHERE user_id = $2', [url, user_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Profile picture updated" });
     } else {
@@ -864,7 +865,11 @@ app.post('/send-confirmation-email', protect, async (req, res) => {
 });
 
 
-module.exports = { app, pool };
+module.exports = {
+    app,
+    pool,
+    generateToken,
+};
 
 //listen server
 app.listen(port, () => {
