@@ -1,129 +1,131 @@
+<header class="fixed-top ">
+    <nav class="navbar navbar-expand-sm bd-navbar" style="background-color: rgb(20, 165, 165);">
+        <div class="container-fluid flex-lg-row align-items-center m-3">
 
- <header class="fixed-top " >
-<nav class="navbar navbar-expand-sm bd-navbar" style="background-color: rgb(20, 165, 165);">
-    <div class="container-fluid flex-lg-row align-items-center m-3">
+            <div class="collapse navbar-collapse">
 
-        <div class="collapse navbar-collapse">
+                <a class="navbar-brand mx-0 me-lg-3 d-none d-lg-block" href="index.html">ArtOfManual</a>
+                <a class="navbar-brand d-none d-sm-block d-lg-none " href="index.html"> <img class="" src="logoSito.png"
+                        alt="Logo" height=35> </a>
 
-            <a class="navbar-brand mx-0 me-lg-3 d-none d-lg-block" href="index.html">ArtOfManual</a>
-            <a class="navbar-brand d-none d-sm-block d-lg-none " href="index.html"> <img class="" src="logoSito.png"
-                    alt="Logo" height=35> </a>
+            </div>
 
-        </div>
+            <div class="collapse navbar-collapse position-absolute top-50 start-50 translate-middle"
+                style="z-index: 999;">
+                <form class="d-flex flex-column position-relative" style="max-width: 300px;" role="search"
+                    id="primarysearchform">
 
-        <div class="collapse navbar-collapse position-absolute top-50 start-50 translate-middle"
-     style="z-index: 999;">
-  <form class="d-flex flex-column position-relative" style="max-width: 300px;" role="search" id="primarysearchform">
-      
-    <!-- Riga con bottone filtri a sinistra e input + cerca a destra -->
-    <div class="d-flex align-items-stretch mb-2 w-100">
-      
-      <!-- Bottone Filtri -->
-      <div class="dropdown me-2">
-        <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
-                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Filtries
-        </button>
-        <div class="dropdown-menu p-3" aria-labelledby="filterDropdown"
-             style="width: 250px; max-height: 200px; overflow-y: auto;"
-             id="filtersContainer">
-          <!-- I filtri verranno inseriti qui via JS -->
-        </div>
-      </div>
-      
-      <!-- Campo ricerca + bottone cerca -->
-      <div class="position-relative flex-grow-1">
-        <input type="text" class="form-control me-2" id="searchfield" placeholder="Search" aria-label="Search" autocomplete="off">
-        
-        <!-- Tendina suggerimenti -->
-        <ul class="list-group position-absolute w-100 mt-1 shadow " id="suggestionsList" 
-            style="z-index: 1000; height: 200px; overflow-y: auto; background-color: black;"></ul>
-        </div>
+                    <!-- Riga con bottone filtri a sinistra e input + cerca a destra -->
+                    <div class="d-flex align-items-stretch mb-2 w-100">
 
-      <button type="submit" class="btn btn-primary ms-2">
-        <i class="bi bi-search"></i>
-      </button>
-      
-    </div>
-  </form>
-</div>
+                        <!-- Bottone Filtri -->
+                        <div class="dropdown me-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
+                                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filtries
+                            </button>
+                            <div class="dropdown-menu p-3" aria-labelledby="filterDropdown"
+                                style="width: 250px; max-height: 200px; overflow-y: auto;" id="filtersContainer">
+                                <!-- I filtri verranno inseriti qui via JS -->
+                            </div>
+                        </div>
 
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
-                <li class="nav-item me-3  d-none loggedUser" style="position: relative;">
-                    <a class="nav-link link-navbar" href="cart.html">Cart</a>
-                    <div class="d-flex justify-content-center align-items-center"
-                        style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
-                        10</div>
-                </li>
-                <li class="nav-item"><a class="nav-link link-navbar loggedUser loggedArtisan d-none"
-                        data-bs-toggle="offcanvas" href="#visProfile" aria-controls="offcanvasExample">Account</a></li>
-                <li class="nav-item"><a class="nav-link link-navbar notLogged" data-bs-toggle="offcanvas"
-                        href="#loggedCanvas" aria-controls="offcanvasExample">Sing in</a></li>
-            </ul>
+                        <!-- Campo ricerca + bottone cerca -->
+                        <div class="position-relative flex-grow-1">
+                            <input type="text" class="form-control me-2" id="searchfield" placeholder="Search"
+                                aria-label="Search" autocomplete="off">
 
-            <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2">
-                <li class="nav-item d-none loggedUser" style="position: relative;">
-                    <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
-                    <div class="d-flex justify-content-center align-items-center"
-                        style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
-                        10</div>
-                </li>
-                <li class="nav-item"><a class="nav-link link-navbar d-none loggedUser loggedArtisan" href="#visProfile"
-                        data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
-                </li>
-                <li class="nav-item"><a class="nav-link link-navbar notLogged" href="#loggedCanvas"
-                        data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
-                </li>
-            </ul>
-        </div>
+                            <!-- Tendina suggerimenti -->
+                            <ul class="list-group position-absolute w-100 mt-1 shadow " id="suggestionsList"
+                                style="z-index: 1000; height: 200px; overflow-y: auto; background-color: black;"></ul>
+                        </div>
 
-        <!--da qua in poi è come viene dopo il collapse sotto sm-->
-
-        <button class="d-flex justify-content-center navbar-toggler d-sm-none" type="button"
-            style="height: 40px;width: 40px;" data-bs-toggle="offcanvas" href="#menusidebar" role="button"
-            aria-controls="menusidebar" href="#">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
-            <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
-                <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
-            </a>
-        </div>
-
-        <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
-            data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false"
-            aria-controls="searchCollapse" style="height: 40px;width: 40px;">
-            <i class="bi bi-search"></i>
-        </button>
-
-        <div class="collapse d-sm-none " id="searchCollapse">
-            <div class="d-flex justify-content-center align-items-center search-control">
-
-                <div style="width: 80%">
-                    <form class="d-flex justify-content-center"
-                        style="width: 100%; margin: auto;border-color: black; border-radius: 5px; border: 1px solid black;"
-                        role="search">
-                        <input type="text" class="form-control" style="border: none;" placeholder="Search"
-                            aria-label="Search"> </input>
-                        <button type="btn">
+                        <button type="submit" class="btn btn-primary ms-2">
                             <i class="bi bi-search"></i>
                         </button>
 
-                    </form>
+                    </div>
+                </form>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
+                    <li class="nav-item me-3  d-none loggedUser" style="position: relative;">
+                        <a class="nav-link link-navbar" href="cart.html">Cart</a>
+                        <div class="d-flex justify-content-center align-items-center"
+                            style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
+                            10</div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link link-navbar loggedUser loggedArtisan d-none"
+                            data-bs-toggle="offcanvas" href="#visProfile" aria-controls="offcanvasExample">Account</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link link-navbar notLogged" data-bs-toggle="offcanvas"
+                            href="#loggedCanvas" aria-controls="offcanvasExample">Sing in</a></li>
+                </ul>
+
+                <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2">
+                    <li class="nav-item d-none loggedUser" style="position: relative;">
+                        <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
+                        <div class="d-flex justify-content-center align-items-center"
+                            style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
+                            10</div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link link-navbar d-none loggedUser loggedArtisan"
+                            href="#visProfile" data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i
+                                class="bi bi-person"></i></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link link-navbar notLogged" href="#loggedCanvas"
+                            data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!--da qua in poi è come viene dopo il collapse sotto sm-->
+
+            <button class="d-flex justify-content-center navbar-toggler d-sm-none" type="button"
+                style="height: 40px;width: 40px;" data-bs-toggle="offcanvas" href="#menusidebar" role="button"
+                aria-controls="menusidebar" href="#">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
+                <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
+                    <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
+                </a>
+            </div>
+
+            <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
+                data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false"
+                aria-controls="searchCollapse" style="height: 40px;width: 40px;">
+                <i class="bi bi-search"></i>
+            </button>
+
+            <div class="collapse d-sm-none " id="searchCollapse">
+                <div class="d-flex justify-content-center align-items-center search-control">
+
+                    <div style="width: 80%">
+                        <form class="d-flex justify-content-center"
+                            style="width: 100%; margin: auto;border-color: black; border-radius: 5px; border: 1px solid black;"
+                            role="search">
+                            <input type="text" class="form-control" style="border: none;" placeholder="Search"
+                                aria-label="Search"> </input>
+                            <button type="btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+
+                        </form>
+                    </div>
+
+
+                    <button class="mx-1 mx-sm-3" type="btn" data-bs-dismiss="collapse" aria-label="Close">
+                        <i style="font-size: 20px;" class="bi bi-x"></i>
+                    </button>
+
                 </div>
-
-
-                <button class="mx-1 mx-sm-3" type="btn" data-bs-dismiss="collapse" aria-label="Close">
-                    <i style="font-size: 20px;" class="bi bi-x"></i>
-                </button>
-
             </div>
         </div>
-    </div>
 
-</nav>
+    </nav>
 </header>
 
 <!--Sidebar OffCanvas di bootstrap per l'accesso personalizzato-->
@@ -221,7 +223,7 @@
                 <p>></p>
             </button>
 
-            <button class="btn button-logged loggedUser" onclick="Orderspage()" >
+            <button class="btn button-logged loggedUser" onclick="Orderspage()">
                 <p>Orders</p>
                 <p>></p>
             </button>
@@ -239,5 +241,3 @@
         </div>
     </div>
 </div>
-
-
