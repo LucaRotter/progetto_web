@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center " style="margin-top: 40px;" id="fullCart">
+        <div class="row justify-content-center d-none" style="margin-top: 40px;" id="fullCart">
             <div class="col-12 col-lg-7 d-flex flex-column align-items-center p-3 gap-3 container-fluid box-carrello mb-5 order-2 order-lg-1 "
                 style="background-color: rgb(255, 255, 255);border: 2px solid rgb(0, 0, 0); border-radius: 10px;"
                 id="item-container">
@@ -46,11 +46,11 @@
                     <h4>Review </h4>
                     <div class=" d-inline-flex  w-100 gap-2">
                         <p class="">N products</p>
-                        <p class="align-self-end">scrivo il numero qui</p>
+                        <p class="align-self-end" id="itemCount"></p>
                     </div>
                     <div class=" d-inline-flex  w-100 gap-2">
                         <p class="align-self-start">Total price</p>
-                        <p class="align-self-end">scrivo il numero qui</p>
+                        <p class="align-self-end" id="totalPrice"></p>
                     </div>
                     <button class="btn btn-primary w-100 " style="height: auto; margin-top:auto"
                         onclick="buyCart()">Buy</button>
