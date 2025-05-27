@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progetto</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="js-loading">
+
+    <div class="alert alert-success mb-0 d-none mt-0 d-none" role="alert" id="alertsucces">
+        succefull logged in your account welcome back
+    </div>
+
+    <!-- barra di navigazione con implementata la ricerca -->
+   
+    <div id="header"></div>
+
+    <main class="mb-5" style="padding-top: 90px;">
+
+        <div class="divisor d-flex w-100 justify-content-center align-items-center mt-5" >
+
+            <h1 >Categorie</h1>
+            
+        </div>
+        <!--slider utilizzato per le card che rappresentano le varie categorie di prodotti-->
+
+        <div class="d-flex justify-content-center w-100">
+        <div class="principale d-flex justify-content-center mt-3 " >
+            <div id="carouselControls" class="carousel slide" data-bs-interval="5000" data-bs-ride="carousel" >
+
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="cards-wrapper">
+                            <div class="card category-card">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card  category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            <div class="card category-card">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            <div class="card category-card">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                            <div class="card category-card d-none d-md-block">
+                                <img src="golubirospiuniro.jpeg" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="carousel-control-prev" href="#carouselControls" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only"></span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselControls" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+</div>
+
+        <div class="divisor d-flex justify-content-center align-items-center w-100 mt-5" >
+
+            <h1 class="text-center">Products</h1>
+            
+        </div>
+
+        <!--parte per la visualizzazione dei prodotti-->
+        <div class="container-fluid mt-5 mb-5" id="product-container">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 mt-5 g-4" id="ProductList">
+
+                
+                <div class="col";>
+                    <div class="card product-item">
+                        <img src="Cat03.jpg" class="card-img-top img-card" alt="...">
+                        <div class="card-body d-flex-column w-100 p-2">
+                            <p class="card-text text-truncate mb-0 Item-Name">Titolo</p>
+                            <p class="card-text Items prezzo-Item">prezzo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="jebenigolub.webp" class="card-img-top img-card" alt="...">
+                        <div class="card-body d-flex-column w-100 p-2">
+                            <p class="card-text text-truncate mb-0 Item-Name">Titolo</p>
+                            <p class="card-text Items prezzo-Item">prezzo</p>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="Cat03.jpg" class="card-img-top img-card" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 p-2">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="golubirospiuniro.jpeg" class="card-img-top img-card" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 p-2">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="golubirospiuniro.jpeg" class="card-img-top img-card" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 ">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card  h-100 product-item">
+                        <img src="golubirospiuniro.jpeg" class="card-img-top img-card" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 ">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="golubirospiuniro.jpeg" xclass="card-img-top" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 ">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card product-item">
+                        <img src="golubirospiuniro.jpeg" xclass="card-img-top" alt="...">
+                        <div class="d-flex-column  w-100">
+                            <div class="d-flex justify-content-start w-100 ">
+                                <h2 class="text-truncate fs-6 text" style="font-size: 20px;">nome prodotto</h5>
+                            </div>
+                            <div class="d-flex justify-content-start  w-100">
+                                <h2 class="fs-6" style="font-size: 20px;">prezzo</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </main>
+
+    
+    <footer style ="background-color: black;height: 100px;">
+
+
+    </footer>
+    
+    <script src="scriptElement.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"crossorigin="anonymous"></script>
+    <script src="scriptindex.js"></script>
+    
+</body>
+
+</html>
