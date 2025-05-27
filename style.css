@@ -155,7 +155,7 @@
     height: 200px;
     width: 100%;
     border:2px solid;
-    background-color: aqua;
+    background-color: rgb(255, 255, 255);
   }
 
 body{
@@ -178,8 +178,8 @@ body{
   
 }
 
-.box-carrello {
-  border: 2px solid orange;
+.box-cart {
+  border: 2px solid rgb(0, 0, 0);
   border-radius: 8px;
   padding: 20px;
   background-color: white;
