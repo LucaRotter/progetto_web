@@ -4,5 +4,6 @@ const request = require('supertest');
 const path = require('path');
 const fs = require('fs');
 const { app,pool, generateToken } = require('../server2'); // Assicurati che app e generateToken siano esportati
+const { Console } = require('console');
 
 

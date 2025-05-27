@@ -481,7 +481,7 @@ app.post('/add-category',uploadMiddleware.single('immagine'), protect, hasPermis
     const result = await pool.query(
         'INSERT INTO categories (category_id, name, image_url) VALUES ($1, $2, $3)',
         [category_id, name, url]);
-    res.json({ message: "Category added" });
+    res.json({ message: "Category added", category_id});//la categoria_id viene restituita per i test
 });
 
 //modifica nome categoria
@@ -497,9 +497,10 @@ app.put('/update-category-name/:id', protect, hasPermission('manage_categories')
 });
 
 //modifica immagine categoria
-app.put('/update-category-image/:id', protect, hasPermission('manage_categories'), uploadMiddleware.single('immagine'), async (req, res) => {
+app.put('/update-category-image/:id', uploadMiddleware.single('immagine'), protect, hasPermission('manage_categories'), async (req, res) => {
     const category_id = req.params.id;
-    const url = await uploadToCloudinary(req.file.path);
+    const response = await uploadToCloudinary(req.file.path);
+    const url = response.url
     const result = await pool.query('UPDATE categories SET image_url = $1 WHERE category_id = $2', [url, category_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Category image updated" });

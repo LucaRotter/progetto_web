@@ -239,10 +239,10 @@ describe('categories', () => {
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.status).toBe(200);
   });
-  describe('Category add and update', () => {
+describe('Category add and update', () => {
     const categoryName = 'Test Category';
     const updatedCategoryName = 'Updated Category Name';
-    const categoryId = 'cat10'; // Assicurati che esista questa categoria per il test di update
+    let categoryId; // Variabile per memorizzare l'ID della categoria
 
     beforeAll(() => {
       // Setta la chiave segreta per JWT
@@ -262,34 +262,62 @@ describe('categories', () => {
         .attach('immagine', imagePath);
 
       expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual({ message: 'Category added' });
+      expect(response.body).toHaveProperty('message', 'Category added');
+     expect(response.body).toHaveProperty('category_id');
+      categoryId = response.body.category_id;
+      console.log('Category ID:', categoryId); // Log per verificare l'ID della categoria
 
       const result = await pool.query('SELECT * FROM categories WHERE name = $1', [categoryName]);
       expect(result.rows.length).toBe(1);
     });
-
     it('should rename category', async () => {
+          const userId = 'ad003';
+          const token = generateToken(userId);
+    
+          const response = await request(app)
+            .put(`/update-category-name/${categoryId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: updatedCategoryName });
+    
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual({ message: 'Category name updated' });
+    
+          const result = await pool.query('SELECT * FROM categories WHERE name = $1', [updatedCategoryName]);
+          expect(result.rows.length).toBe(1);
+        });
+
+    it('should update category image', async () => {
+      const userId = 'ad003'; // ID utente già esistente nel DB
+      const token = generateToken(userId);
+      const imagePath = path.join(__dirname, 'test.jpeg');
+      expect(fs.existsSync(imagePath)).toBe(true);
+
+      const response = await request(app)
+        .put(`/update-category-image/${categoryId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .attach('immagine', imagePath);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual({ message: 'Category image updated' });
+
+      const result = await pool.query('SELECT * FROM categories WHERE category_id = $1', [categoryId]);
+      expect(result.rows.length).toBe(1);
+    });
+    test('should delete category', async () => {
       const userId = 'ad003';
       const token = generateToken(userId);
 
       const response = await request(app)
-        .put(`/update-category-name/${categoryId}`)
-        .set('Authorization', `Bearer ${token}`)
-        .send({ name: updatedCategoryName });
+        .delete(`/delete-category/${categoryId}`)
+        .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual({ message: 'Category name updated' });
+      expect(response.body).toEqual({ message: 'Category deleted' });
 
-      const result = await pool.query('SELECT * FROM categories WHERE name = $1', [updatedCategoryName]);
-      expect(result.rows.length).toBe(1);
+      const result = await pool.query('SELECT * FROM categories WHERE category_id = $1', [categoryId]);
+      expect(result.rows.length).toBe(0);
     });
 
-    //AGGIUNGERE LE ALTRE DESCRIBE QUI PRIMA DEL 'afterAll'
-
-    afterAll(async () => {
-      await pool.query("DELETE FROM categories WHERE name = $1", [categoryName]);
-      await pool.query("DELETE FROM categories WHERE name = $1", [updatedCategoryName]);
-    });
   });
 });
 
