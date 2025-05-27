@@ -454,6 +454,14 @@ app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) =
 
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
+//restituisce tutte le categorie
+app.get('/categories', async (res) => {
+    const result = await pool.query('SELECT * FROM categories');
+    res.json(result.rows);
+});
+
+
+
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
 
     const { name, category, description, price, quantity, image_url } = req.body;
