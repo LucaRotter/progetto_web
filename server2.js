@@ -399,14 +399,14 @@ app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, r
 app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
     const { item_id, quantity } = req.body;
     const user_id = req.user.user_id;
-    const result = await pool.query('INSERT INTO cart (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
+    const result = await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
     res.json({ message: "Item added to cart" });
 });
 
 //articoli dal carrello
 app.get('/cart', protect, async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM cart WHERE user_id = $1', [user_id]);
+    const result = await pool.query('SELECT * FROM carts WHERE user_id = $1', [user_id]);
     res.json(result.rows);
 });
 
@@ -414,7 +414,7 @@ app.get('/cart', protect, async (req, res) => {
 app.put('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
     const { quantity } = req.body;
     const user_id = req.user.user_id;
-    const result = await pool.query('UPDATE cart SET quantity = $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, req.params.id]);
+    const result = await pool.query('UPDATE carts SET quantity = $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, req.params.id]);
     if (result.rowCount > 0) {
         res.json({ message: "Item updated in cart" });
     } else {
@@ -425,7 +425,7 @@ app.put('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => 
 //rimozione articolo con id passato per parametro dal carrello dell'utente passato come token
 app.delete('/cart/:id', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('DELETE FROM cart WHERE user_id = $1 AND item_id = $2', [user_id, req.params.id]);
+    const result = await pool.query('DELETE FROM carts WHERE user_id = $1 AND item_id = $2', [user_id, req.params.id]);
     if (result.rowCount > 0) {
         res.json({ message: "Item removed from cart" });
     } else {
@@ -436,7 +436,7 @@ app.delete('/cart/:id', protect, hasPermission('update_cart'), async (req, res) 
 //rimozione di tutti gli articoli dal carrello dell'utente con id passato per parametro
 app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('DELETE FROM cart WHERE user_id = $1', [user_id]);
+    const result = await pool.query('DELETE FROM carts WHERE user_id = $1', [user_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Items removed from cart" });
     } else {
@@ -447,21 +447,67 @@ app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, re
 //numero articoli nel carrello
 app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT COUNT(*) AS count FROM cart WHERE user_id = $1', [user_id]);
+    const result = await pool.query('SELECT COUNT(*) AS count FROM carts WHERE user_id = $1', [user_id]);
     res.json({ count: result.rows[0].count });
 });
 
 
-//CRUD PER LA GESTIONE DEGLI ARTICOLI
-
+//gestione categorie
 //restituisce tutte le categorie
 app.get('/categories', async (res) => {
     const result = await pool.query('SELECT * FROM categories');
     res.json(result.rows);
 });
 
+//aggiungi categoria
+app.post('/add-category', protect, hasPermission('manage_categories'), async (req, res) => {
+    const { name, url } = req.body;
+    const count = await pool.query('SELECT COUNT(*) FROM categories');
+    const category_id = parseInt(count.rows[0].count) + 1;
+    const result = await pool.query(
+        'INSERT INTO categories (category_id, name, image_url) VALUES ($1, $2, $3)',
+        [category_id, name, url]);
+    res.json({ message: "Category added" });
+});
 
+//modifica nome categoria
+app.put('/update-category-name/:id', protect, hasPermission('manage_categories'), async (req, res) => {
+    const { name } = req.body;
+    const category_id = req.params.id;
+    const result = await pool.query('UPDATE categories SET name = $1 WHERE category_id = $2', [name, category_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Category name updated" });
+    } else {
+        res.status(400).json({ message: "Category not found" });
+    }
+});
 
+//modifica immagine categoria
+app.put('/update-category-image/:id', protect, hasPermission('manage_categories'), uploadMiddleware.single('immagine'), async (req, res) => {
+    const category_id = req.params.id;
+    const url = await uploadToCloudinary(req.file.path);
+    const result = await pool.query('UPDATE categories SET image_url = $1 WHERE category_id = $2', [url, category_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Category image updated" });
+    } else {
+        res.status(400).json({ message: "Category not found" });
+    }
+});
+
+//elimina categoria
+app.delete('/delete-category/:id', protect, hasPermission('manage_categories'), async (req, res) => {
+    const category_id = req.params.id;
+    const result = await pool.query('DELETE FROM categories WHERE category_id = $1', [category_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Category deleted" });
+    } else {
+        res.status(400).json({ message: "Category not found" });
+    }
+});
+
+//CRUD PER LA GESTIONE DEGLI ARTICOLI
+
+//aggiungi articolo
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
 
     const { name, category, description, price, quantity, image_url } = req.body;
