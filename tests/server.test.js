@@ -4,6 +4,10 @@ const path = require('path');
 const fs = require('fs');
 const { app, pool, generateToken } = require('../server2.js');  // Importa la tua app Express
 
+afterAll(async () => {
+    await pool.end(); // Chiudi connessione al DB
+  });
+
 let uploadedPublicId;  // variabile globale per salvare il publicId
 
 //TEST INSERIMENTO E RIMOZIONE STESSA IMMAGINE
@@ -103,13 +107,13 @@ describe('Register and Login for role C or A', () => {
     role: 'C',
   };
 
-  // Pulizia prima o dopo i test se necessario
+  // Pulizia dopo il test
   afterAll(async () => {
   await pool.query('DELETE FROM users WHERE email = $1', [testUser.email]);
 });
 
   it('should register and then login a user with role C', async () => {
-    // 1. REGISTRAZIONE
+    // 1. registrazione
     const registerRes = await request(app)
       .post('/register')
       .send(testUser);
@@ -121,7 +125,7 @@ describe('Register and Login for role C or A', () => {
     console.log('role_id:', registerRes.body.user.role_id);
     
 
-    // 2. LOGIN
+    // 2. login
     const loginRes = await request(app)
       .post('/login')
       .send({
@@ -166,10 +170,6 @@ describe('Login for role Ad', () => {
   });
 });
 
-afterAll(async () => {
-    await pool.end(); // Chiudi connessione al DB
-  });
-
 //TEST AGGIORNAMENTO IMMAGINE PROFILO
 describe('Profile Picture Update', () => {
   beforeAll(() => {
@@ -194,3 +194,45 @@ describe('Profile Picture Update', () => {
     expect(response.body).toEqual({ message: 'Profile picture updated' });
   });
 });
+
+//FORGOT PASSWORD E RESET PASSWORD CON LA STESSA NEL DB
+
+describe('POST /forgot-password and reset-password', () => {
+  const testUser = {
+    email: 'marketrader69@gmail.com',
+    role: 'C'
+  };
+    test('should send reset email if user exists', async () => {
+    const response = await request(app)
+      .post('/forgot-password')
+      .send(testUser)
+      .expect(200);
+
+    expect(response.body).toEqual({ message: 'Email sent' });
+  });
+  const testUserPdw = {
+      email: 'marketrader69@gmail.com',
+      newPassword: 'prova1',
+      role: 'C'
+    };
+    test('should reset password', async () => {
+    const response = await request(app)
+      .post('/reset-password')
+      .send(testUserPdw)
+      .expect(200);
+
+    expect(response.body).toEqual({ message: 'Password updated'});
+    });
+});
+
+//CATEGORIE
+
+describe('categories', () => {
+  test('should return all categories', async () => {
+    const response = await request(app)
+    .get('/categories');
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.status).toBe(200);
+  });
+});
+

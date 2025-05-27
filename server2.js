@@ -302,8 +302,12 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
 //recupera password
 app.post('/forgot-password', async (req, res) => {
     const { email, role } = req.body;
-    role_id = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
-    const userResult = await pool.query('SELECT * FROM users WHERE email = $1 && role_id = $2', [email, role_id]);
+    console.log(email, role);
+    result = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const role_id = result.rows[0].role_id;
+    console.log(role_id);
+    const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
+    console.log(userResult.rows);
     if (userResult.rows.length > 0) {
         const user = userResult.rows[0];
         
@@ -324,7 +328,8 @@ app.post('/forgot-password', async (req, res) => {
 app.post('/reset-password', async (req, res) => {
     const { email, newPassword, role } = req.body;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    role_id = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]);; //fare la query per recuperare l'id del ruolo
+    const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]);; //fare la query per recuperare l'id del ruolo
+    const role_id = result1.rows[0].role_id;
     const result = await pool.query('UPDATE users SET pwd = $1 WHERE email = $2 AND role_id = $3', [hashedPassword, email, role_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Password updated" });
@@ -459,7 +464,7 @@ app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) =
 
 //gestione categorie
 //restituisce tutte le categorie
-app.get('/categories', async (res) => {
+app.get('/categories', async (req,res) => {
     const result = await pool.query('SELECT * FROM categories');
     res.json(result.rows);
 });
