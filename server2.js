@@ -465,10 +465,12 @@ app.get('/categories', async (req,res) => {
 });
 
 //aggiungi categoria
-app.post('/add-category', protect, hasPermission('manage_categories'), async (req, res) => {
-    const { name, url } = req.body;
+app.post('/add-category',uploadMiddleware.single('immagine'), protect, hasPermission('manage_categories'), async (req, res) => {
+    const url = await uploadToCloudinary(req.file.path);
+    const name = req.body;
     const count = await pool.query('SELECT COUNT(*) FROM categories');
     const category_id = parseInt(count.rows[0].count) + 1;
+    console.log(category_id, name, url);
     const result = await pool.query(
         'INSERT INTO categories (category_id, name, image_url) VALUES ($1, $2, $3)',
         [category_id, name, url]);
