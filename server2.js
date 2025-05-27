@@ -399,7 +399,12 @@ app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, r
 app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
     const { item_id, quantity } = req.body;
     const user_id = req.user.user_id;
-    const result = await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
+    let result = await pool.query('SELECT item_id FROM carts WHERE user_id = $1', [user_id]);
+    if(item_id in result.rows[0].item_id){
+        await pool.query('UPDATE carts SET quantity = quantity + $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, item_id]);
+    } else {
+        await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
+    }
     res.json({ message: "Item added to cart" });
 });
 
@@ -618,6 +623,12 @@ app.get('/item/:id', async (req, res) => {
 let list_items = [];
 let shuffledItems = [];
 
+//ricomincia lista
+app.put('/reset-items', async (req, res) => {
+    list_items = [];
+    shuffledItems = [];
+});
+
 app.get('/random-items', async (req, res) => {
     const nItems = parseInt(req.query.nItems, 10);
     if (!nItems || isNaN(nItems)) {
@@ -634,15 +645,14 @@ app.get('/random-items', async (req, res) => {
         if (end > shuffledItems.length) {
             end = shuffledItems.length;
         }
-        const selectedItems = shuffledItems.slice(start, end);
-        list_items.push(...selectedItems);
 
-        if (list_items.length === shuffledItems.length) {
-            list_items = [];
-            shuffledItems = [];
+        if(start == end){
+            return res.json({message: "non sono presenti altri oggetti"});
+        } else {
+            const selectedItems = shuffledItems.slice(start, end);
+            list_items.push(...selectedItems);
+            res.json(selectedItems);
         }
-
-        res.json(selectedItems);
 
     } catch (err) {
         console.error("Errore durante il recupero degli articoli:", err);
@@ -654,7 +664,17 @@ app.get('/random-items', async (req, res) => {
 // Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
 const categoryItemsCache = {};
 
-app.get('/category/:name', async (req, res) => {
+//ricomincia lista
+app.put('/reset-category-items/:name', async (req, res) => {
+    const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
+        if (categoryResult.rows.length === 0) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+        const category_id = categoryResult.rows[0].category_id;
+    delete categoryItemsCache[category_id];
+});
+
+app.get('/category-items/:name', async (req, res) => {
     const category_name = req.params.name;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
@@ -675,11 +695,11 @@ app.get('/category/:name', async (req, res) => {
         }
 
         const items = categoryItemsCache[category_id];
-        const selectedItems = items.slice(offset, offset + limit);
+        const selectedItems = items.slice(offset, Math.min(offset + limit, items.length));
 
         // Se abbiamo raggiunto la fine, resetta la cache per questa categoria
-        if (offset + limit >= items.length) {
-            delete categoryItemsCache[category_id];
+        if (offset >= items.length) {
+            return res.json({message: `non ci sono piu' item nella categoria: ${category_name}`})
         }
 
         res.json(selectedItems);
