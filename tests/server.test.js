@@ -5,8 +5,8 @@ const fs = require('fs');
 const { app, pool, generateToken } = require('../server2.js');  // Importa la tua app Express
 
 afterAll(async () => {
-    await pool.end(); // Chiudi connessione al DB
-  });
+  await pool.end(); // Chiudi connessione al DB
+});
 
 let uploadedPublicId;  // variabile globale per salvare il publicId
 
@@ -109,8 +109,8 @@ describe('Register and Login for role C or A', () => {
 
   // Pulizia dopo il test
   afterAll(async () => {
-  await pool.query('DELETE FROM users WHERE email = $1', [testUser.email]);
-});
+    await pool.query('DELETE FROM users WHERE email = $1', [testUser.email]);
+  });
 
   it('should register and then login a user with role C', async () => {
     // 1. registrazione
@@ -123,7 +123,7 @@ describe('Register and Login for role C or A', () => {
     expect(registerRes.body).toHaveProperty('user');
     console.log('user_id:', registerRes.body.user.user_id);
     console.log('role_id:', registerRes.body.user.role_id);
-    
+
 
     // 2. login
     const loginRes = await request(app)
@@ -193,7 +193,7 @@ describe('Profile Picture Update', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({ message: 'Profile picture updated' });
   });
-  
+
 });
 
 //FORGOT PASSWORD E RESET PASSWORD CON LA STESSA NEL DB
@@ -203,7 +203,7 @@ describe('POST /forgot-password and reset-password', () => {
     email: 'marketrader69@gmail.com',
     role: 'C'
   };
-    test('should send reset email if user exists', async () => {
+  test('should send reset email if user exists', async () => {
     const response = await request(app)
       .post('/forgot-password')
       .send(testUser)
@@ -212,57 +212,83 @@ describe('POST /forgot-password and reset-password', () => {
     expect(response.body).toEqual({ message: 'Email sent' });
   });
   const testUserPdw = {
-      email: 'marketrader69@gmail.com',
-      newPassword: 'prova1',
-      role: 'C'
-    };
-    test('should reset password', async () => {
+    email: 'marketrader69@gmail.com',
+    newPassword: 'prova1',
+    role: 'C'
+  };
+  test('should reset password', async () => {
     const response = await request(app)
       .post('/reset-password')
       .send(testUserPdw)
       .expect(200);
 
-    expect(response.body).toEqual({ message: 'Password updated'});
-    });
+    expect(response.body).toEqual({ message: 'Password updated' });
+  });
 });
 
 //CATEGORIE
 
 describe('categories', () => {
+  beforeAll(() => {
+    // Setta la chiave segreta usata per firmare/verificare il token
+    process.env.JWT_SECRET = 'progetto_web_AbcDe1234';
+  });
   test('should return all categories', async () => {
     const response = await request(app)
-    .get('/categories');
+      .get('/categories');
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.status).toBe(200);
   });
-  describe('POST /add-category', () => {
-      const categoryName = 'Test Category With Image';
-  beforeAll(() => {
-      // Setta la chiave segreta usata per firmare/verificare il token
+  describe('Category add and update', () => {
+    const categoryName = 'Test Category';
+    const updatedCategoryName = 'Updated Category Name';
+    const categoryId = 'cat10'; // Assicurati che esista questa categoria per il test di update
+
+    beforeAll(() => {
+      // Setta la chiave segreta per JWT
       process.env.JWT_SECRET = 'progetto_web_AbcDe1234';
     });
-    afterAll(async () => {
-      // Assicurati che il database sia connesso
-      await pool.query("DELETE FROM categories WHERE name='Test Category'"); // Pulizia 
-    });
+
     it('should add a new category', async () => {
       const userId = 'ad003'; // ID utente già esistente nel DB
       const token = generateToken(userId);
       const imagePath = path.join(__dirname, 'test.jpeg');
       expect(fs.existsSync(imagePath)).toBe(true);
-      
+
       const response = await request(app)
         .post('/add-category')
         .set('Authorization', `Bearer ${token}`)
         .field('name', categoryName)
         .attach('immagine', imagePath);
-        
-  
+
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({ message: 'Category added' });
-      // Verifica che la categoria sia davvero nel DB
+
       const result = await pool.query('SELECT * FROM categories WHERE name = $1', [categoryName]);
       expect(result.rows.length).toBe(1);
+    });
+
+    it('should rename category', async () => {
+      const userId = 'ad003';
+      const token = generateToken(userId);
+
+      const response = await request(app)
+        .put(`/update-category-name/${categoryId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: updatedCategoryName });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual({ message: 'Category name updated' });
+
+      const result = await pool.query('SELECT * FROM categories WHERE name = $1', [updatedCategoryName]);
+      expect(result.rows.length).toBe(1);
+    });
+
+    //AGGIUNGERE LE ALTRE DESCRIBE QUI PRIMA DEL 'afterAll'
+
+    afterAll(async () => {
+      await pool.query("DELETE FROM categories WHERE name = $1", [categoryName]);
+      await pool.query("DELETE FROM categories WHERE name = $1", [updatedCategoryName]);
     });
   });
 });
