@@ -103,7 +103,7 @@ INSERT INTO permissions(permission_id, name) VALUES
 (9, 'view_manage_orders'),
 (10, 'delete_user'),
 (11, 'moderate_reviews'),
-(12, 'modarate_reports'),
+(12, 'moderate_reports'),
 (13, 'manage_categories'),
 --for artisan and admin
 (14, 'delete_item'),
