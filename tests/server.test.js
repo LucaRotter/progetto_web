@@ -263,7 +263,7 @@ describe('Category add and update', () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toHaveProperty('message', 'Category added');
-     expect(response.body).toHaveProperty('category_id');
+      expect(response.body).toHaveProperty('category_id');
       categoryId = response.body.category_id;
       console.log('Category ID:', categoryId); // Log per verificare l'ID della categoria
 
@@ -318,6 +318,53 @@ describe('Category add and update', () => {
       expect(result.rows.length).toBe(0);
     });
 
+  });
+});
+
+//TEST ITEMS
+
+describe('items', () => {
+  describe('add item', () => {
+       beforeAll(() => {
+        // Setta la chiave segreta per JWT
+        process.env.JWT_SECRET = 'progetto_web_AbcDe1234';
+      });
+     let itemId;
+  
+      it('should add an item', async () => {
+          const userId = 'A0001';
+          const token = generateToken(userId);
+          const response = await request(app)
+              .post('/add-item')
+              .set('Authorization', `Bearer ${token}`)
+              .send({
+                  name: 'libroProva',
+                  category: 'books',
+                  description: 'This is a test item',
+                  price: 10.99,
+                  quantity: 5,
+                  image_url: null,
+              });
+              expect(response.statusCode).toBe(200);
+              expect(response.body).toHaveProperty('message', 'Item added');
+              expect(response.body).toHaveProperty('item');
+              itemId = response.body.item.item_id;
+              console.log(itemId);
+              
+         
+      });
+      it('should delete an item', async () => {
+          const userId = 'A0001';
+          const token = generateToken(userId);
+          const response = await request(app)
+          .delete(`/delete-item/${itemId}`)
+          .set('Authorization', `Bearer ${token}`)
+          
+          
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toHaveProperty('message', 'Item deleted');
+      });
+      
   });
 });
 

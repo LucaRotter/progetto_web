@@ -533,9 +533,9 @@ app.post('/add-item', protect, hasPermission('update_item'), async (req, res) =>
     const category_id = tmp.rows[0].category_id;
 
     const result = await pool.query(
-        'INSERT INTO items (item_id, user_id, name, category_id, description, prezzo, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+        'INSERT INTO items (item_id, user_id, name, category_id, description, price, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)RETURNING *', 
         [item_id, user_id, name, category_id, description, price, quantity, image_url]);
-    res.json({ message: "Item added" });
+    res.json({ message: "Item added", item: result.rows[0] });//restituire l'item serve per il test
 });
 
 //modifica prezzo articolo
