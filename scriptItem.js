@@ -65,5 +65,60 @@ fetch(`http://localhost:8000/cart`, {
 
 }
 
+// Apre la finestra del report
+function openModal() {
+  document.getElementById("reportModal").style.display = "block";
+  document.getElementById("modalOverlay").style.display = "block";
+}
 
 
+// Chiude la finestra del report
+function closeModal() {
+  document.getElementById("reportModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+
+// Manda il report se la descrizione è stata scritta 
+function sendReport() {
+    const description = document.getElementById("description");
+
+    let valid = true;
+    description.style.border = "";
+
+    if (!description.value.trim()) {
+      description.style.border = "2px solid red";
+      valid = false;
+    }
+    if (!valid) {
+      return; 
+    }
+    description.value = "";
+    closeModal();
+  }
+
+
+
+// Crea per ogni reportTypes un'option che verra aggiunta alla select
+document.addEventListener("DOMContentLoaded", () => {
+  const reportTypes = [
+    "Inappropriate content",
+    "Spam or unsolicited advertising",
+    "False or misleading information",
+    "Counterfeit product",
+    "Missing or incorrect image/description",
+    "Safety concerns",
+    "Copyright infringement",
+    "Other (general report)"
+  ];
+
+  const selectType = document.getElementById("type");
+  selectType.innerHTML = ""; 
+
+  reportTypes.forEach(type => {
+    const option = document.createElement("option");
+    option.value = type.toLowerCase().replace(/\s+/g, '-');
+    option.textContent = type;
+    selectType.appendChild(option);
+  });
+});
