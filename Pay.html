@@ -12,235 +12,29 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body style="padding-top: 70px;">
 
-  <!-- NAVBAR con Breadcrumb -->
-  <header class="fixed-top" id="header">
+<body class="bg-light">
 
-    <nav class="navbar navbar-expand-sm bd-navbar" style="background-color: rgb(20, 165, 165);">
-      <div class="container-fluid flex-lg-row align-items-center m-3">
-
-        <div class="collapse navbar-collapse">
-
-          <a class="navbar-brand mx-0 me-lg-3 d-none d-lg-block" href="index.html">ArtOfManual</a>
-          <a class="navbar-brand d-none d-sm-block d-lg-none " href="index.html"> <img class="" src="logoSito.png"
-              alt="Logo" height=35> </a>
-
-        </div>
-
-        <div class="collapse navbar-collapse position-absolute top-50 start-50 translate-middle" style="z-index: 1;">
-          <form class="d-flex" style="max-width: 300px;" role="search" id="primarysearchform">
-            <input type="text" class="form-control me-2 W-100" id="searchfield" placeholder="Search" aria-label="Search"
-              style="width: 300px;">
-            <button type="submit">
-              <i class="bi bi-search"></i>
-            </button>
-          </form>
-        </div>
-
-        <div class="collapse navbar-collapse">
-          <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
-            <li class="nav-item me-3  d-none loggedUser" style="position: relative;">
-              <a class="nav-link link-navbar" href="cart.html">Cart</a>
-              <div class="d-flex justify-content-center align-items-center"
-                style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">10
-              </div>
-            </li>
-            <li class="nav-item"><a class="nav-link link-navbar loggedUser d-none" data-bs-toggle="offcanvas"
-                href="#visProfile" aria-controls="offcanvasExample">Account</a></li>
-            <li class="nav-item"><a class="nav-link link-navbar notLogged" data-bs-toggle="offcanvas"
-                href="#loggedCanvas" aria-controls="offcanvasExample">Sing in</a></li>
-          </ul>
-
-          <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2">
-            <li class="nav-item d-none loggedUser" style="position: relative;">
-              <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
-              <div class="d-flex justify-content-center align-items-center"
-                style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">10
-              </div>
-            </li>
-            <li class="nav-item"><a class="nav-link link-navbar loggedUser" href="#visProfile"
-                data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a></li>
-            <li class="nav-item"><a class="nav-link link-navbar notLogged" href="#loggedCanvas"
-                data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a></li>
-          </ul>
-        </div>
-
-        <!--da qua in poi è come viene dopo il collapse sotto sm-->
-
-        <button class="d-flex justify-content-center navbar-toggler d-sm-none" type="button"
-          style="height: 40px;width: 40px;" data-bs-toggle="offcanvas" href="#menusidebar" role="button"
-          aria-controls="menusidebar" href="#">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
-          <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
-            <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
-          </a>
-        </div>
-
-        <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
-          data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false"
-          aria-controls="searchCollapse" style="height: 40px;width: 40px;">
-          <i class="bi bi-search"></i>
-        </button>
-
-        <div class="collapse d-sm-none " id="searchCollapse">
-          <div class="d-flex justify-content-center align-items-center search-control">
-
-            <div style="width: 80%">
-              <form class="d-flex justify-content-center"
-                style="width: 100%; margin: auto;border-color: black; border-radius: 5px; border: 1px solid black;"
-                role="search">
-                <input type="text" class="form-control" style="border: none;" placeholder="Search" aria-label="Search">
-                </input>
-                <button type="btn">
-                  <i class="bi bi-search"></i>
-                </button>
-
-              </form>
-            </div>
+<header class="sticky-top" id="header">
+  <nav class="navbar navbar-expand-sm bd-navbar" style="background-color: rgb(20, 165, 165);">
+    <a class="navbar-brand mx-3" href="index.html">ArtOfManual</a>
+  </nav>
+</header>
 
 
-            <button class="mx-1 mx-sm-3" type="btn" data-bs-dismiss="collapse" aria-label="Close">
-              <i style="font-size: 20px;" class="bi bi-x"></i>
-            </button>
-
-          </div>
-        </div>
-      </div>
-
-    </nav>
-  </header>
-
-  <!--Sidebar OffCanvas di bootstrap per l'accesso personalizzato-->
-
-  <div class="offcanvas offcanvas-end notLogged" tabindex="-1" id="loggedCanvas"
-    aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header mb-3"
-      style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-
-      <div class="btn-group d-flex mb-5 mx-auto  " role="group" aria-label="Basic radio toggle button group"
-        style="max-width: 300px;">
-
-        <input type="radio" class="btn-check " name="btnradio" id="btnradio1" autocomplete="off" checked>
-        <label class="btn btn-outline-primary " for="btnradio1" style="width: 40px;">User</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btnradio2" style="width: 40px;">Artisan</label>
-
-      </div>
-
-
-      <div class="d-flex justify-content-center">
-
-        <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
-          <img src="golubirospiuniro.jpeg" alt="Icona"
-            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-        </button>
-
-      </div>
-
-      <div class="d-flex flex-column align-items-center mt-5 px-3 w-100">
-
-        <form class="d-flex flex-column align-items-center" style="width: 100%;" id="singform">
-          <input type="email" class="form-control mb-3" placeholder="Email" style="max-width: 250px;" id="emailfield"
-            autocomplete="email">
-          <input type="password" class="form-control mb-3 " placeholder="Password" style="max-width: 250px;"
-            id="passwordfield" autocomplete="current-password">
-
-          <a href="#" class="text-decoration-none  mx-1 W-100" style="max-width: 250px;">Forgot password?</a>
-
-          <button type="submit" class="btn btn-primary w-100 mt-3 mb-5" style="max-width: 150px;" id="SingInButton">Sing
-            up</button>
-        </form>
-
-        <p class="mt-1"> don't have an account?<a href="registration.html" class="text-decoration-none" id="linkreg">
-            register here</a></p>
-
-        <div class="d-flex justify-content-center align-items-center mt-3 text-center">
-          <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
-          <div class="vr"></div>
-          <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="offcanvas offcanvas-end loggedUser" tabindex="-1" id="visProfile" aria-labelledby="offcanvasExampleLabel">
-
-    <div class="offcanvas-header mb-3"
-      style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-
-      <div class="d-flex flex-column justify-content-center h-100 gap-3">
-
-        <div class="d-flex justify-content-center">
-          <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
-            <img src="golubirospiuniro.jpeg" alt="Icona"
-              style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-          </button>
-        </div>
-
-
-        <button class="btn button-logged mt-3" onclick="Userpage()">
-          <p>view profile</p>
-          <p>></p>
-        </button>
-
-        <button class="btn button-logged">
-          <p>cart</p>
-          <p>></p>
-        </button>
-
-        <button class="btn button-logged">
-          <p>Orders</p>
-          <p>></p>
-        </button>
-
-        <button class="btn button-logged">
-          <p>Artisan</p>
-          <p>></p>
-        </button>
-
-        <button class="btn button-logged" style="margin-top: auto;" onclick="logout()">
-          <p>Log out</p>
-          <p>></p>
-        </button>
-
-        <div class="d-flex justify-content-center align-items-center mt-3 text-center">
-          <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
-          <div class="vr"></div>
-          <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP CONTAINER -->
+ 
   <div class="container py-5">
-    <!-- PILL NAV -->
+    
     <ul class="nav nav-pills mb-4 justify-content-center" id="stepNav">
       <li class="nav-item">
         <button class="nav-link disabled" id="step1-tab">Address</button>
       </li>
     </ul>
 
-    <!-- STEP 1 -->
+    
     <div id="step1" class="step d">
       <div class="row">
-        <!-- Form indirizzo -->
+        
         <div class="col-lg-8">
           <form>
             <div class="mb-3">
@@ -314,7 +108,7 @@
           </form>
         </div>
 
-        <!-- Riepilogo Carrello -->
+        
         <div class="col-lg-4 mt-5 mt-lg-0">
           <div class="card" style="border-radius: 10px; border: 2px solid rgb(0, 0, 0);">
             <div class="card-body">
@@ -332,7 +126,7 @@
           </div>
         </div>
 
-        <!-- Pulsante"Avanti" -->
+       
         <div class="d-flex justify-content-center gap-3 mt-3">
           <button type="submit" class="btn btn-primary" style="max-width: 300px; width: 100%;" onclick="nextStep(2)">
             Next
