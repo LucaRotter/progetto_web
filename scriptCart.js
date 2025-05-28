@@ -102,7 +102,7 @@ function createCartElement(CartContent){
   // Bottone
   const button = document.createElement("button");
   const icon = document.createElement("i");
-  icon.className = "bi bi-trash";
+  icon.className = "bi bi-trash2";
   button.appendChild(icon);
 
   button.addEventListener("click", () => {
