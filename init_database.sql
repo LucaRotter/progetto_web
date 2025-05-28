@@ -144,3 +144,10 @@ INSERT INTO categories(category_id, name, image_url) VALUES
 ('cat07', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
 ('cat08', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
 ('cat09', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg');
+
+--INSERIMENTO UTENTI PER TEST
+--la password è password123
+insert into users(user_id, name, surname, email, pwd, role_id )values
+('A0001','prova','artigiano','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',2);
+insert into users(user_id, name, surname, email, pwd, role_id )values
+('C1000','prova','cliente','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',1);
