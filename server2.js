@@ -625,8 +625,19 @@ app.delete('/delete-item/:id', protect, hasPermission('delete_item'), async (req
 app.get('/item/:id', async (req, res) => {
     const item_id = req.params.id;
     const result = await pool.query('SELECT * FROM items WHERE item_id = $1', [item_id]);
+    const response = await pool.query('SELECT * FROM categories WHERE category_id = $1' [result.rows[0].category_id]);
+    const category_id = response.rows[0].category_id;
+    
+    res.json({item: result.rows, category_id: category_id});
+});
+
+//restituisce articoli per user_id(artigiano)
+app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) => {
+    const user_id = req.user.user_id;;
+    const result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
     res.json(result.rows);
 });
+
 
 //ricevi un elenco di articoli casuali con il numero di articoli specificato nel body della richiesta
 let list_items = [];
