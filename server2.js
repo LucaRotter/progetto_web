@@ -302,12 +302,9 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
 //recupera password
 app.post('/forgot-password', async (req, res) => {
     const { email, role } = req.body;
-    console.log(email, role);
     result = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
     const role_id = result.rows[0].role_id;
-    console.log(role_id);
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
-    console.log(userResult.rows);
     if (userResult.rows.length > 0) {
         const user = userResult.rows[0];
         
@@ -542,9 +539,9 @@ app.post('/add-item', protect, hasPermission('update_item'), async (req, res) =>
 app.put('/update-price/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { price } = req.body;
     const item_id = req.params.id;
-    const result = await pool.query('UPDATE items SET price = $1 WHERE item_id = $2', [price, item_id]);
+    const result = await pool.query('UPDATE items SET price = $1 WHERE item_id = $2  RETURNING *', [price, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Price updated" });
+        res.json({ message: "Price updated", item: result.rows[0] });
     } else {
         res.status(400).json({ message: "Item not found" });
     }
@@ -554,21 +551,22 @@ app.put('/update-price/:id', protect, hasPermission('update_item'), async (req, 
 app.put('/update-quantity/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { quantity } = req.body;
     const item_id = req.params.id;
-    const result = await pool.query('UPDATE items SET quantity = $1 WHERE item_id = $2', [quantity, item_id]);
+    const result = await pool.query('UPDATE items SET quantity = $1 WHERE item_id = $2 RETURNING *', [quantity, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Quantity updated" });
+        res.json({ message: "Quantity updated", item: result.rows[0] });
     } else {
-        res.status(400).json({ message: "Item not found" });
+        res.status(400).json({ message: "Item not found"});
     }
 });
 
 //modifica immagine articolo
-app.put('/update-image/:id', protect, hasPermission('update_item'), uploadMiddleware.single('immagine'), async (req, res) => {
+app.put('/update-image/:id',uploadMiddleware.single('immagine'), protect, hasPermission('update_item'),  async (req, res) => {
     const item_id = req.params.id;
-    const url = await uploadToCloudinary(req.file.path);
-    const result = await pool.query('UPDATE items SET image_url = $1 WHERE item_id = $2', [url, item_id]);
+    const response = await uploadToCloudinary(req.file.path);
+    const url = response.url;
+    const result = await pool.query('UPDATE items SET image_url = $1 WHERE item_id = $2 RETURNING *', [url, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Image updated" });
+        res.json({ message: "Image updated", item: result.rows[0] });
     } else {
         res.status(400).json({ message: "Item not found" });
     }
@@ -578,9 +576,9 @@ app.put('/update-image/:id', protect, hasPermission('update_item'), uploadMiddle
 app.put('/update-name/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { name } = req.body;
     const item_id = req.params.id;
-    const result = await pool.query('UPDATE items SET name = $1 WHERE item_id = $2', [name, item_id]);
+    const result = await pool.query('UPDATE items SET name = $1 WHERE item_id = $2 RETURNING *', [name, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Name updated" });
+        res.json({ message: "Name updated", item: result.rows[0] });
     } else {
         res.status(400).json({ message: "Item not found" });
     }
@@ -590,10 +588,11 @@ app.put('/update-name/:id', protect, hasPermission('update_item'), async (req, r
 app.put('/update-category/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { category } = req.body;
     const item_id = req.params.id;
-    const category_id = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
-    const result = await pool.query('UPDATE items SET category = $1 WHERE item_id = $2', [category_id, item_id]);
+    const response = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+    const category_id = response.rows[0].category_id;
+    const result = await pool.query('UPDATE items SET category_id = $1 WHERE item_id = $2 RETURNING *', [category_id, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Category updated" });
+        res.json({ message: "Category updated", item: result.rows[0] });
     } else {
         res.status(400).json({ message: "Item not found" });
     }
@@ -603,9 +602,9 @@ app.put('/update-category/:id', protect, hasPermission('update_item'), async (re
 app.put('/update-description/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { description } = req.body;
     const item_id = req.params.id;
-    const result = await pool.query('UPDATE items SET description = $1 WHERE item_id = $2', [description, item_id]);
+    const result = await pool.query('UPDATE items SET description = $1 WHERE item_id = $2 RETURNING *', [description, item_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Description updated" });
+        res.json({ message: "Description updated", item: result.rows[0] });
     } else {
         res.status(400).json({ message: "Item not found" });
     }
