@@ -151,3 +151,36 @@ insert into users(user_id, name, surname, email, pwd, role_id )values
 ('A0001','prova','artigiano','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',2);
 insert into users(user_id, name, surname, email, pwd, role_id )values
 ('C1000','prova','cliente','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',1);
+
+--INSERIMENTO ITEM 
+INSERT INTO items(item_id, name, price, description, quantity, category_id, user_id) VALUES
+(2, 'Item 2', 10.50, 'Description for item 2', 5, 'cat01', 'A0001'),
+(3, 'Item 3', 25.00, 'Description for item 3', 10, 'cat02', 'A0001'),
+(4, 'Item 4', 15.75, 'Description for item 4', 8, 'cat03', 'A0001'),
+(5, 'Item 5', 8.99,  'Description for item 5', 12, 'cat04', 'A0001'),
+(6, 'Item 6', 12.30, 'Description for item 6', 6, 'cat05', 'A0001'),
+(7, 'Item 7', 55.00, 'Description for item 7', 3, 'cat06', 'A0001'),
+(8, 'Item 8', 20.00, 'Description for item 8', 7, 'cat07', 'A0001'),
+(9, 'Item 9', 30.50, 'Description for item 9', 4, 'cat08', 'A0001'),
+(10, 'Item 10', 5.25, 'Description for item 10', 15, 'cat09', 'A0001'),
+(11, 'Item 11', 14.80, 'Description for item 11', 9, 'cat01', 'A0001'),
+(12, 'Item 12', 40.00, 'Description for item 12', 2, 'cat02', 'A0001'),
+(13, 'Item 13', 18.99, 'Description for item 13', 11, 'cat03', 'A0001'),
+(14, 'Item 14', 22.50, 'Description for item 14', 5, 'cat04', 'A0001'),
+(15, 'Item 15', 9.99,  'Description for item 15', 8, 'cat05', 'A0001'),
+(16, 'Item 16', 60.00, 'Description for item 16', 1, 'cat06', 'A0001'),
+(17, 'Item 17', 24.75, 'Description for item 17', 6, 'cat07', 'A0001'),
+(18, 'Item 18', 35.00, 'Description for item 18', 4, 'cat08', 'A0001'),
+(19, 'Item 19', 7.50,  'Description for item 19', 14, 'cat09', 'A0001'),
+(20, 'Item 20', 13.25, 'Description for item 20', 7, 'cat01', 'A0001'),
+(21, 'Item 21', 45.00, 'Description for item 21', 3, 'cat02', 'A0001'),
+(22, 'Item 22', 17.50, 'Description for item 22', 10, 'cat03', 'A0001'),
+(23, 'Item 23', 21.99, 'Description for item 23', 6, 'cat04', 'A0001'),
+(24, 'Item 24', 10.00, 'Description for item 24', 9, 'cat05', 'A0001'),
+(25, 'Item 25', 70.00, 'Description for item 25', 2, 'cat06', 'A0001'),
+(26, 'Item 26', 27.30, 'Description for item 26', 5, 'cat07', 'A0001'),
+(27, 'Item 27', 38.50, 'Description for item 27', 3, 'cat08', 'A0001'),
+(28, 'Item 28', 6.75,  'Description for item 28', 12, 'cat09', 'A0001'),
+(29, 'Item 29', 16.00, 'Description for item 29', 7, 'cat01', 'A0001'),
+(30, 'Item 30', 42.00, 'Description for item 30', 4, 'cat02', 'A0001'),
+(31, 'Item 31', 19.99, 'Description for item 31', 8, 'cat03', 'A0001');
