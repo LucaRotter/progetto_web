@@ -20,6 +20,30 @@ app.use(express.json());
 app.use(cors());
 const port = 8000;
 
+//GESTIONE RICHIESTE UTENTI MASSIME
+const RATE_LIMIT = 100; // max richieste per IP
+const WINDOW_MS = 60 * 1000; // 1 minuto
+
+const ipRequests = new Map();
+
+setInterval(() => {
+  ipRequests.clear(); // reset ogni minuto
+}, WINDOW_MS);
+
+app.use((req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress;
+
+  const count = ipRequests.get(ip) || 0;
+
+  if (count >= RATE_LIMIT) {
+    return res.status(429).send('Troppe richieste, riprova più tardi.');
+  }
+
+  ipRequests.set(ip, count + 1);
+
+  next();
+});
+
 
 //connessione a PostgreSQL
 const pool = new Pool({
@@ -53,6 +77,24 @@ const transporter = nodemailer.createTransport({
         pass: process.env.APP_PASSWORD // App password for Gmail
     }
 });
+//recupera ip utente per utenti senza token
+const getUserKey = (req) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const token = authHeader.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return decoded.id;  // qui restituisci user_id dal token direttamente
+    } catch {
+      // token invalido, fallback a IP
+      return req.ip;
+    }
+  } else {
+    // nessun token, fallback a IP
+    return req.ip;
+  }
+};
 
 // Middleware verifica token e recupera permessi utente
 const protect = async (req, res, next) => {
@@ -625,10 +667,10 @@ app.delete('/delete-item/:id', protect, hasPermission('delete_item'), async (req
 app.get('/item/:id', async (req, res) => {
     const item_id = req.params.id;
     const result = await pool.query('SELECT * FROM items WHERE item_id = $1', [item_id]);
-    const response = await pool.query('SELECT * FROM categories WHERE category_id = $1' [result.rows[0].category_id]);
-    const category_id = response.rows[0].category_id;
-    
-    res.json({item: result.rows, category_id: category_id});
+
+    const response = await pool.query('SELECT * FROM categories WHERE category_id = $1',[result.rows[0].category_id]);
+    const category_name = response.rows[0].name;
+    res.json({item: result.rows, category_name: category_name});
 });
 
 //restituisce articoli per user_id(artigiano)
@@ -640,42 +682,47 @@ app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) =
 
 
 //ricevi un elenco di articoli casuali con il numero di articoli specificato nel body della richiesta
-let list_items = [];
-let shuffledItems = [];
+const userState = new Map(); // userKey -> { list_items, shuffledItems }
 
-//ricomincia lista
-app.put('/reset-items', async (req, res) => {
-    list_items = [];
-    shuffledItems = [];
+app.put('/reset-items', (req, res) => {
+    const userKey = getUserKey(req);
+    userState.set(userKey, { list_items: [], shuffledItems: [] });
+    res.json({ message: "Lista resettata" });
 });
 
 app.get('/random-items', async (req, res) => {
+    const userKey = getUserKey(req);
     const nItems = parseInt(req.query.nItems, 10);
+
     if (!nItems || isNaN(nItems)) {
-        return res.status(400).json({ error: "Invalid or missing 'nItems' parameter" });
+        return res.status(400).json({ error: "Parametro 'nItems' non valido" });
     }
 
     try {
-        if (shuffledItems.length === 0) {
+        let state = userState.get(userKey);
+
+        if (!state) {
             const result = await pool.query('SELECT * FROM items');
-            shuffledItems = result.rows.sort(() => 0.5 - Math.random());
+            const shuffled = result.rows.sort(() => 0.5 - Math.random());
+            state = { list_items: [], shuffledItems: shuffled };
+            userState.set(userKey, state);
         }
+
+        const { list_items, shuffledItems } = state;
         let start = list_items.length;
         let end = start + nItems;
-        if (end > shuffledItems.length) {
-            end = shuffledItems.length;
+        if (end > shuffledItems.length) end = shuffledItems.length;
+
+        if (start === end) {
+            return res.json({ message: "Non sono presenti altri oggetti" });
         }
 
-        if(start == end){
-            return res.json({message: "non sono presenti altri oggetti"});
-        } else {
-            const selectedItems = shuffledItems.slice(start, end);
-            list_items.push(...selectedItems);
-            res.json(selectedItems);
-        }
+        const selectedItems = shuffledItems.slice(start, end);
+        list_items.push(...selectedItems);
 
+        res.json(selectedItems);
     } catch (err) {
-        console.error("Errore durante il recupero degli articoli:", err);
+        console.error("Errore:", err);
         res.status(500).json({ error: "Errore interno del server" });
     }
 });
