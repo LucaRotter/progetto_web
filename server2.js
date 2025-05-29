@@ -268,20 +268,12 @@ app.post('/register', async (req, res) => {
 
     //creazione id utente
     let user_id = "";
-    if(role_id == 1){
-        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '1'");
-        const usersNumber = parseInt(number.rows[0].count) + 1;
-        user_id = "C" + usersNumber.toString().padStart(4, '0');
-    } else if(role_id == 2){
-        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '2'");
-        const usersNumber = parseInt(number.rows[0].count) + 1;
-        user_id = "A" + usersNumber.toString().padStart(4, '0');
-    } else if(role_id == 3){
-        const number = await pool.query("SELECT COUNT(*) FROM users WHERE role_id = '3'");
-        const usersNumber = parseInt(number.rows[0].count) + 1;
-        user_id = "Ad" + usersNumber.toString().padStart(3, '0');
-    }
-    
+
+    const maxResult = await pool.query('SELECT MAX(CAST(user_id AS INTEGER)) AS maxUser_id FROM users');
+    const maxId = maxResult.rows[0].maxUser_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    user_id = nextId.toString();
+
     const result = await pool.query(
         'INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id, name, email, role_id',
         [user_id, name, surname, email, hashedPassword, role_id]
@@ -563,11 +555,13 @@ app.delete('/delete-category/:id', protect, hasPermission('manage_categories'), 
 
 //aggiungi articolo
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
-
+    console.log('qui1');
     const { name, category, description, price, quantity, image_url } = req.body;
     const user_id = req.user.user_id;
-    const count = await pool.query('SELECT COUNT(*) FROM items');
-    const item_id = parseInt(count.rows[0].count) + 1;
+    const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM items');
+    const maxId = maxResult.rows[0].max_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    const item_id = nextId.toString();
     const tmp = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
     const category_id = tmp.rows[0].category_id;
 
@@ -677,7 +671,7 @@ app.get('/item/:id', async (req, res) => {
 app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) => {
     const user_id = req.user.user_id;;
     const result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
-    res.json(result.rows);
+    res.json({items: result.rows});
 });
 
 
