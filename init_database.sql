@@ -79,7 +79,7 @@ admin_id varchar(5) references users(user_id)
 create table reviews(
 item_id varchar(5) references items(item_id) on delete cascade on update cascade,
 user_id varchar(5) references users(user_id)on delete cascade on update cascade,
-evaulation int not null,
+evaluation int not null,
 description text
 );
 
@@ -137,7 +137,7 @@ INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 --CATEGORIE
 INSERT INTO categories(category_id, name, image_url) VALUES
 ('1', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('2', 'eletronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('2', 'electronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
 ('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
 ('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
 ('5', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
