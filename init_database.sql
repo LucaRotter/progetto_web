@@ -72,6 +72,7 @@ category varchar(100) not null,
 description text,
 customer_id varchar(5) references users(user_id) on delete cascade on update cascade,
 artisan_id varchar(5) references users(user_id) on delete cascade on update cascade,
+item_id varchar(5) references items(item_id),
 admin_id varchar(5) references users(user_id)
 );
 
