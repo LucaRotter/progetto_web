@@ -128,59 +128,60 @@ INSERT INTO roles_permissions(role_id, permission_id) VALUES
 --admin
 --DA MODIFICARE EMAIL E PWD
 INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES 
-('ad001', 'Alessandro', 'Grassi', 'alessandro.grassi24062003@gmail.com', '$2b$10$llCxJQwhksb8f88QqYpVhu8KFqe9EivvXYPGBcGLJz.P1mr26VDmm', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746795022/https___images.genius.com_00fec6153b63522d6896275b0aedf9e3.1000x1000x1_snyln4.png', 3),
-('ad002', 'Aleksandar', 'Kastratovic', 'aleks.kastratovic@gmail.com', '$2b$10$R3G8ErDD0tJ6.h0uYonK8OWxRzJtS3t5L8Q.T7mdxiEJnekmQyzNe', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794932/Screenshot_2025-05-09_144831_ufynui.png', 3),
-('ad003', 'Luca', 'Rotter', 'marketrader69@gmail.com', '$2b$10$jEkHE6GFwiPXzFP.lbcDBu.QuwHAnVvitJwxqal9olEIBuinLpsDe', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg', 3),
-('ad004', 'Davide', 'Bilora', 'davidebilora03pc@gmail.com', '$2b$10$BCIs7NOlt090n2CHkr5q5O/sbrXA32Sb2PXYb0eoSL25a09ErHDj6', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794973/Screenshot_2025-05-09_144923_efkeg7.png', 3);
+('1', 'Alessandro', 'Grassi', 'alessandro.grassi24062003@gmail.com', '$2b$10$llCxJQwhksb8f88QqYpVhu8KFqe9EivvXYPGBcGLJz.P1mr26VDmm', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746795022/https___images.genius.com_00fec6153b63522d6896275b0aedf9e3.1000x1000x1_snyln4.png', 3),
+('2', 'Aleksandar', 'Kastratovic', 'aleks.kastratovic@gmail.com', '$2b$10$R3G8ErDD0tJ6.h0uYonK8OWxRzJtS3t5L8Q.T7mdxiEJnekmQyzNe', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794932/Screenshot_2025-05-09_144831_ufynui.png', 3),
+('3', 'Luca', 'Rotter', 'marketrader69@gmail.com', '$2b$10$jEkHE6GFwiPXzFP.lbcDBu.QuwHAnVvitJwxqal9olEIBuinLpsDe', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg', 3),
+('4', 'Davide', 'Bilora', 'davidebilora03pc@gmail.com', '$2b$10$BCIs7NOlt090n2CHkr5q5O/sbrXA32Sb2PXYb0eoSL25a09ErHDj6', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1746794973/Screenshot_2025-05-09_144923_efkeg7.png', 3);
 
 --CATEGORIE
 INSERT INTO categories(category_id, name, image_url) VALUES
-('cat01', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat02', 'eletronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat03', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat04', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat05', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat06', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat07', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat08', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
-('cat09', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg');
+('1', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('2', 'eletronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('5', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('6', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('7', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('8', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg'),
+('9', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1747398272/OIP_tnnwhm.jpg');
 
 --INSERIMENTO UTENTI PER TEST
 --la password è password123
 insert into users(user_id, name, surname, email, pwd, role_id )values
-('A0001','prova','artigiano','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',2);
+('5','prova','artigiano','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',2);
 insert into users(user_id, name, surname, email, pwd, role_id )values
-('C1000','prova','cliente','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',1);
+('6','prova','cliente','marketrader69@gmail.com','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',1);
 
 --INSERIMENTO ITEM 
 INSERT INTO items(item_id, name, price, description, quantity, category_id, user_id) VALUES
-(2, 'Item 2', 10.50, 'Description for item 2', 5, 'cat01', 'A0001'),
-(3, 'Item 3', 25.00, 'Description for item 3', 10, 'cat02', 'A0001'),
-(4, 'Item 4', 15.75, 'Description for item 4', 8, 'cat03', 'A0001'),
-(5, 'Item 5', 8.99,  'Description for item 5', 12, 'cat04', 'A0001'),
-(6, 'Item 6', 12.30, 'Description for item 6', 6, 'cat05', 'A0001'),
-(7, 'Item 7', 55.00, 'Description for item 7', 3, 'cat06', 'A0001'),
-(8, 'Item 8', 20.00, 'Description for item 8', 7, 'cat07', 'A0001'),
-(9, 'Item 9', 30.50, 'Description for item 9', 4, 'cat08', 'A0001'),
-(10, 'Item 10', 5.25, 'Description for item 10', 15, 'cat09', 'A0001'),
-(11, 'Item 11', 14.80, 'Description for item 11', 9, 'cat01', 'A0001'),
-(12, 'Item 12', 40.00, 'Description for item 12', 2, 'cat02', 'A0001'),
-(13, 'Item 13', 18.99, 'Description for item 13', 11, 'cat03', 'A0001'),
-(14, 'Item 14', 22.50, 'Description for item 14', 5, 'cat04', 'A0001'),
-(15, 'Item 15', 9.99,  'Description for item 15', 8, 'cat05', 'A0001'),
-(16, 'Item 16', 60.00, 'Description for item 16', 1, 'cat06', 'A0001'),
-(17, 'Item 17', 24.75, 'Description for item 17', 6, 'cat07', 'A0001'),
-(18, 'Item 18', 35.00, 'Description for item 18', 4, 'cat08', 'A0001'),
-(19, 'Item 19', 7.50,  'Description for item 19', 14, 'cat09', 'A0001'),
-(20, 'Item 20', 13.25, 'Description for item 20', 7, 'cat01', 'A0001'),
-(21, 'Item 21', 45.00, 'Description for item 21', 3, 'cat02', 'A0001'),
-(22, 'Item 22', 17.50, 'Description for item 22', 10, 'cat03', 'A0001'),
-(23, 'Item 23', 21.99, 'Description for item 23', 6, 'cat04', 'A0001'),
-(24, 'Item 24', 10.00, 'Description for item 24', 9, 'cat05', 'A0001'),
-(25, 'Item 25', 70.00, 'Description for item 25', 2, 'cat06', 'A0001'),
-(26, 'Item 26', 27.30, 'Description for item 26', 5, 'cat07', 'A0001'),
-(27, 'Item 27', 38.50, 'Description for item 27', 3, 'cat08', 'A0001'),
-(28, 'Item 28', 6.75,  'Description for item 28', 12, 'cat09', 'A0001'),
-(29, 'Item 29', 16.00, 'Description for item 29', 7, 'cat01', 'A0001'),
-(30, 'Item 30', 42.00, 'Description for item 30', 4, 'cat02', 'A0001'),
-(31, 'Item 31', 19.99, 'Description for item 31', 8, 'cat03', 'A0001');
+(1, 'Item 1', 10.50, 'Description for item 1', 5, '1', '5'),
+(2, 'Item 2', 10.50, 'Description for item 2', 5, '1', '5'),
+(3, 'Item 3', 25.00, 'Description for item 3', 10, '2', '5'),
+(4, 'Item 4', 15.75, 'Description for item 4', 8, '3', '5'),
+(5, 'Item 5', 8.99,  'Description for item 5', 12, '4', '5'),
+(6, 'Item 6', 12.30, 'Description for item 6', 6, '5', '5'),
+(7, 'Item 7', 55.00, 'Description for item 7', 3, '6', '5'),
+(8, 'Item 8', 20.00, 'Description for item 8', 7, '7', '5'),
+(9, 'Item 9', 30.50, 'Description for item 9', 4, '8', '5'),
+(10, 'Item 10', 5.25, 'Description for item 10', 15, '9', '5'),
+(11, 'Item 11', 14.80, 'Description for item 11', 9, '1', '5'),
+(12, 'Item 12', 40.00, 'Description for item 12', 2, '2', '5'),
+(13, 'Item 13', 18.99, 'Description for item 13', 11, '3', '5'),
+(14, 'Item 14', 22.50, 'Description for item 14', 5, '4', '5'),
+(15, 'Item 15', 9.99,  'Description for item 15', 8, '5', '5'),
+(16, 'Item 16', 60.00, 'Description for item 16', 1, '6', '5'),
+(17, 'Item 17', 24.75, 'Description for item 17', 6, '7', '5'),
+(18, 'Item 18', 35.00, 'Description for item 18', 4, '8', '5'),
+(19, 'Item 19', 7.50,  'Description for item 19', 14, '9', '5'),
+(20, 'Item 20', 13.25, 'Description for item 20', 7, '1', '5'),
+(21, 'Item 21', 45.00, 'Description for item 21', 3, '2', '5'),
+(22, 'Item 22', 17.50, 'Description for item 22', 10, '3', '5'),
+(23, 'Item 23', 21.99, 'Description for item 23', 6, '4', '5'),
+(24, 'Item 24', 10.00, 'Description for item 24', 9, '5', '5'),
+(25, 'Item 25', 70.00, 'Description for item 25', 2, '6', '5'),
+(26, 'Item 26', 27.30, 'Description for item 26', 5, '7', '5'),
+(27, 'Item 27', 38.50, 'Description for item 27', 3, '8', '5'),
+(28, 'Item 28', 6.75,  'Description for item 28', 12, '9', '5'),
+(29, 'Item 29', 16.00, 'Description for item 29', 7, '1', '5'),
+(30, 'Item 30', 42.00, 'Description for item 30', 4, '2', '5');
+
