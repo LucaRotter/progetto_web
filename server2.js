@@ -729,51 +729,73 @@ app.get('/random-items', async (req, res) => {
 
 //recupera articoli appartenenti ad una categoria
 // Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
-const categoryItemsCache = {};
+const categoryItemsCache = new Map(); 
 
 //ricomincia lista
 app.put('/reset-category-items/:name', async (req, res) => {
+  const userKey = getUserKey(req);
+  const category_name = req.params.name;
+
+  try {
     const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
-        if (categoryResult.rows.length === 0) {
-            return res.status(404).json({ message: "Category not found" });
-        }
-        const category_id = categoryResult.rows[0].category_id;
-    delete categoryItemsCache[category_id];
+    if (categoryResult.rows.length === 0) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    const category_id = categoryResult.rows[0].category_id;
+
+    if (categoryItemsCache.has(userKey)) {
+      const userCache = categoryItemsCache.get(userKey);
+      if (userCache.has(category_id)) {
+        userCache.delete(category_id);
+      }
+    }
+
+    res.json({ message: `Cache resettata per categoria ${category_name} e utente ${userKey}` });
+  } catch (err) {
+    console.error("Errore durante il reset della cache per categoria:", err);
+    res.status(500).json({ error: "Errore interno del server" });
+  }
 });
 
+
 app.get('/category-items/:name', async (req, res) => {
-    const category_name = req.params.name;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const offset = (limit * (page - 1));
+  const userKey = getUserKey(req);
+  const category_name = req.params.name;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const offset = (limit * (page - 1));
 
-    try {
-        const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
-        if (categoryResult.rows.length === 0) {
-            return res.status(404).json({ message: "Category not found" });
-        }
-        const category_id = categoryResult.rows[0].category_id;
-
-        // Usa una chiave per ogni categoria per mantenere la lista mescolata
-        if (!categoryItemsCache[category_id]) {
-            const allItemsResult = await pool.query('SELECT * FROM items WHERE category_id = $1', [category_id]);
-            // Mescola gli articoli
-            categoryItemsCache[category_id] = allItemsResult.rows.sort(() => 0.5 - Math.random());
-        }
-
-        const items = categoryItemsCache[category_id];
-        const selectedItems = items.slice(offset, Math.min(offset + limit, items.length));
-
-        // Se abbiamo raggiunto la fine, resetta la cache per questa categoria
-        if (offset >= items.length) {
-            return res.json({message: `non ci sono piu' item nella categoria: ${category_name}`})
-        }
-
-        res.json(selectedItems);
-    } catch (err) {
-        console.error("Errore durante il recupero degli articoli per categoria:", err);
-        res.status(500).json({ error: "Errore interno del server" });
+  try {
+    const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
+    if (categoryResult.rows.length === 0) {
+      return res.status(404).json({ message: "Category not found" });
     }
+    const category_id = categoryResult.rows[0].category_id;
+
+    if (!categoryItemsCache.has(userKey)) {
+      categoryItemsCache.set(userKey, new Map());
+    }
+    const userCache = categoryItemsCache.get(userKey);
+
+    if (!userCache.has(category_id)) {
+      const allItemsResult = await pool.query('SELECT * FROM items WHERE category_id = $1', [category_id]);
+      const shuffledItems = allItemsResult.rows.sort(() => 0.5 - Math.random());
+      userCache.set(category_id, shuffledItems);
+    }
+
+    const items = userCache.get(category_id);
+
+    if (offset >= items.length) {
+      return res.json({ message: `Non ci sono più item nella categoria: ${category_name}` });
+    }
+
+    const selectedItems = items.slice(offset, Math.min(offset + limit, items.length));
+    res.json(selectedItems);
+
+  } catch (err) {
+    console.error("Errore durante il recupero degli articoli per categoria:", err);
+    res.status(500).json({ error: "Errore interno del server" });
+  }
 });
 
 //articoli con i filtri
