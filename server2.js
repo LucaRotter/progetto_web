@@ -505,9 +505,10 @@ app.post('/add-category',uploadMiddleware.single('immagine'), protect, hasPermis
     const response = await uploadToCloudinary(req.file.path);
     const url = response.url;
     const name = req.body.name;
-    const count = await pool.query('SELECT COUNT(*) FROM categories');
-    const nextIdNumber = parseInt(count.rows[0].count) + 1;
-    const category_id =`cat${String(nextIdNumber).padStart(2, '0')}`;
+    const maxResult = await pool.query('SELECT MAX(CAST(category_id AS INTEGER)) AS max_id FROM categories');
+    const maxId = maxResult.rows[0].max_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    const category_id = nextId.toString();
 
     const result = await pool.query(
         'INSERT INTO categories (category_id, name, image_url) VALUES ($1, $2, $3)',
@@ -831,8 +832,10 @@ app.get('/items', async (req, res) => {
 app.post('/add-order', protect, hasPermission('place-order'), async (req, res) => {
     const { items, address, civic_number, postal_code, province, country, phone_number  } = req.body;
     const user_id = req.user.user_id;
-    const orderNumber = await pool.query('SELECT COUNT(*) FROM orders');
-    const order_id = parseInt(orderNumber.rows[0].count) + 1;
+    const maxResult = await pool.query('SELECT MAX(CAST(order_id AS INTEGER)) AS max_id FROM orders');
+    const maxId = maxResult.rows[0].max_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    const order_id = nextId.toString();
 
     const now = new Date();
     const day = now.toISOString().split('T')[0]; // formato YYYY-MM-DD
@@ -905,8 +908,10 @@ app.delete('/admin-orders/:id', protect, hasPermission('view_manage_orders'), as
 app.post('/create-report', protect, hasPermission('manage_report'), async (req, res) => {
     const { item_id, category, description } = req.body;
     const user_id = req.user.user_id;
-    const count = await pool.query('SELECT COUNT(*) FROM reports');
-    const report_id = parseInt(count.rows[0].count) + 1;
+    const maxResult = await pool.query('SELECT MAX(CAST(report_id AS INTEGER)) AS max_id FROM reports');
+    const maxId = maxResult.rows[0].max_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    const report_id = nextId.toString();
 
     let artisan_id = null;
     let customer_id = null;
