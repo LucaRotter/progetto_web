@@ -471,7 +471,31 @@ describe('items', () => {
     });
 
   });
+  describe('get items', () => {
+      it('should items with filters', async () => {
+          const response = await request(app)
+              .get('/items')
+              .query({
+                  name: 'item',
+                  category: 'electronics',
+                  maxPrice: '43',
+                  
+              });
+              
+  
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toHaveProperty('items');
+          console.log(response.body);
+      });
+      
+  });
 
 
+});
+
+//TEST ORDINI
+
+describe('orders', () => {
+  
 });
 
