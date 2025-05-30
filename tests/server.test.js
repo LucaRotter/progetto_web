@@ -178,7 +178,7 @@ describe('Profile Picture Update', () => {
   });
 
   test('PUT /profile-picture - should update profile picture successfully', async () => {
-    const userId = 'C1000'; // 👈 ID utente già esistente nel DB
+    const userId = '6'; // 👈 ID utente già esistente nel DB
     const token = generateToken(userId); // Deve generare un JWT con { id: 'C1000' }
     const imagePath = path.join(__dirname, 'test.jpeg');
 
@@ -250,7 +250,7 @@ describe('categories', () => {
     });
 
     it('should add a new category', async () => {
-      const userId = 'ad003'; // ID utente già esistente nel DB
+      const userId = '3'; // ID utente già esistente nel DB
       const token = generateToken(userId);
       const imagePath = path.join(__dirname, 'test.jpeg');
       expect(fs.existsSync(imagePath)).toBe(true);
@@ -271,7 +271,7 @@ describe('categories', () => {
       expect(result.rows.length).toBe(1);
     });
     it('should rename category', async () => {
-      const userId = 'ad003';
+      const userId = '3';
       const token = generateToken(userId);
 
       const response = await request(app)
@@ -287,7 +287,7 @@ describe('categories', () => {
     });
 
     it('should update category image', async () => {
-      const userId = 'ad003'; // ID utente già esistente nel DB
+      const userId = '3'; // ID utente già esistente nel DB
       const token = generateToken(userId);
       const imagePath = path.join(__dirname, 'test.jpeg');
       expect(fs.existsSync(imagePath)).toBe(true);
@@ -304,7 +304,7 @@ describe('categories', () => {
       expect(result.rows.length).toBe(1);
     });
     test('should delete category', async () => {
-      const userId = 'ad003';
+      const userId = '3';
       const token = generateToken(userId);
 
       const response = await request(app)
@@ -332,7 +332,7 @@ describe('items', () => {
     let itemId;
 
     it('should add an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .post('/add-item')
@@ -355,7 +355,7 @@ describe('items', () => {
     });
 
     it('update price of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .put(`/update-price/${itemId}`)
@@ -369,7 +369,7 @@ describe('items', () => {
 
     });
     it('should update quantity of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .put(`/update-quantity/${itemId}`)
@@ -382,7 +382,7 @@ describe('items', () => {
       console.log(response.body);
     });
     it('should update image of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const imagePath = path.join(__dirname, 'test.jpeg');
       expect(fs.existsSync(imagePath)).toBe(true);
@@ -395,7 +395,7 @@ describe('items', () => {
       console.log(response.body);
     });
     it('should update name of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .put(`/update-name/${itemId}`)
@@ -409,7 +409,7 @@ describe('items', () => {
     });
 
     it('should update category of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .put(`/update-category/${itemId}`)
@@ -423,7 +423,7 @@ describe('items', () => {
 
     });
     it('should update description of an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .put(`/update-description/${itemId}`)
@@ -436,7 +436,7 @@ describe('items', () => {
       console.log(response.body);
     });
     it('should delete an item', async () => {
-      const userId = 'A0001';
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .delete(`/delete-item/${itemId}`)
@@ -459,7 +459,7 @@ describe('items', () => {
     });
 
     it('should get items by user id', async () => {
-      const userId = 'A0001'; // Sostituisci con un ID utente valido
+      const userId = '5'; // Sostituisci con un ID utente valido
       const token = generateToken(userId);
       const response = await request(app)
         .get('/user-items/')
@@ -471,7 +471,31 @@ describe('items', () => {
     });
 
   });
+  describe('get items', () => {
+      it('should items with filters', async () => {
+          const response = await request(app)
+              .get('/items')
+              .query({
+                  name: 'item',
+                  category: 'electronics',
+                  maxPrice: '43',
+                  
+              });
+              
+  
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toHaveProperty('items');
+          console.log(response.body);
+      });
+      
+  });
 
 
+});
+
+//TEST ORDINI
+
+describe('orders', () => {
+  
 });
 

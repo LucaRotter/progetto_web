@@ -806,33 +806,59 @@ app.get('/category-items/:name', async (req, res) => {
 //articoli con i filtri
 app.get('/items', async (req, res) => {
     const { name, category, minPrice, maxPrice, minEvaluation } = req.query;
-    let query = 'SELECT * FROM items WHERE name LIKE $1';
-    name = `%${name}%`;
-    const params = [name];
+    const params = [];
     let count = 1;
 
+    //Se un articolo non ha recensioni, la valutazione media è 0 con il COALESCE
+    //left join non esclude gli articoli senza recensioni
+    let query = `
+        SELECT 
+            items.*,
+            COALESCE(AVG(reviews.evaluation), 0) AS average_evaluation 
+        FROM items
+        LEFT JOIN reviews ON reviews.item_id = items.item_id
+        WHERE 1=1
+    `;
+
+    if (name) {
+        query += ` AND items.name ILIKE $${count}`;
+        params.push(`%${name}%`);
+        count++;
+    }
+
     if (category) {
-        query += ' AND category = $', ++count;
-        params.push(category);
+        const response = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+        const category_id = response.rows[0].category_id;
+        query += ` AND items.category_id = $${count}`;
+        params.push(category_id);
+        count++;
     }
+
     if (minPrice) {
-        query += ' AND price >= $', ++count;
+        query += ` AND items.price >= $${count}`;
         params.push(minPrice);
+        count++;
     }
+
     if (maxPrice) {
-        query += ' AND price <= $', ++count;
+        query += ` AND items.price <= $${count}`;
         params.push(maxPrice);
+        count++;
     }
-    if(minEvaluation) {
-        query += ' AND evaluation >= $', ++count;
+
+    query += ` GROUP BY items.item_id`;
+
+    if (minEvaluation) {
+        query += ` HAVING AVG(reviews.evaluation) >= $${count}`;
         params.push(minEvaluation);
+        count++;
     }
 
     try {
         const result = await pool.query(query, params);
-        res.json(result.rows);
+        res.json({ items: result.rows });
     } catch (err) {
-        console.error("Errore durante il recupero degli articoli:", err);
+        console.error("Errore durante il recupero degli articoli:",  err.message, err.stack);
         res.status(500).json({ error: "Errore interno del server" });
     }
 });

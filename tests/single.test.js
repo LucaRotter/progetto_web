@@ -5,26 +5,21 @@ const path = require('path');
 const fs = require('fs');
 const { app, pool, generateToken } = require('../server2'); // Assicurati che app e generateToken siano esportati
 
-describe('get item', () => {
-    it('should get an item by id', async () => {
-        const itemId=2;
+describe('get items', () => {
+    it('should items with filters', async () => {
         const response = await request(app)
-        .get(`/item/${itemId}`)
-        expect(response.body).toHaveProperty('item');
-        expect(response.body).toHaveProperty('category_name');
-        console.log(response.body);
-    });
-
-    it('should get items by user id', async () => {
-        const userId = 'A0001'; // Sostituisci con un ID utente valido
-        const token = generateToken(userId);
-        const response = await request(app)
-        .get('/user-items/')
-        .set('Authorization', `Bearer ${token}`)
+            .get('/items')
+            .query({
+                name: 'item',
+                category: 'electronics',
+                maxPrice: '43',
+                
+            });
+            
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('items');
-       
+        console.log(response.body);
     });
     
 });
