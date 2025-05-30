@@ -682,7 +682,7 @@ const userState = new Map();
 app.delete('/reset-items', async (req, res) => {
     const userKey = getUserKey(req);
     await pool.query('DELETE FROM shuffled WHERE user_key = $1', [userKey]);
-    userState.set(userKey, {index:-1, indexMax :-1});
+    userState.delete(userKey); // reset dello stato dell'utente
     res.json({ message: "Lista resettata" });
 });
 
@@ -695,7 +695,7 @@ app.get('/random-items', async (req, res) => {
     }
 
     try {
-        if (!userState.has(userKey) || userState.get(userKey).index === -1) {
+        if (!userState.has(userKey)) {
             const result = await pool.query('SELECT item_id FROM items');
             const shuffled = result.rows.sort(() => 0.5 - Math.random());
 
@@ -723,6 +723,8 @@ app.get('/random-items', async (req, res) => {
 
         const selectedItems_id = await pool.query('SELECT item_id FROM shuffled WHERE user_key = $1 AND index >= $2 AND index <= $3', [userKey, startIndex, endIndex]);
         const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
+
+        userState.set(userKey, { index: endIndex + 1, indexMax: indexMax });
 
         res.json(selectedItems);
     } catch (err) {
