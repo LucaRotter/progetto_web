@@ -83,6 +83,13 @@ evaluation int not null,
 description text
 );
 
+create table shuffled(
+index varchar(5) primary key,
+item_id varchar(5) references items(item_id) on delete cascade on update cascade,
+user_key varchar(16) not null,
+category_id varchar(5) references categories(category_id) on delete cascade on update cascade
+);
+
 --INSERT DI DEFAULT
 --roles
 insert into roles(role_id, name)
