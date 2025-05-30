@@ -62,3 +62,26 @@
   }
 
   }
+
+
+const codeInputs = document.querySelectorAll('.code-box');
+
+codeInputs.forEach((input, index) => {
+  input.addEventListener('input', () => {
+    if (/^[0-9]$/.test(input.value)) {
+      if (input.value.length === input.maxLength) {
+        const nextInput = codeInputs[index + 1];
+        if (nextInput) nextInput.focus();
+      }
+    } else {
+      input.value = '';
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && input.value.length === 0) {
+      const prevInput = codeInputs[index - 1];
+      if (prevInput) prevInput.focus();
+    }
+  });
+});

@@ -1,5 +1,5 @@
 <header class="fixed-top ">
-    <nav class="navbar navbar-expand-sm bd-navbar" style="background-color: rgb(20, 165, 165);">
+    <nav class="navbar navbar-expand-sm bd-navbar">
         <div class="container-fluid flex-lg-row align-items-center m-3">
 
             <div class="collapse navbar-collapse">
@@ -9,43 +9,36 @@
                         alt="Logo" height=35> </a>
 
             </div>
+<div class="collapse navbar-collapse justify-content-center" id="navbarSearch">
+  <form class="d-flex w-100 justify-content-center" id="primarysearchform" role="search">
+    <div class="d-flex align-items-stretch w-100 flex-wrap" style="max-width: 700px;">
+      
+      <!-- Bottone Filtri -->
+      <div class="dropdown me-2 mb-2 mb-sm-0">
+        <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
+                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Filtri
+        </button>
+        <div class="dropdown-menu p-3" aria-labelledby="filterDropdown"
+             style="width: 250px; max-height: 200px; overflow-y: auto;" id="filtersContainer">
+        </div>
+      </div>
 
-            <div class="collapse navbar-collapse position-absolute top-50 start-50 translate-middle"
-                style="z-index: 999;">
-                <form class="d-flex flex-column position-relative" style="max-width: 300px;" role="search"
-                    id="primarysearchform">
+      <!-- Campo ricerca -->
+      <div class="position-relative flex-grow-1 me-2 mb-2 mb-sm-0">
+        <input type="text" class="form-control w-100" id="searchfield" placeholder="Search"
+               aria-label="Search" autocomplete="off">
+        <ul class="list-group w-100 mt-1 shadow" id="suggestionsList"></ul>
+      </div>
 
-                    <!-- Riga con bottone filtri a sinistra e input + cerca a destra -->
-                    <div class="d-flex align-items-stretch mb-2 w-100">
+      <!-- Bottone cerca -->
+      <button type="submit" class="searchbtn btn btn-primary mb-2 mb-sm-0">
+        <i class="bi bi-search"></i>
+      </button>
 
-                        <!-- Bottone Filtri -->
-                        <div class="dropdown me-2">
-                            <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
-                                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filtries
-                            </button>
-                            <div class="dropdown-menu p-3" aria-labelledby="filterDropdown"
-                                style="width: 250px; max-height: 200px; overflow-y: auto;" id="filtersContainer">
-                            </div>
-                        </div>
-
-                        <!-- Campo ricerca + bottone cerca -->
-                        <div class="position-relative flex-grow-1">
-                            <input type="text" class="form-control me-2" id="searchfield" placeholder="Search"
-                                aria-label="Search" autocomplete="off">
-
-                            <!-- Tendina suggerimenti -->
-                            <ul class="list-group position-absolute w-100 mt-1 shadow " id="suggestionsList"
-                                style="z-index: 1000; height: 200px; overflow-y: auto; background-color: black;"></ul>
-                        </div>
-
-                        <button type="submit" class="searchbtn ms-2">
-                            <i class="bi bi-search"></i>
-                        </button>
-
-                    </div>
-                </form>
-            </div>
+    </div>
+  </form>
+</div>
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
