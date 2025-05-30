@@ -677,11 +677,12 @@ app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) =
 
 
 //ricevi un elenco di articoli casuali con il numero di articoli specificato nel body della richiesta
-const userState = new Map(); // userKey -> { list_items, shuffledItems }
+const userState = new Map(); 
 
-app.put('/reset-items', (req, res) => {
+app.delete('/reset-items', async (req, res) => {
     const userKey = getUserKey(req);
-    userState.set(userKey, { list_items: [], shuffledItems: [] });
+    await pool.query('DELETE FROM shuffled WHERE user_key = $1', [userKey]);
+    userState.delete(userKey); // reset dello stato dell'utente
     res.json({ message: "Lista resettata" });
 });
 
@@ -694,26 +695,36 @@ app.get('/random-items', async (req, res) => {
     }
 
     try {
-        let state = userState.get(userKey);
-
-        if (!state) {
-            const result = await pool.query('SELECT * FROM items');
+        if (!userState.has(userKey)) {
+            const result = await pool.query('SELECT item_id FROM items');
             const shuffled = result.rows.sort(() => 0.5 - Math.random());
-            state = { list_items: [], shuffledItems: shuffled };
-            userState.set(userKey, state);
+
+            const maxResult = await pool.query('SELECT MAX(item_id) AS max_id FROM items');
+            const maxId = maxResult.rows[0].max_id;
+            const nextId = (maxId !== null ? maxId : 0) + 1;
+            const index = nextId.toString();
+            const indexMax = index + shuffled.length - 1;
+
+            userState.set(userKey, { index: index, indexMax: indexMax });
+            for (let i = 0; i < shuffled.length; i++) {
+                await pool.query('INSERT INTO shuffled (index, user_key, item_id, category_id) VALUES ($1, $2, $3, $4)', [i+index, userKey, shuffled[i].item_id, null]);
+            }
         }
 
-        const { list_items, shuffledItems } = state;
-        let start = list_items.length;
-        let end = start + nItems;
-        if (end > shuffledItems.length) end = shuffledItems.length;
-
-        if (start === end) {
-            return res.json({ message: "Non sono presenti altri oggetti" });
+        const { index, indexMax } = userState.get(userKey);
+        if (index === indexMax) {
+            return res.status(404).json({ error: "Nessun altro elemento disponibile" });
+        }
+        const startIndex = parseInt(index, 10);
+        let endIndex = startIndex + nItems - 1;
+        if (endIndex > indexMax) {
+            endIndex = indexMax;
         }
 
-        const selectedItems = shuffledItems.slice(start, end);
-        list_items.push(...selectedItems);
+        const selectedItems_id = await pool.query('SELECT item_id FROM shuffled WHERE user_key = $1 AND index >= $2 AND index <= $3', [userKey, startIndex, endIndex]);
+        const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
+
+        userState.set(userKey, { index: endIndex + 1, indexMax: indexMax });
 
         res.json(selectedItems);
     } catch (err) {
@@ -721,6 +732,7 @@ app.get('/random-items', async (req, res) => {
         res.status(500).json({ error: "Errore interno del server" });
     }
 });
+
 
 //recupera articoli appartenenti ad una categoria
 // Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
@@ -1027,9 +1039,9 @@ app.post("/create-checkout-session", protect, hasPermission('place-order'), asyn
 
 //richiesta da fare quando viene reindirizzato nella nuova pagina per vedere lo stato del pagamento
 app.get("/checkout-session/:id", async (req, res) => {
-  const session = await stripe.checkout.sessions.retrieve(req.params.id);
-  res.json(session); // contiene anche payment_status
-});//se il pagamento va a buon fine il front deve fare un sendmail
+    const session = await stripe.checkout.sessions.retrieve(req.params.id);
+    res.json(session); // contiene anche payment_status
+});
 
 // Invia un'email di conferma al cliente
 app.post('/send-confirmation-email', protect, async (req, res) => {
