@@ -11,91 +11,20 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<style>
-  .modal-backdrop.show {
-    background-color: rgba(0, 0, 0, 0.4);
-    /* sfondo semitrasparente */
-    backdrop-filter: blur(5px);
-    /* effetto sfocatura */
-    -webkit-backdrop-filter: blur(5px);
-    /* supporto Safari */
-  }
-
-  main.container {
-    max-height: 90vh;
-    /* massimo 90% viewport height */
-    overflow-y: auto;
-    /* scroll verticale se serve */
-  }
-
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  main {
-    flex: 1 0 auto;
-    /* cresce per occupare spazio */
-  }
-
-  footer {
-    height: 100px;
-    background-color: black;
-    flex-shrink: 0;
-    /* non si restringe */
-  }
-
-  .carousel-inner {
-    width: 100%;
-    /* prende tutta la larghezza possibile */
-    max-width: 250px;
-    /* limite massimo, come prima */
-    height: 150px;
-    /* altezza fissa */
-    overflow: hidden;
-  }
-
-  @media (max-width: 418px) {
-    .carousel-inner {
-      max-width: 100%;
-      /* si restringe fino al 100% della card */
-      height: 120px;
-      /* altezza più piccola su schermi piccoli */
-    }
-  }
-
-  .carousel-item img {
-    width: 100%;
-    /* si adatta alla larghezza del container */
-    height: 150px;
-    /* stessa altezza del container */
-    object-fit: contain;
-    /* mantiene proporzioni senza ritagli */
-  }
-
-  @media (max-width: 418px) {
-    .carousel-item img {
-      height: 120px;
-    }
-  }
-</style>
 
 <body>
 
   <div id="header"></div>
 
-  <main class="container" style="padding-top: 70px;">
+  <main class="containers" style="padding-top: 70px;">
     <div class="d-flex align-items-start justify-content-center w-100" style="margin-top: 80px;">
       <div class="d-flex flex-column justify-content-center align-items-center gap-4"
-        style="background-color: rgb(201, 199, 199); width: 90%; padding: 20px; border-radius: 10px;">
+        style="background-color: rgb(255, 255, 255); width: 90%; padding: 20px; border-radius: 10px;">
         <div id="productList" class="mt-4 w-100"></div>
         <div id="imagePreviewContainer" class="mb-3"></div>
 
         <p id="emptyCart">Add something to your</p>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalView"
+        <button type="button" class="shiny-blue-btn" data-bs-toggle="modal" data-bs-target="#modalView"
           id="btnAddProduct">add new product</button>
       </div>
     </div>
@@ -114,7 +43,7 @@
           <div class="row g-4">
             <div class="col-md-5 ">
               <input type="file" id="imageUploader" accept="image/*" multiple class="form-control mb-2">
-              <div id="uploadInfo">You can upload max 5 photos</div>
+              <div id="uploadInfo">You can upload max 1 photos</div>
               <div id="imageCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
                 <div class="carousel-inner" id="carouselInner"></div>
               </div>
@@ -130,7 +59,7 @@
                   <label for="Category" class="form-label">Category</label>
                   <select class="form-select" id="Category">
                     <option value="" disabled selected>Choose Category</option>
-                    <!-- Le altre opzioni verranno aggiunte via JS -->
+                    
                   </select>
                   <div class="invalid-feedback">Choose category</div>
                 </div>
@@ -150,7 +79,7 @@
                     placeholder="Write a short description..."></textarea>
                   <div class="invalid-feedback">Insert description</div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Add product</button>
+                <button type="submit" class="shiny-blue-btn mt-3">Add product</button>
               </form>
             </div>
           </div>
@@ -166,7 +95,6 @@
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>
   <script src="scriptindex.js"></script>
-
   <script src="scriptManageProduct.js"></script>
 </body>
 

@@ -1,3 +1,5 @@
+const description = document.getElementById("description");
+const selectType = document.getElementById("type");
 // Apre la finestra del report
 function openModal() {
   document.getElementById("reportModal").style.display = "block";
@@ -9,6 +11,11 @@ function openModal() {
 function closeModal() {
   document.getElementById("reportModal").style.display = "none";
   document.getElementById("modalOverlay").style.display = "none";
+  
+
+  description.value = "";
+  description.style.border = "";
+  selectType.selectedIndex = 0;
 }
 
 
@@ -27,6 +34,7 @@ function sendReport() {
       return; 
     }
     description.value = "";
+    selectType.selectedIndex = 0;
     closeModal();
   }
 

@@ -1,19 +1,16 @@
 const uploader = document.getElementById("imageUploader");
 const carouselInner = document.getElementById("carouselInner");
 const productList = document.getElementById("productList");
-let allImages = [];
+let Images = [];
 let productCounter = 0;
 
 uploader.addEventListener("change", function () {
   const newFiles = Array.from(this.files);
-  if (newFiles.length > 1) {
-    alert("Puoi caricare solo 1 immagine.");
-  }
   const filesToAdd = newFiles.slice(0, 1);
   filesToAdd.forEach(file => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      allImages = [e.target.result]; // solo 1 immagine
+      Images = [e.target.result]; 
       renderCarousel(false);
     };
     reader.readAsDataURL(file);
@@ -23,8 +20,8 @@ uploader.addEventListener("change", function () {
 
 function renderCarousel(isEditing = false) {
   carouselInner.innerHTML = "";
-  if (allImages.length === 0) return;
-  const src = allImages[0];
+  if (Images.length === 0) return;
+  const src = Images[0];
   const item = document.createElement("div");
   item.className = "carousel-item active";
 
@@ -56,7 +53,7 @@ function renderCarousel(isEditing = false) {
 
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      allImages = [];
+      Images = [];
       renderCarousel(true);
     });
 
@@ -69,13 +66,12 @@ function renderCarousel(isEditing = false) {
 
 function resetFormAndCarousel() {
   document.getElementById("productForm").reset();
-  allImages = [];
+  Images = [];
   renderCarousel(false);
   const form = document.getElementById("productForm");
   delete form.dataset.editingId;
 }
 
-// Nuova funzione per aprire modal per nuovo prodotto
 function openModalForNewProduct() {
   resetFormAndCarousel();
   const modal = new bootstrap.Modal(document.getElementById("modalView"));
@@ -94,68 +90,67 @@ productList.addEventListener("click", function (event) {
 document.getElementById("productForm").addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const nome = document.getElementById("Name Product");
-  const categoria = document.getElementById("Category");
-  const prezzo = document.getElementById("Price");
-  const quantita = document.getElementById("Quantity");
-  const descrizione = document.getElementById("Description");
-  const immagini = document.getElementById("imageUploader");
-  // Restituisci l'URL dell'immagine caricata (base64)
-
-  const imageUrl = allImages.length > 0 ? allImages[0] : "";
+  const name = document.getElementById("Name Product");
+  const category = document.getElementById("Category");
+  const price = document.getElementById("Price");
+  const quantity = document.getElementById("Quantity");
+  const description = document.getElementById("Description");
+  const image = document.getElementById("imageUploader");
+  const imageUrl = Images.length > 0 ? Images[0] : "";
  
 
   let valid = true;
-  if (nome.value.trim() === "") {
-    nome.classList.add("is-invalid");
+  if (name.value.trim() === "") {
+    name.classList.add("is-invalid");
     valid = false;
   } else {
-    nome.classList.remove("is-invalid");
+    name.classList.remove("is-invalid");
   }
-  if (!categoria.value) {
-    categoria.classList.add("is-invalid");
+  if (!category.value) {
+    category.classList.add("is-invalid");
     valid = false;
   } else {
-    categoria.classList.remove("is-invalid");
+    category.classList.remove("is-invalid");
   }
-  const prezzoVal = parseFloat(prezzo.value);
+  const prezzoVal = parseFloat(price.value);
   if (isNaN(prezzoVal) || prezzoVal <= 0) {
-    prezzo.classList.add("is-invalid");
+    price.classList.add("is-invalid");
     valid = false;
   } else {
-    prezzo.classList.remove("is-invalid");
+    price.classList.remove("is-invalid");
   }
-  const quantitaVal = parseInt(quantita.value);
+  const quantitaVal = parseInt(quantity.value);
   if (isNaN(quantitaVal) || quantitaVal < 1) {
-    quantita.classList.add("is-invalid");
+    quantity.classList.add("is-invalid");
     valid = false;
   } else {
-    quantita.classList.remove("is-invalid");
+    quantity.classList.remove("is-invalid");
   }
-  if (allImages.length === 0) {
+  if (Images.length === 0) {
     uploader.classList.add("is-invalid");
     valid = false;
   } else {
     uploader.classList.remove("is-invalid");
   }
 
-  if (!descrizione.value.trim()) {
-  descrizione.classList.add("is-invalid");
+  if (!description.value.trim()) {
+  description.classList.add("is-invalid");
   formValido = false;
 } else {
-  descrizione.classList.remove("is-invalid");
+  description.classList.remove("is-invalid");
 }
 
-// Immagini
-if (immagini.files.length === 0 || immagini.files.length > 5) {
-  immagini.classList.add("is-invalid");
-  document.getElementById("uploadInfo").textContent = "Upload between 1 and 5 images";
-  formValido = false;
+
+if (Images.length === 0) {
+  uploader.classList.add("is-invalid");
+  document.getElementById("uploadInfo").textContent = "You must upload 1 photo";
+  valid = false;
 } else {
-  immagini.classList.remove("is-invalid");
-  document.getElementById("uploadInfo").textContent = "You can upload max 5 photos";
+  uploader.classList.remove("is-invalid");
+  document.getElementById("uploadInfo").textContent = "";
 }
-console.log("Form valid:", categoria.value);
+
+console.log("Form valid:", category.value);
 
 const token = sessionStorage.getItem("token");
 console.log(token);
@@ -168,7 +163,7 @@ console.log(token);
           'Content-Type': 'application/json',
           'authorization': `Bearer ${token}`   
         },
-        body: JSON.stringify({ name: nome.value, category: categoria.value, description: descrizione.value, price: prezzo.value, quantity: quantita.value, image_url: imageUrl})
+        body: JSON.stringify({ name:name.value, category: category.value, description: description.value, price: price.value, quantity: quantity.value, image_url: imageUrl})
       })
       .then(response => response.json())
       .then(Data => {
@@ -184,25 +179,25 @@ console.log(token);
 function addNewProduct() {
   productCounter++;
 
-  const nome = document.getElementById("Name Product").value;
-  const categoria = document.getElementById("Category").value;
-  const prezzoVal = parseFloat(document.getElementById("Price").value);
-  const quantitaVal = parseInt(document.getElementById("Quantity").value);
+  const name = document.getElementById("Name Product").value;
+  const category = document.getElementById("Category").value;
+  const priceVal = parseFloat(document.getElementById("Price").value);
+  const quantityVal = parseInt(document.getElementById("Quantity").value);
 
-  const prodottoCard = document.createElement("div");
-  prodottoCard.classList.add("card", "mb-4", "shadow");
-  prodottoCard.dataset.productId = productCounter;
-  prodottoCard.dataset.nome = nome;
-  prodottoCard.dataset.categoria = categoria;
-  prodottoCard.dataset.prezzo = prezzoVal.toFixed(2);
-  prodottoCard.dataset.quantita = quantitaVal;
-  prodottoCard.dataset.immagini = JSON.stringify(allImages);
+  const productCard = document.createElement("div");
+  productCard.classList.add("card", "mb-4", "shadow");
+  productCard.dataset.productId = productCounter;
+  productCard.dataset.name = name;
+  productCard.dataset.category = category;
+  productCard.dataset.price = priceVal.toFixed(2);
+  productCard.dataset.quantity = quantityVal;
+  productCard.dataset.image = JSON.stringify(Images);
 
   let carouselId = `carouselCard${productCounter}`;
 
-  const imgSrc = allImages[0] || "";
+  const imgSrc = Images[0] || "";
 
-  let immaginiCarouselHTML = `
+  let imageCarouselHTML = `
     <div id="${carouselId}" style="width: 250px; height: 150px;">
       <img src="${imgSrc}" class="d-block w-100" style="height: 150px; object-fit: contain;">
     </div>
@@ -210,19 +205,19 @@ function addNewProduct() {
 
   prodottoCard.innerHTML = `
     <div class="row g-0">
-      <div class="col-md-4 d-flex align-items-center p-2">${immaginiCarouselHTML}</div>
+      <div class="col-md-4 d-flex align-items-center p-2">${imageCarouselHTML}</div>
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">${nome}</h5>
-          <p class="card-text mb-1">Categoria: <strong>${categoria}</strong></p>
-          <p class="card-text mb-1">Prezzo: €${prezzoVal.toFixed(2)}</p>
-          <p class="card-text mb-0">Quantità: ${quantitaVal}</p>
+          <p class="card-text mb-1">Categoria: <strong>${category}</strong></p>
+          <p class="card-text mb-1">Prezzo: €${pricwVal.toFixed(2)}</p>
+          <p class="card-text mb-0">Quantità: ${quantityVal}</p>
         </div>
       </div>
     </div>
   `;
 
-  productList.appendChild(prodottoCard);
+  productList.appendChild(productCard);
 
   const emptyCartDiv = document.getElementById("emptyCart");
   if (emptyCartDiv) {
@@ -241,22 +236,22 @@ function updateProduct(productId) {
   const card = document.querySelector(`[data-product-id="${productId}"]`);
   if (!card) return;
 
-  const nome = document.getElementById("Name Product").value;
-  const categoria = document.getElementById("Category").value;
-  const prezzoVal = parseFloat(document.getElementById("Price").value);
-  const quantitaVal = parseInt(document.getElementById("Quantity").value);
+  const name = document.getElementById("Name Product").value;
+  const category = document.getElementById("Category").value;
+  const priceVal = parseFloat(document.getElementById("Price").value);
+  const quantityVal = parseInt(document.getElementById("Quantity").value);
 
-  card.dataset.nome = nome;
-  card.dataset.categoria = categoria;
-  card.dataset.prezzo = prezzoVal.toFixed(2);
-  card.dataset.quantita = quantitaVal;
-  card.dataset.immagini = JSON.stringify(allImages);
+  card.dataset.name = name;
+  card.dataset.category = category;
+  card.dataset.price = priceVal.toFixed(2);
+  card.dataset.quantity = quantityVal;
+  card.dataset.image = JSON.stringify(Images);
 
   let carouselId = `carouselCard${productId}`;
 
-  const imgSrc = allImages[0] || "";
+  const imgSrc = Images[0] || "";
 
-  let immaginiCarouselHTML = `
+  let imageCarouselHTML = `
     <div id="${carouselId}" style="width: 250px; height: 150px;">
       <img src="${imgSrc}" class="d-block w-100" style="height: 150px; object-fit: contain;">
     </div>
@@ -264,13 +259,13 @@ function updateProduct(productId) {
 
   card.innerHTML = `
     <div class="row g-0">
-      <div class="col-md-4 d-flex align-items-center p-2">${immaginiCarouselHTML}</div>
+      <div class="col-md-4 d-flex align-items-center p-2">${imageCarouselHTML}</div>
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">${nome}</h5>
-          <p class="card-text mb-1">Categoria: <strong>${categoria}</strong></p>
-          <p class="card-text mb-1">Prezzo: €${prezzoVal.toFixed(2)}</p>
-          <p class="card-text mb-0">Quantità: ${quantitaVal}</p>
+          <p class="card-text mb-1">Categoria: <strong>${category}</strong></p>
+          <p class="card-text mb-1">Prezzo: €${priceVal.toFixed(2)}</p>
+          <p class="card-text mb-0">Quantità: ${quantityVal}</p>
         </div>
       </div>
     </div>
@@ -288,12 +283,12 @@ function openModalForEdit(productId) {
   const card = document.querySelector(`[data-product-id="${productId}"]`);
   if (!card) return;
 
-  document.getElementById("Name Product").value = card.dataset.nome;
-  document.getElementById("Category").value = card.dataset.categoria;
-  document.getElementById("Price").value = card.dataset.prezzo;
-  document.getElementById("Quantity").value = card.dataset.quantita;
+  document.getElementById("Name Product").value = card.dataset.name;
+  document.getElementById("Category").value = card.dataset.category;
+  document.getElementById("Price").value = card.dataset.price;
+  document.getElementById("Quantity").value = card.dataset.quantity;
 
-  allImages = JSON.parse(card.dataset.immagini);
+  Images = JSON.parse(card.dataset.image);
   renderCarousel(true);
 
   const form = document.getElementById("productForm");

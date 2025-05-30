@@ -28,7 +28,7 @@
       <div class="p-3 d-flex flex-column gap-3" style="background-color: #fff; border: 2px solid #000; border-radius: 10px;">
         <div class="d-flex justify-content-between align-items-center">
           <h3 class="m-0">My details</h3>
-          <button style="border-radius: 10px;">Edit</button>
+          <button style="border-radius: 10px;" class="shiny-blue-btn" id="details" onclick="openModal()">Edit</button>
         </div>
         <div><span>Name: </span></div>
         <div><span>Surname: </span></div>
@@ -48,7 +48,7 @@
       <div class="p-3 d-flex flex-column gap-3" style="background-color: #fff; border: 2px solid #000; border-radius: 10px;">
         <div class="d-flex justify-content-between align-items-center">
           <h3 class="m-0">My Password</h3>
-          <button style="border-radius: 10px;">Edit</button>
+          <button style="border-radius: 10px;" class="shiny-blue-btn" id="password" onclick="openModal()">Edit</button>
         </div>
         <div><span>Password: </span></div>
       </div>
@@ -56,14 +56,52 @@
 
   </div>
 </div>
-
     </main>
+
+    
+    <div id="modifyModal1" class="report-inline">
+    <div class="modal-content">
+      <h4>Change Data</h4>
+      <form>
+      <div class="NameD">
+      <label>Name</label>
+      <input type="text" id="name" placeholder="enter your name"></div>
+      <div class="Surname">
+        <label>Surname</label>
+      <input type="text" id="surname" placeholder="enter your surname">
+      </div>
+      <button class="shiny-blue-btn" onclick="saveChanges(event)">Save Changes </button>
+      </form>
+      </div>
+    </div>
+  
+  <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+
+  <div id="modifyModal2" class="report-inline">
+    <div class="modal-content">
+      <h4>Reset Password</h4>
+      <form>
+      <div class="oldPassword">
+      <label>Old Password</label>
+      <input type="text" id="oldpw" placeholder="old password">
+      </div>
+      <div class="newPassword">
+        <label>New Password</label>
+		 <input type="text" id="newpw"placeholder= "new password">
+      </div>
+      <button class="shiny-blue-btn" onclick="saveChanges(event)">Save Changes </button>
+      </form>
+      </div>
+    </div>
+  <div id="modalOverlay2" class="modal-overlay" onclick="closeModal()"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
 
     <script src="scriptElement.js"></script>
+    <script src="scriptUser.js"></script>
 </body>
 
 <footer>
