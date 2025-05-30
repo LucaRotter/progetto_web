@@ -459,7 +459,7 @@ describe('items', () => {
     });
 
     it('should get items by user id', async () => {
-      const userId = '5'; // Sostituisci con un ID utente valido
+      const userId = '5'; 
       const token = generateToken(userId);
       const response = await request(app)
         .get('/user-items/')
@@ -496,6 +496,97 @@ describe('items', () => {
 //TEST ORDINI
 
 describe('orders', () => {
+  let orderId1;
+  it('should add an order', async () => {
+          const userId = '6';
+          const token = generateToken(userId);
+          const response = await request(app)
   
+              .post('/add-order')
+              .set('Authorization', `Bearer ${token}`)
+              .send({
+                  items: [
+                      { item_id: '30', quantity: 2 },
+                      { item_id: '7', quantity: 5 },
+                      { item_id: '13', quantity: 1 }
+                  ],
+                  address: 'Via Roma',
+                  civic_number: '10A',
+                  postal_code: '21100',
+                  province: 'VA',
+                  country: 'Italia',
+                  phone_number: '34567890127'
+              });
+  
+          expect(response.body).toHaveProperty('message', 'Order added');
+          expect(response.body).toHaveProperty('order_id');
+          orderId1 = response.body.order_id;
+          console.log(orderId1);
+
+      });
+      describe('should change order state', () => {
+        it('should update order state', async () => {
+          const userId = '5';
+          const token = generateToken(userId);
+          const OrderId = '1';
+          const response = await request(app)
+      
+              .put(`/update-order/${OrderId}`)
+              .set('Authorization', `Bearer ${token}`)
+          expect(response.body).toHaveProperty('message', 'Order updated');
+      
+        });
+          afterAll(async () => {
+              //rimetti lo stato iniziale dell'ordine
+              const OrderId = '1';
+              const resetOrderQuery = 'UPDATE orders SET state = $1 WHERE order_id = $2';
+              await pool.query(resetOrderQuery, ['confirmed', OrderId]);
+          });
+      });
+      describe('get orders', () => {
+    it('should get orders by customer', async () => {
+        const userId = '6';
+        const token = generateToken(userId);
+        const response = await request(app)
+
+            .get('/customer-orders')
+            .set('Authorization', `Bearer ${token}`)
+        expect(response.body).toHaveProperty('orders');
+ 
+
+    });
+    it('should get orders by artisan', async () => {
+        const userId = '5';
+        const token = generateToken(userId);
+        const response = await request(app)
+
+            .get('/artisan-orders')
+            .set('Authorization', `Bearer ${token}`)
+        expect(response.body).toHaveProperty('orders');
+
+    });
+    it('should get orders by admin', async () => {
+        const OrderId = '1';
+        const userId = '3';
+        const token = generateToken(userId);
+        const response = await request(app)
+
+            .get(`/admin-orders/${OrderId}`)
+            .set('Authorization', `Bearer ${token}`)
+            expect(response.body).toHaveProperty('orders'); 
+
+    });
+    it('should delete order', async () => {
+      const userId = '3';
+      const token = generateToken(userId);
+      const response = await request(app)
+          .delete(`/delete-orders/${orderId1}`)
+          .set('Authorization', `Bearer ${token}`);
+          expect(response.body).toHaveProperty('message', 'Order deleted');
+      });
+
+});
+
+      
 });
 

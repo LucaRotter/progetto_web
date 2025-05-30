@@ -855,7 +855,7 @@ app.get('/items', async (req, res) => {
 
 //gestione ordini
 //aggiungi ordine
-app.post('/add-order', protect, hasPermission('place-order'), async (req, res) => {
+app.post('/add-order', protect, hasPermission('place_order'), async (req, res) => {
     const { items, address, civic_number, postal_code, province, country, phone_number  } = req.body;
     const user_id = req.user.user_id;
     const maxResult = await pool.query('SELECT MAX(CAST(order_id AS INTEGER)) AS max_id FROM orders');
@@ -867,7 +867,7 @@ app.post('/add-order', protect, hasPermission('place-order'), async (req, res) =
     const day = now.toISOString().split('T')[0]; // formato YYYY-MM-DD
     const time = now.toTimeString().split(' ')[0]; // formato HH:MM:SS
 
-    for (const item of items) {
+    for (let item of items) {
 
         let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
         artisan_id = artisan_id.rows[0].user_id;
@@ -877,7 +877,7 @@ app.post('/add-order', protect, hasPermission('place-order'), async (req, res) =
             [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, province, country, phone_number]
         );
     }
-    res.json({ message: "Order added" });
+    res.json({ message: "Order added", order_id: order_id });//l'order_id viene restituito per i test
 });
 
 //aggiorna stato ordine
@@ -895,14 +895,14 @@ app.put('/update-order/:id', protect, hasPermission('manage_orders'), async (req
 app.get('/customer-orders', protect, hasPermission('view_orders'), async (req, res) => {
     const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [user_id]);
-    res.json(result.rows);
+    res.json({orders: result.rows});
 });
 
 //recupera ordini per id utente dell'artigiano
 app.get('/artisan-orders', protect, hasPermission('manage_orders'), async (req, res) => {
     const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1', [user_id]);
-    res.json(result.rows);
+    res.json({orders: result.rows});
 });
 
 //recupera ordini per id ordine per amministratore
@@ -910,16 +910,16 @@ app.get('/admin-orders/:id', protect, hasPermission('view_manage_orders'), async
     const order_id = req.params.id;
     const result = await pool.query('SELECT * FROM orders WHERE order_id = $1', [order_id]);
     if (result.rows.length > 0) {
-        res.json(result.rows[0]);
+        res.json({orders:result.rows});
     } else {
         res.status(400).json({ message: "Order not found" });
     }
 });
 
 //elimina ordine da parte dell'amministratore
-app.delete('/admin-orders/:id', protect, hasPermission('view_manage_orders'), async (req, res) => {
+app.delete('/delete-orders/:id', protect, hasPermission('view_manage_orders'), async (req, res) => {
     const order_id = req.params.id;
-    const result = await pool.query('DELETE FROM orders WHERE order_id = $1', [order_id]);
+    const result = await pool.query('DELETE FROM orders WHERE order_id = $1 RETURNING *', [order_id]);
     if (result.rowCount > 0) {
         res.json({ message: "Order deleted" });
     } else {
