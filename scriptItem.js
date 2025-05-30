@@ -4,13 +4,6 @@ const btn = document.getElementById('searchBtn');
 
 let expanded = false;
 
-function changeImage(img) {
-    const mainImage = document.getElementById("mainImage");
-    mainImage.src = img.src;
-
-    document.querySelectorAll('.thumb-img').forEach(el => el.classList.remove('active'));
-    img.classList.add('active');
-}
 
 const params = new URLSearchParams(window.location.search);
 const product = params.get('id');

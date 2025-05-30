@@ -18,8 +18,8 @@ const token = sessionStorage.getItem("token");
        if (Data.length === 0) {
       document.getElementById("emptyCart").classList.remove("d-none");
       document.getElementById("fullCart").classList.add("d-none");
-      document.getElementById("buttonCart").classList.add("d-none");
-      document.body.classList.remove("js-loading");
+      
+      
       return;
     }
     
@@ -27,26 +27,25 @@ const token = sessionStorage.getItem("token");
       .then(() => {
         document.getElementById("emptyCart").classList.add("d-none");
         document.getElementById("fullCart").classList.remove("d-none");
-        document.getElementById("buttonCart").classList.remove("d-none");
 
         updateCartReview(); 
-        document.body.classList.remove("js-loading");
+        
       });
   })
   .catch(error => {
     console.error("Errore nel caricamento del carrello:", error);
-    document.body.classList.remove("js-loading");
+    
   });
 });
 
 
 //crea i contenitori per il cart
 function createCartElement(CartContent){
-
+console.log("sono qui")
   const container = document.getElementById("item-container");
   
   const carItem = document.createElement("div");
-  carItem.className = "col-12 cartItem d-flex";
+  carItem.className = "col-12 cartItem d-flex";  
   carItem.id = CartContent.item_id;
 
   // Immagine
@@ -102,7 +101,7 @@ function createCartElement(CartContent){
   // Bottone
   const button = document.createElement("button");
   const icon = document.createElement("i");
-  icon.className = "bi bi-trash2";
+  icon.className = "bi bi-trash";
   button.appendChild(icon);
 
   button.addEventListener("click", () => {
@@ -117,11 +116,9 @@ function createCartElement(CartContent){
     })
     .then(response => {
       document.getElementById(CartContent.item_id).remove();
+      updateCartReview()
     })
   })
-
-
-  // Assembla tutto
 
   carItem.appendChild(img);
   container.appendChild(carItem);
@@ -146,7 +143,8 @@ function getInfo(product) {
   })
   .then(response => response.json())
   .then(data => {
-    createCartElement(data[0]);
+    elemento = data.item
+    createCartElement(elemento[0]);
   });
 }
 
