@@ -2,7 +2,7 @@
 const request = require('supertest');
 const path = require('path');
 const fs = require('fs');
-const { app, pool, generateToken } = require('../server2.js');  // Importa la tua app Express
+const { app, pool, generateToken, userState } = require('../server2.js');  // Importa la tua app Express
 
 afterAll(async () => {
   await pool.end(); // Chiudi connessione al DB
@@ -489,7 +489,65 @@ describe('items', () => {
       });
       
   });
+describe('shuffled items', () => {
+  const userId = 6;
+  const token = generateToken(userId);
 
+  it('should return two batches of items for same user', async () => {
+    const response1 = await request(app)
+      .get('/random-items')
+      .set('Authorization', `Bearer ${token}`)
+      .query({ nItems: 27 });
+
+    expect(response1.body.selectedItems).toHaveLength(27);
+
+    const response2 = await request(app)
+      .get('/random-items')
+      .set('Authorization', `Bearer ${token}`)
+      .query({ nItems: 5 });
+
+    expect(response2.body.selectedItems).toHaveLength(3);
+
+    const response3 = await request(app)
+      .get('/random-items')
+      .set('Authorization', `Bearer ${token}`)
+      .query({ nItems: 5 });
+
+    expect(response3.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
+  });
+
+  it('should return two batches for guest user', async () => {
+    const response1 = await request(app)
+      .get('/random-items')
+      .query({ nItems: 5 });
+
+    expect(response1.body.selectedItems).toHaveLength(5);
+    console.log(response1.body.selectedItems);
+
+    const response2 = await request(app)
+      .get('/random-items')
+      .query({ nItems: 5 });
+
+    expect(response2.body.selectedItems).toHaveLength(5);
+    console.log(response2.body.selectedItems);
+  });
+  it('deletes shuffled items of user', async () => {
+    const response = await request(app)
+      .delete('/reset-items')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.body).toHaveProperty('message', 'Lista resettata');
+  });
+  it('deletes shuffled items of guest', async () => {
+    const response = await request(app)
+    .delete('/reset-items')
+    expect(response.body).toHaveProperty('message', 'Lista resettata');
+  });
+
+  afterAll(async () => {
+    userState.clear();
+    await pool.query('DELETE FROM shuffled');
+  });
+});
 
 });
 

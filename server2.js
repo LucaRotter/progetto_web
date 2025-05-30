@@ -689,6 +689,7 @@ app.delete('/reset-items', async (req, res) => {
 app.get('/random-items', async (req, res) => {
     const userKey = getUserKey(req);
     const nItems = parseInt(req.query.nItems, 10);
+    
 
     if (!nItems || isNaN(nItems)) {
         return res.status(400).json({ error: "Parametro 'nItems' non valido" });
@@ -699,20 +700,21 @@ app.get('/random-items', async (req, res) => {
             const result = await pool.query('SELECT item_id FROM items');
             const shuffled = result.rows.sort(() => 0.5 - Math.random());
 
-            const maxResult = await pool.query('SELECT MAX(item_id) AS max_id FROM items');
+            const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM shuffled');
             const maxId = maxResult.rows[0].max_id;
             const nextId = (maxId !== null ? maxId : 0) + 1;
-            const index = nextId.toString();
+            const index = nextId;
             const indexMax = index + shuffled.length - 1;
 
             userState.set(userKey, { index: index, indexMax: indexMax });
+            
             for (let i = 0; i < shuffled.length; i++) {
-                await pool.query('INSERT INTO shuffled (index, user_key, item_id, category_id) VALUES ($1, $2, $3, $4)', [i+index, userKey, shuffled[i].item_id, null]);
+                await pool.query('INSERT INTO shuffled (item_index, user_key, item_id, category_id) VALUES ($1, $2, $3, $4)', [i+index, userKey, shuffled[i].item_id, null]);
             }
         }
 
         const { index, indexMax } = userState.get(userKey);
-        if (index === indexMax) {
+        if (index === indexMax + 1) {
             return res.status(404).json({ error: "Nessun altro elemento disponibile" });
         }
         const startIndex = parseInt(index, 10);
@@ -720,13 +722,18 @@ app.get('/random-items', async (req, res) => {
         if (endIndex > indexMax) {
             endIndex = indexMax;
         }
-
-        const selectedItems_id = await pool.query('SELECT item_id FROM shuffled WHERE user_key = $1 AND index >= $2 AND index <= $3', [userKey, startIndex, endIndex]);
+       
+        const selectedItems_id = await pool.query(
+            `SELECT item_id FROM shuffled WHERE item_index >= $1 AND item_index <= $2`, 
+            [ startIndex, endIndex]
+        );
+       
         const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
 
         userState.set(userKey, { index: endIndex + 1, indexMax: indexMax });
+        console.log("Stato utente aggiornato:", userState.get(userKey));
 
-        res.json(selectedItems);
+        res.json({selectedItems: selectedItems.rows});
     } catch (err) {
         console.error("Errore:", err);
         res.status(500).json({ error: "Errore interno del server" });
@@ -1069,6 +1076,7 @@ module.exports = {
     app,
     pool,
     generateToken,
+    userState,
 };
 
 //listen server
@@ -1083,3 +1091,8 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
+
+//INSERIRE GET UTENTE SENZA ID E PWD
+//INSERIRE GET user_id da admin con permission manage_users
+//INSERIRE PUT PER NOME E COGNOME USER
+//INSERIRE DELETE PER user da admin con permission delete_user e da stesso user con permission update_profile
