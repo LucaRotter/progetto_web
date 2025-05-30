@@ -333,11 +333,8 @@ margin-left: auto;
     }
   }
 
-#type:invalid,
-#description:invalid {
-  border: 2px solid red;
-}
 
+/*MODAL REPORT*/
 .report-inline {
   display: none;
   position: fixed; 
@@ -367,7 +364,6 @@ margin-left: auto;
   font-size: 14px;
 }
 
-
 .modal-overlay {
   display: none;
   position: fixed;
@@ -378,7 +374,13 @@ margin-left: auto;
   z-index: 1040; 
 }
 
-/* BUTTON */
+#type:invalid,
+#description:invalid {
+  border: 2px solid red;
+}
+/* */
+
+/*BUTTON*/
 .shiny-blue-btn {
   padding: 12px 24px;
   font-size: 16px;
@@ -417,9 +419,9 @@ margin-left: auto;
   background: linear-gradient(145deg, #03a9f4, #0277bd);
   transform: translateY(-2px);
 }
-/*  */
+/* */
 
-/* NAVBAR*/
+/*NAVBAR*/
 .navbar {
   background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
@@ -495,6 +497,28 @@ margin-left: auto;
 
 #suggestionsList li:hover {
   background-color: #222;
+}
+
+.searchbtn {
+  background: linear-gradient(145deg, #4fc3f7, #0288d1);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
+}
+
+.searchbtn:hover {
+ background: linear-gradient(145deg, #03a9f4, #0277bd);
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 191, 255, 0.6);
+  color: #e0f7ff;
+}
+
+.searchbtn:active {
+  transform: scale(0.98);
+   box-shadow: 0 6px 20px rgba(0, 191, 255, 0.6);
 }
 /* */
 
@@ -639,10 +663,6 @@ margin-left: auto;
 }
 /* */
 
-/*STEP ADMIN*/
-
-/* */
-
 /*MODAL USER DETAIL/PASSWORD*/
 #modifyModal1,
 #modifyModal2 {
@@ -659,6 +679,7 @@ margin-left: auto;
   width: 90%;
   max-width: 400px;
 }
+
 #modalOverlay,
 #modalOverlay2 {
   position: fixed;
@@ -725,3 +746,130 @@ margin-left: auto;
   resize: none;
 }
 /* */
+
+/*STEP ADMIN AND PAY*/
+.switchbtn {
+  background-color: #007bff; 
+  color: rgb(255, 255, 255);
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+.step {
+  background-color: #000000;
+  color: white;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.step .d-flex {
+  background-color: #000000; 
+  color: white;
+}
+
+.step input.form-control,
+.step input.code-box {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border: 1px solid #555;
+}
+
+.step input.form-control::placeholder {
+  color: #000000;
+}
+
+.nav-pills .nav-link {
+  background: none;
+  border: none;
+}
+
+.step form {
+  background-color: #000000; 
+  border-radius: 10px;
+}
+/* */
+
+/*CONTAINER EMPTY CART*/
+#emptyCart .d-flex {
+  background-color: #000000; 
+  color: white;
+  border: 2px solid #fff; 
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  height: 40%;
+  width: 90%;
+}
+
+#emptyCart p {
+  margin: 0;
+  font-size: 1.25rem;
+  color: white;
+}
+/* */
+
+#fullCart #item-container {
+  background-color: #111; 
+  color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+/* Titolo "Your orders" */
+#fullCart h4 {
+  color: white;
+  margin: 0;
+}
+
+/* Input search */
+#fullCart input.form-control {
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+}
+
+#fullCart input.form-control::placeholder {
+  color: #aaa;
+}
+
+/* Bottone search */
+#fullCart button.btn {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+#fullCart button.btn:hover {
+  background-color: #444;
+  color: white;
+}
+
+#fullCart p,
+#fullCart label,
+#fullCart span,
+#fullCart li,
+#fullCart div,
+#fullCart form {
+  color: rgb(0, 0, 0) !important; /* Forza bianco */
+}
+@media (max-width: 600px) {
+  #fullCart #item-container .d-flex.justify-content-between {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #fullCart h4 {
+    text-align: center;
+  }
+
+  #fullCart form {
+    width: 100%;
+  }
+}
