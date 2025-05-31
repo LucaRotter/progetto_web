@@ -745,71 +745,90 @@ app.get('/random-items', async (req, res) => {
 // Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
 const categoryItemsCache = new Map(); 
 
-//ricomincia lista
-app.put('/reset-category-items/:name', async (req, res) => {
-  const userKey = getUserKey(req);
-  const category_name = req.params.name;
-
-  try {
-    const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
-    if (categoryResult.rows.length === 0) {
-      return res.status(404).json({ message: "Category not found" });
+app.delete('reset-category-items/:name', async (req, res) => {
+    const userKey = getUserKey(req);
+    
+    const categoryName = req.params.name;
+    const result =  await pool.query('SELECT category_id FROM categories WHERE name = $1', [categoryName]);
+    if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Categoria non trovata" });
     }
-    const category_id = categoryResult.rows[0].category_id;
+    const category_id = result.rows[0].category_id;
 
-    if (categoryItemsCache.has(userKey)) {
-      const userCache = categoryItemsCache.get(userKey);
-      if (userCache.has(category_id)) {
-        userCache.delete(category_id);
-      }
+    key = [userKey, category_id];
+
+
+    if (!categoryItemsCache.has(key)) {
+        return res.status(404).json({ error: "Nessun elemento da resettare per l\'utente in questa categoria" });
     }
 
-    res.json({ message: `Cache resettata per categoria ${category_name} e utente ${userKey}` });
-  } catch (err) {
-    console.error("Errore durante il reset della cache per categoria:", err);
-    res.status(500).json({ error: "Errore interno del server" });
-  }
+    await pool.query('DELETE FROM shuffled WHERE user_key = $1 AND category_id = $2', [userKey, category_id]);
+    categoryItemsCache.delete(key); // reset dello stato dell'utente
+    res.json({ message: "Lista resettata" });
 });
 
-
 app.get('/category-items/:name', async (req, res) => {
-  const userKey = getUserKey(req);
-  const category_name = req.params.name;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const offset = (limit * (page - 1));
-
-  try {
-    const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category_name]);
-    if (categoryResult.rows.length === 0) {
-      return res.status(404).json({ message: "Category not found" });
+    const userKey = getUserKey(req);
+    const nItems = parseInt(req.query.nItems, 10);
+    const categoryName = req.params.name;
+    const result = await pool.query('SELECT category_id FROM categories WHERE name = $1', [categoryName]);
+    if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Categoria non trovata" });
     }
-    const category_id = categoryResult.rows[0].category_id;
+    const category_id = result.rows[0].category_id;
+    const key = [userKey, category_id];
+    
 
-    if (!categoryItemsCache.has(userKey)) {
-      categoryItemsCache.set(userKey, new Map());
-    }
-    const userCache = categoryItemsCache.get(userKey);
-
-    if (!userCache.has(category_id)) {
-      const allItemsResult = await pool.query('SELECT * FROM items WHERE category_id = $1', [category_id]);
-      const shuffledItems = allItemsResult.rows.sort(() => 0.5 - Math.random());
-      userCache.set(category_id, shuffledItems);
+    if (!nItems || isNaN(nItems)) {
+        return res.status(400).json({ error: "Parametro 'nItems' non valido" });
     }
 
-    const items = userCache.get(category_id);
+    try {
+        if (!categoryItemsCache.has(key)) {
+            
+            const result = await pool.query('SELECT item_id FROM items WHERE category_id = $1', [category_id]);
+            const shuffled = result.rows.sort(() => 0.5 - Math.random());
 
-    if (offset >= items.length) {
-      return res.json({ message: `Non ci sono più item nella categoria: ${category_name}` });
+            const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM shuffled');
+            const maxId = maxResult.rows[0].max_id;
+            const nextId = (maxId !== null ? maxId : 0) + 1;
+            const index = nextId;
+            const indexMax = index + shuffled.length - 1;
+
+            categoryItemsCache.set(key, { index: index, indexMax: indexMax });
+            
+            for (let i = 0; i < shuffled.length; i++) {
+                await pool.query('INSERT INTO shuffled (item_index, user_key, item_id, category_id) VALUES ($1, $2, $3, $4)', [i+index, userKey, shuffled[i].item_id, category_id]);
+            }
+
+
+        }
+
+        const { index, indexMax } = categoryItemsCache.get(key);
+        if (index === indexMax + 1) {
+            return res.status(404).json({ error: "Nessun altro elemento disponibile" });
+        }
+        const startIndex = parseInt(index, 10);
+        let endIndex = startIndex + nItems - 1;
+        if (endIndex > indexMax) {
+            endIndex = indexMax;
+        }
+       
+        const selectedItems_id = await pool.query(
+            `SELECT item_id FROM shuffled WHERE item_index >= $1 AND item_index <= $2`, 
+            [ startIndex, endIndex]
+        );
+       
+        const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
+
+        categoryItemsCache.set(key, { index: endIndex + 1, indexMax: indexMax });
+        console.log("Stato utente aggiornato:", categoryItemsCache.get(key));
+
+        res.json({selectedItems: selectedItems.rows});
+    } catch (err) {
+        console.error("Errore:", err);
+        res.status(500).json({ error: "Errore interno del server" });
     }
-
-    const selectedItems = items.slice(offset, Math.min(offset + limit, items.length));
-    res.json(selectedItems);
-
-  } catch (err) {
-    console.error("Errore durante il recupero degli articoli per categoria:", err);
-    res.status(500).json({ error: "Errore interno del server" });
-  }
 });
 
 //articoli con i filtri
