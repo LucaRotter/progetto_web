@@ -330,6 +330,64 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
     }
 });
 
+//ricevi utente
+app.get('/user', protect, async (req, res) => {
+    const user_id = req.user.user_id;
+    const result = await pool.query('SELECT user_id, name, surname, email FROM users WHERE user_id = $1', [user_id]);
+    if (result.rows.length > 0) {
+        res.json(result.rows[0]);
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//modifica nome utente
+app.put('/update-name', protect, hasPermission('update_profile'), async (req, res) => {
+    const { name, surname } = req.body;
+    const user_id = req.user.user_id;
+    const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Name updated" });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//per admin: recupera utente
+app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const user_id = req.params.id;
+    const result = await pool.query('SELECT user_id, name, surname, email, role_id FROM users WHERE user_id = $1', [user_id]);
+    if (result.rows.length > 0) {
+        res.json(result.rows[0]);
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//eliminazione utente da parte dell'utente stesso
+app.delete('/user', protect, hasPermission('update_profile'), async (req, res) => {
+    const user_id = req.user.user_id;
+    const result = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
+    //aggiunta mail
+    if (result.rowCount > 0) {
+        res.json({ message: "User deleted" });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//eliminazione utente da parte dell'admin
+app.delete('/user/:id', protect, hasPermission('delete_user'), async (req, res) => {
+    const user_id = req.params.id;
+    const result = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
+    //aggiunta mail
+    if (result.rowCount > 0) {
+        res.json({ message: "User deleted" });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
 
 //CRUD PER RESET PASSWORD
 
@@ -1110,8 +1168,3 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
-
-//INSERIRE GET UTENTE SENZA ID E PWD
-//INSERIRE GET user_id da admin con permission manage_users
-//INSERIRE PUT PER NOME E COGNOME USER
-//INSERIRE DELETE PER user da admin con permission delete_user e da stesso user con permission update_profile
