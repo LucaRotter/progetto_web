@@ -77,6 +77,7 @@ admin_id varchar(5) references users(user_id)
 );
 
 create table reviews(
+review_id varchar(5) primary key,
 item_id varchar(5) references items(item_id) on delete cascade on update cascade,
 user_id varchar(5) references users(user_id)on delete cascade on update cascade,
 evaluation int not null,
