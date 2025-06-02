@@ -482,6 +482,26 @@ app.post('/reset-password', async (req, res) => {
     }
 });
 
+//aggiorna password
+app.put('/update-password', protect, hasPermission('update_profile'), async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const user_id = req.user.user_id;
+    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+    
+    if (userResult.rows.length > 0) {
+        const user = userResult.rows[0];
+        if (await bcrypt.compare(oldPassword, user.pwd)) {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await pool.query('UPDATE users SET pwd = $1 WHERE user_id = $2', [hashedPassword, user_id]);
+            res.json({ message: "Password updated" });
+        } else {
+            res.status(401).json({ message: "Old password is incorrect" });
+        }
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
 //CRUD PER LA GESTIONE DELLE RECENSIONI
 
 //aggiungi recensione
@@ -792,26 +812,6 @@ app.put('/update-name/:id', protect, hasPermission('update_item'), async (req, r
     }
 });
 
-//aggiorna password
-app.put('/update-password', protect, hasPermission('update_profile'), async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
-    const user_id = req.user.user_id;
-    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-    
-    if (userResult.rows.length > 0) {
-        const user = userResult.rows[0];
-        if (await bcrypt.compare(oldPassword, user.pwd)) {
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            await pool.query('UPDATE users SET pwd = $1 WHERE user_id = $2', [hashedPassword, user_id]);
-            res.json({ message: "Password updated" });
-        } else {
-            res.status(401).json({ message: "Old password is incorrect" });
-        }
-    } else {
-        res.status(400).json({ message: "User not found" });
-    }
-});
-
 //modifica categoria articolo
 app.put('/update-category/:id', protect, hasPermission('update_item'), async (req, res) => {
     const { category } = req.body;
@@ -858,6 +858,7 @@ app.get('/item/:id', async (req, res) => {
     const category_name = response.rows[0].name;
     res.json({item: result.rows, category_name: category_name});
 });
+
 //recupera id articolo per nome, prezzo, descrizione, categoria
 app.get('/itemgetId', async (req, res) => {
     const { name, price, description, category } = req.body;
