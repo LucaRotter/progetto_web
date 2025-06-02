@@ -474,16 +474,19 @@ app.post('/reset-password', async (req, res) => {
 app.post('/add-review', protect, hasPermission('add_review'), async (req, res) => {
     const { item_id, description, evaluation } = req.body;
     const user_id = req.user.user_id;
-    const count = await pool.query('SELECT COUNT(*) FROM reviews WHERE item_id = $1 && user_id = $2', [item_id, user_id]);
+    const count = await pool.query('SELECT * FROM reviews WHERE item_id = $1 AND user_id = $2', [item_id, user_id]);
     if (count.rows.length > 0) {
         return res.status(400).json({ message: "Review already exists" });
     }
-    count = await pool.query('SELECT COUNT(*) FROM reviews');
-    const review_id = parseInt(count.rows[0].count) + 1;
+    const maxResult = await pool.query('SELECT MAX(CAST(review_id AS INTEGER)) AS max_id FROM reviews');
+    const maxId = maxResult.rows[0].max_id;
+    const nextId = (maxId !== null ? maxId : 0) + 1;
+    const review_id = nextId.toString();
+    console.log('review_id:', review_id);
     const result = await pool.query(
-        'INSERT INTO reviews (review_id, user_id, item_id, description, evaluation) VALUES ($1, $2, $3, $4, $5)',
+        'INSERT INTO reviews (review_id, user_id, item_id, description, evaluation) VALUES ($1, $2, $3, $4, $5) RETURNING *',
         [review_id, user_id, item_id, description, evaluation]);
-    res.json({ message: "Review added" });
+    res.json({ message: "Review added", review: result.rows[0] });
 });
 
 //elimina recensione
