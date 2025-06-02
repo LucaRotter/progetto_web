@@ -11,6 +11,7 @@ const multer = require('multer'); // Includi multer per la gestione dei file
 const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);//include stripe per i pagamenti
 const fs = require('fs');
 const { get } = require('http');
+//aggiungere csrf per la protezione CSRF ?
 
 
 // INIZIALIZZAZIONE DEL SERVER E CONFIGURAZIONE DELLE VARIABILI DA USARE
