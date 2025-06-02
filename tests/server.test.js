@@ -230,7 +230,7 @@ describe('GET user and DELETE user', () => {
     console.log('User:', response.body.user);
 
   });
-  it('get item by email e and role', async () => {
+  it('get user by email e and role', async () => {
     const userId = 3;
     const token = generateToken(userId);
     const email = 'marketrader69@gmail.com';
