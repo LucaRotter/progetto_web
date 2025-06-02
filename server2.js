@@ -864,7 +864,7 @@ app.get('/random-items', async (req, res) => {
 // Recupera articoli appartenenti a una categoria in modo casuale, senza ripetizioni nella sessione utente
 const categoryItemsCache = new Map(); 
 
-app.delete('reset-category-items/:name', async (req, res) => {
+app.delete('/reset-category-items/:name', async (req, res) => {
     const userKey = getUserKey(req);
     
     const categoryName = req.params.name;
@@ -874,7 +874,7 @@ app.delete('reset-category-items/:name', async (req, res) => {
     }
     const category_id = result.rows[0].category_id;
 
-    key = [userKey, category_id];
+    const key = `${userKey}-${category_id}`;
 
 
     if (!categoryItemsCache.has(key)) {
@@ -895,7 +895,8 @@ app.get('/category-items/:name', async (req, res) => {
         return res.status(404).json({ error: "Categoria non trovata" });
     }
     const category_id = result.rows[0].category_id;
-    const key = [userKey, category_id];
+    const key = `${userKey}-${category_id}`;
+    
     
 
     if (!nItems || isNaN(nItems)) {
@@ -908,7 +909,7 @@ app.get('/category-items/:name', async (req, res) => {
             const result = await pool.query('SELECT item_id FROM items WHERE category_id = $1', [category_id]);
             const shuffled = result.rows.sort(() => 0.5 - Math.random());
 
-            const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM shuffled');
+            const maxResult = await pool.query('SELECT MAX(CAST(item_index AS INTEGER)) AS max_id FROM shuffled');
             const maxId = maxResult.rows[0].max_id;
             const nextId = (maxId !== null ? maxId : 0) + 1;
             const index = nextId;
@@ -939,7 +940,7 @@ app.get('/category-items/:name', async (req, res) => {
         );
        
         const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
-
+        
         categoryItemsCache.set(key, { index: endIndex + 1, indexMax: indexMax });
         console.log("Stato utente aggiornato:", categoryItemsCache.get(key));
 
@@ -1215,6 +1216,7 @@ module.exports = {
     pool,
     generateToken,
     userState,
+    categoryItemsCache
 };
 
 //listen server

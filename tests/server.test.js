@@ -2,7 +2,7 @@
 const request = require('supertest');
 const path = require('path');
 const fs = require('fs');
-const { app, pool, generateToken, userState } = require('../server2.js');  // Importa la tua app Express
+const { app, pool, generateToken, userState, categoryItemsCache } = require('../server2.js');  // Importa la tua app Express
 
 afterAll(async () => {
   await pool.end(); // Chiudi connessione al DB
@@ -459,7 +459,7 @@ describe('items', () => {
     });
 
     it('should get items by user id', async () => {
-      const userId = '5'; 
+      const userId = '5';
       const token = generateToken(userId);
       const response = await request(app)
         .get('/user-items/')
@@ -472,82 +472,179 @@ describe('items', () => {
 
   });
   describe('get items', () => {
-      it('should items with filters', async () => {
-          const response = await request(app)
-              .get('/items')
-              .query({
-                  name: 'item',
-                  category: 'electronics',
-                  maxPrice: '43',
-                  
-              });
-              
-  
-          expect(response.statusCode).toBe(200);
-          expect(response.body).toHaveProperty('items');
-          console.log(response.body);
+    it('should items with filters', async () => {
+      const response = await request(app)
+        .get('/items')
+        .query({
+          name: 'item',
+          category: 'electronics',
+          maxPrice: '43',
+
+        });
+
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty('items');
+      console.log(response.body);
+    });
+
+  });
+  describe('shuffled items', () => {
+    const userId = 6;
+    const token = generateToken(userId);
+
+    it('should return two batches of items for same user', async () => {
+      const response1 = await request(app)
+        .get('/random-items')
+        .set('Authorization', `Bearer ${token}`)
+        .query({ nItems: 27 });
+
+      expect(response1.body.selectedItems).toHaveLength(27);
+
+      const response2 = await request(app)
+        .get('/random-items')
+        .set('Authorization', `Bearer ${token}`)
+        .query({ nItems: 5 });
+
+      expect(response2.body.selectedItems).toHaveLength(3);
+
+      const response3 = await request(app)
+        .get('/random-items')
+        .set('Authorization', `Bearer ${token}`)
+        .query({ nItems: 5 });
+
+      expect(response3.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
+    });
+
+    it('should return two batches for guest user', async () => {
+      const response1 = await request(app)
+        .get('/random-items')
+        .query({ nItems: 5 });
+
+      expect(response1.body.selectedItems).toHaveLength(5);
+      console.log(response1.body.selectedItems);
+
+      const response2 = await request(app)
+        .get('/random-items')
+        .query({ nItems: 5 });
+
+      expect(response2.body.selectedItems).toHaveLength(5);
+      console.log(response2.body.selectedItems);
+    });
+    it('deletes shuffled items of user', async () => {
+      const response = await request(app)
+        .delete('/reset-items')
+        .set('Authorization', `Bearer ${token}`);
+      expect(response.body).toHaveProperty('message', 'Lista resettata');
+    });
+    it('deletes shuffled items of guest', async () => {
+      const response = await request(app)
+        .delete('/reset-items')
+      expect(response.body).toHaveProperty('message', 'Lista resettata');
+    });
       });
-      
-  });
-describe('shuffled items', () => {
-  const userId = 6;
-  const token = generateToken(userId);
 
-  it('should return two batches of items for same user', async () => {
-    const response1 = await request(app)
-      .get('/random-items')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ nItems: 27 });
+    
 
-    expect(response1.body.selectedItems).toHaveLength(27);
+    afterAll(async () => {
+      userState.clear();
+      await pool.query('DELETE FROM shuffled');
+    });
+    describe('shuffled items category', () => {
+      it('return  4 shuffled items by category', async () => {
+        category = 'books';
+        userId = '6';
+        const token = generateToken(userId);
+        const response = await request(app)
+          .get(`/category-items/${category}`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({ nItems: 4 });
 
-    const response2 = await request(app)
-      .get('/random-items')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ nItems: 5 });
 
-    expect(response2.body.selectedItems).toHaveLength(3);
+        expect(response.body).toHaveProperty('selectedItems');
+        expect(response.body.selectedItems).toHaveLength(4);
+        console.log(response.body.selectedItems);
+        console.log(categoryItemsCache);
 
-    const response3 = await request(app)
-      .get('/random-items')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ nItems: 5 });
+      });
+      it('return  1 shuffled items by category', async () => {
+        category = 'books';
+        userId = '6';
+        const token = generateToken(userId);
+        const response = await request(app)
+          .get(`/category-items/${category}`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({ nItems: 5 });
 
-    expect(response3.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
-  });
 
-  it('should return two batches for guest user', async () => {
-    const response1 = await request(app)
-      .get('/random-items')
-      .query({ nItems: 5 });
+        expect(response.body).toHaveProperty('selectedItems');
+        expect(response.body.selectedItems).toHaveLength(1);
+        console.log(response.body.selectedItems);
+        console.log(categoryItemsCache);
 
-    expect(response1.body.selectedItems).toHaveLength(5);
-    console.log(response1.body.selectedItems);
+      });
+      it('return error items by category', async () => {
+        category = 'books';
+        userId = '6';
+        const token = generateToken(userId);
+        const response = await request(app)
+          .get(`/category-items/${category}`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({ nItems: 3 });
 
-    const response2 = await request(app)
-      .get('/random-items')
-      .query({ nItems: 5 });
+        expect(response.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
 
-    expect(response2.body.selectedItems).toHaveLength(5);
-    console.log(response2.body.selectedItems);
-  });
-  it('deletes shuffled items of user', async () => {
-    const response = await request(app)
-      .delete('/reset-items')
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.body).toHaveProperty('message', 'Lista resettata');
-  });
-  it('deletes shuffled items of guest', async () => {
-    const response = await request(app)
-    .delete('/reset-items')
-    expect(response.body).toHaveProperty('message', 'Lista resettata');
-  });
 
-  afterAll(async () => {
-    userState.clear();
-    await pool.query('DELETE FROM shuffled');
-  });
-});
+      });
+      it('return  4 shuffled items by category by a guest', async () => {
+        category = 'books';
+
+
+        const response = await request(app)
+          .get(`/category-items/${category}`)
+          .query({ nItems: 4 });
+
+
+        expect(response.body).toHaveProperty('selectedItems');
+        expect(response.body.selectedItems).toHaveLength(4);
+        console.log(response.body.selectedItems);
+        console.log(categoryItemsCache);
+
+      });
+      it('return  1 shuffled items by category by a guest', async () => {
+        category = 'books';
+
+
+        const response = await request(app)
+          .get(`/category-items/${category}`)
+          .query({ nItems: 5 });
+
+
+        expect(response.body).toHaveProperty('selectedItems');
+        expect(response.body.selectedItems).toHaveLength(1);
+        console.log(response.body.selectedItems);
+        console.log(categoryItemsCache);
+
+      });
+      it('deletes shuffled items of user', async () => {
+        category = 'books';
+        userId = '6';
+        const token = generateToken(userId);
+
+        const response = await request(app)
+          .delete(`/reset-category-items/${category}`)
+          .set('Authorization', `Bearer ${token}`);
+        expect(response.body).toHaveProperty('message', 'Lista resettata');
+      });
+      it('deletes shuffled items of user', async () => {
+        category = 'books';
+        const response = await request(app)
+          .delete(`/reset-category-items/${category}`)
+        expect(response.body).toHaveProperty('message', 'Lista resettata');
+      });
+
+    });
+
 
 });
 
@@ -556,95 +653,95 @@ describe('shuffled items', () => {
 describe('orders', () => {
   let orderId1;
   it('should add an order', async () => {
-          const userId = '6';
-          const token = generateToken(userId);
-          const response = await request(app)
-  
-              .post('/add-order')
-              .set('Authorization', `Bearer ${token}`)
-              .send({
-                  items: [
-                      { item_id: '30', quantity: 2 },
-                      { item_id: '7', quantity: 5 },
-                      { item_id: '13', quantity: 1 }
-                  ],
-                  address: 'Via Roma',
-                  civic_number: '10A',
-                  postal_code: '21100',
-                  province: 'VA',
-                  country: 'Italia',
-                  phone_number: '34567890127'
-              });
-  
-          expect(response.body).toHaveProperty('message', 'Order added');
-          expect(response.body).toHaveProperty('order_id');
-          orderId1 = response.body.order_id;
-          console.log(orderId1);
+    const userId = '6';
+    const token = generateToken(userId);
+    const response = await request(app)
 
+      .post('/add-order')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        items: [
+          { item_id: '30', quantity: 2 },
+          { item_id: '7', quantity: 5 },
+          { item_id: '13', quantity: 1 }
+        ],
+        address: 'Via Roma',
+        civic_number: '10A',
+        postal_code: '21100',
+        province: 'VA',
+        country: 'Italia',
+        phone_number: '34567890127'
       });
-      describe('should change order state', () => {
-        it('should update order state', async () => {
-          const userId = '5';
-          const token = generateToken(userId);
-          const OrderId = '1';
-          const response = await request(app)
-      
-              .put(`/update-order/${OrderId}`)
-              .set('Authorization', `Bearer ${token}`)
-          expect(response.body).toHaveProperty('message', 'Order updated');
-      
-        });
-          afterAll(async () => {
-              //rimetti lo stato iniziale dell'ordine
-              const OrderId = '1';
-              const resetOrderQuery = 'UPDATE orders SET state = $1 WHERE order_id = $2';
-              await pool.query(resetOrderQuery, ['confirmed', OrderId]);
-          });
-      });
-      describe('get orders', () => {
+
+    expect(response.body).toHaveProperty('message', 'Order added');
+    expect(response.body).toHaveProperty('order_id');
+    orderId1 = response.body.order_id;
+    console.log(orderId1);
+
+  });
+  describe('should change order state', () => {
+    it('should update order state', async () => {
+      const userId = '5';
+      const token = generateToken(userId);
+      const OrderId = '1';
+      const response = await request(app)
+
+        .put(`/update-order/${OrderId}`)
+        .set('Authorization', `Bearer ${token}`)
+      expect(response.body).toHaveProperty('message', 'Order updated');
+
+    });
+    afterAll(async () => {
+      //rimetti lo stato iniziale dell'ordine
+      const OrderId = '1';
+      const resetOrderQuery = 'UPDATE orders SET state = $1 WHERE order_id = $2';
+      await pool.query(resetOrderQuery, ['confirmed', OrderId]);
+    });
+  });
+  describe('get orders', () => {
     it('should get orders by customer', async () => {
-        const userId = '6';
-        const token = generateToken(userId);
-        const response = await request(app)
+      const userId = '6';
+      const token = generateToken(userId);
+      const response = await request(app)
 
-            .get('/customer-orders')
-            .set('Authorization', `Bearer ${token}`)
-        expect(response.body).toHaveProperty('orders');
- 
+        .get('/customer-orders')
+        .set('Authorization', `Bearer ${token}`)
+      expect(response.body).toHaveProperty('orders');
+
 
     });
     it('should get orders by artisan', async () => {
-        const userId = '5';
-        const token = generateToken(userId);
-        const response = await request(app)
+      const userId = '5';
+      const token = generateToken(userId);
+      const response = await request(app)
 
-            .get('/artisan-orders')
-            .set('Authorization', `Bearer ${token}`)
-        expect(response.body).toHaveProperty('orders');
+        .get('/artisan-orders')
+        .set('Authorization', `Bearer ${token}`)
+      expect(response.body).toHaveProperty('orders');
 
     });
     it('should get orders by admin', async () => {
-        const OrderId = '1';
-        const userId = '3';
-        const token = generateToken(userId);
-        const response = await request(app)
+      const OrderId = '1';
+      const userId = '3';
+      const token = generateToken(userId);
+      const response = await request(app)
 
-            .get(`/admin-orders/${OrderId}`)
-            .set('Authorization', `Bearer ${token}`)
-            expect(response.body).toHaveProperty('orders'); 
+        .get(`/admin-orders/${OrderId}`)
+        .set('Authorization', `Bearer ${token}`)
+      expect(response.body).toHaveProperty('orders');
 
     });
     it('should delete order', async () => {
       const userId = '3';
       const token = generateToken(userId);
       const response = await request(app)
-          .delete(`/delete-orders/${orderId1}`)
-          .set('Authorization', `Bearer ${token}`);
-          expect(response.body).toHaveProperty('message', 'Order deleted');
-      });
+        .delete(`/delete-orders/${orderId1}`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(response.body).toHaveProperty('message', 'Order deleted');
+    });
 
-});
+  });
 
-      
+
 });
 
