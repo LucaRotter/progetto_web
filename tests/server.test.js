@@ -939,6 +939,98 @@ describe('reviews', () => {
 
 //CARRELLO
 
-describe('cart', () => {
+describe('carts', () => {
+
+  it('should add an item to the cart', async () => {
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .post('/cart')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ item_id: 1, quantity: 2 });
+
+    expect(response.body).toHaveProperty('message', 'Item added to cart');
+  });
+  it('should get the cart items', async () => {
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/cart')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('items');
+    expect(Array.isArray(response.body.items)).toBe(true);
+  });
+  it('should update the quantity of an item in the cart', async () => {
+    const userId = 6;
+    const itemId = 1;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .put(`/cart/${itemId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ quantity: 3 });
+
+    expect(response.body).toHaveProperty('message', 'Item updated in cart');
+  });
+  it('should get number of items in the cart', async () => {
+    await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [6, 2, 2]);
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/cart-count')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('count');
+    console.log('Cart count:', response.body.count);
+
+  });
+  it('should get the total number of items in the cart', async () => {
+
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/cart-total')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('total');
+    console.log('Cart total:', response.body.total);
+    await pool.query('DELETE FROM carts WHERE item_id = $1', [3]);
+  });
+  it('should get the total price of items in the cart', async () => {
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/cart-price')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('totalPrice');
+    console.log('Cart total price:', response.body.totalPrice);
+  });
+
+  it('deletes an item from the cart', async () => {
+    const userId = 6;
+    const itemId = 1;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .delete(`/cart/${itemId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('message', 'Item removed from cart');
+  });
+  it('should remove all items from the cart', async () => {
+    await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [6, 1, 2]);
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .delete('/delete-cart')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('message', 'Items removed from cart');
+  });
+});
+
+// REPORT
+
+describe('report', () => {
   
 });

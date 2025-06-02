@@ -566,14 +566,17 @@ app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, r
 
 //inserimento articolo nel carrello
 app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
-    const { item_id, quantity } = req.body;
+    const item_id = Number(req.body.item_id);
+    const quantity = Number(req.body.quantity);
     const user_id = req.user.user_id;
 
     try {
-        const result = await pool.query('SELECT item_id FROM carts WHERE user_id = $1', [user_id]);
-        const itemExists = result.rows.some(row => row.item_id === item_id);
+        const check = await pool.query(
+            'SELECT 1 FROM carts WHERE user_id = $1 AND item_id = $2',
+            [user_id, item_id]
+        );
 
-        if (itemExists) {
+        if (check.rows.length > 0) {
             await pool.query(
                 'UPDATE carts SET quantity = quantity + $1 WHERE user_id = $2 AND item_id = $3',
                 [quantity, user_id, item_id]
@@ -592,12 +595,11 @@ app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 //articoli dal carrello
 app.get('/cart', protect, async (req, res) => {
     const user_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM carts WHERE user_id = $1', [user_id]);
-    res.json(result.rows);
+    res.json({items:result.rows});
 });
 
 //modifica quantità articolo nel carrello
@@ -634,12 +636,31 @@ app.delete('/delete-cart', protect, hasPermission('update_cart'), async (req, re
     }
 });
 
-//numero articoli nel carrello
+//numero tipi articoli diversi nel carrello
 app.get('/cart-count', protect, hasPermission('update_cart'), async (req, res) => {
     const user_id = req.user.user_id;
     const result = await pool.query('SELECT COUNT(*) AS count FROM carts WHERE user_id = $1', [user_id]);
     res.json({ count: result.rows[0].count });
 });
+//numero articoli totali nel carrello
+app.get('/cart-total', protect, hasPermission('update_cart'), async (req, res) => {
+    const user_id = req.user.user_id;
+    const result = await pool.query('SELECT SUM(quantity) AS total FROM carts WHERE user_id = $1', [user_id]);
+    res.json({ total: result.rows[0].total });
+});
+
+//totale prezzo articoli nel carrello
+app.get('/cart-price', protect, hasPermission('update_cart'), async (req, res) => {
+    const user_id = req.user.user_id;
+    const result = await pool.query(`
+        SELECT SUM(i.price * c.quantity) AS total_price
+        FROM carts c
+        JOIN items i ON c.item_id = i.item_id
+        WHERE c.user_id = $1
+    `, [user_id]);
+    res.json({ totalPrice: result.rows[0].total_price });
+});
+
 
 
 //gestione categorie
