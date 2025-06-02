@@ -279,6 +279,20 @@ app.post('/register', async (req, res) => {
         [user_id, name, surname, email, hashedPassword, role_id]
     );
     const newUser = result.rows[0];
+    // Invia un'email di benvenuto
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Conferma Registrazione',
+        text: `Ciao ${name},\n\nGrazie per esserti registrato!\n\nBenvenuto nella nostra piattaforma!`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Errore nell\'invio dell\'email:', error);
+        res.status(500).json({ error: 'Errore nell\'invio dell\'email' });
+    }
     res.json({ token: generateToken(newUser.user_id), user: newUser });
 });
 
@@ -369,6 +383,19 @@ app.delete('/user', protect, hasPermission('update_profile'), async (req, res) =
     const user_id = req.user.user_id;
     const result = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
     //aggiunta mail
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: req.user.email,
+        subject: 'Eliminazione account',
+        text: `Ciao ${req.user.name},\n\nIl tuo account è stato eliminato con successo.\n\nGrazie per aver utilizzato il nostro servizio!`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Errore nell\'invio dell\'email:', error);
+        res.status(500).json({ error: 'Errore nell\'invio dell\'email' });
+    }
     if (result.rowCount > 0) {
         res.json({ message: "User deleted" });
     } else {
@@ -379,8 +406,22 @@ app.delete('/user', protect, hasPermission('update_profile'), async (req, res) =
 //eliminazione utente da parte dell'admin
 app.delete('/user/:id', protect, hasPermission('delete_user'), async (req, res) => {
     const user_id = req.params.id;
+    const email = await pool.query('SELECT email FROM users WHERE user_id = $1', [user_id]);
     const result = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
     //aggiunta mail
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Eliminazione account',
+        text: `Un admin ha eliminato il tuo account.\n\nSe hai bisogno di assistenza, contatta il supporto.\n\nGrazie per aver utilizzato il nostro servizio!`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Errore nell\'invio dell\'email:', error);
+        res.status(500).json({ error: 'Errore nell\'invio dell\'email' });
+    }
     if (result.rowCount > 0) {
         res.json({ message: "User deleted" });
     } else {
