@@ -63,7 +63,8 @@ phone_number varchar(30)
 create table carts(
 quantity int not null,
 item_id varchar(5) references items(item_id) on delete cascade on update cascade,
-user_id varchar(5) references users(user_id)on delete cascade on update cascade
+user_id varchar(5) references users(user_id)on delete cascade on update cascade,
+primary key(item_id, user_id)
 );
 
 create table reports(
