@@ -345,11 +345,11 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
 });
 
 //ricevi utente
-app.get('/user', protect, async (req, res) => {
+app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
     const user_id = req.user.user_id;
     const result = await pool.query('SELECT user_id, name, surname, email FROM users WHERE user_id = $1', [user_id]);
     if (result.rows.length > 0) {
-        res.json(result.rows[0]);
+        res.json({user: result.rows[0]});
     } else {
         res.status(400).json({ message: "User not found" });
     }
@@ -367,12 +367,12 @@ app.put('/update-name', protect, hasPermission('update_profile'), async (req, re
     }
 });
 
-//per admin: recupera utente
+//per admin: recupera utente, dopo aver recuperato la segnalazione
 app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) => {
     const user_id = req.params.id;
     const result = await pool.query('SELECT user_id, name, surname, email, role_id FROM users WHERE user_id = $1', [user_id]);
     if (result.rows.length > 0) {
-        res.json(result.rows[0]);
+        res.json({user: result.rows[0]});
     } else {
         res.status(400).json({ message: "User not found" });
     }
@@ -411,13 +411,13 @@ app.delete('/user/:id', protect, hasPermission('delete_user'), async (req, res) 
     //aggiunta mail
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: email,
+        to: email.rows[0].email,
         subject: 'Eliminazione account',
         text: `Un admin ha eliminato il tuo account.\n\nSe hai bisogno di assistenza, contatta il supporto.\n\nGrazie per aver utilizzato il nostro servizio!`
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+       await transporter.sendMail(mailOptions);
     } catch (error) {
         console.error('Errore nell\'invio dell\'email:', error);
         res.status(500).json({ error: 'Errore nell\'invio dell\'email' });

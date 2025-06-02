@@ -5,97 +5,70 @@ const path = require('path');
 const fs = require('fs');
 const { app, pool, generateToken, userState, categoryItemsCache } = require('../server2'); // Assicurati che app e generateToken siano esportati
 
-describe('Single Function Tests', () => {
-it('return  4 shuffled items by category', async() => {
-    category = 'books';
-    userId= '6';
-    const token = generateToken(userId);
+test('get user',  async() => {
+    const userId = '6';
+    const token = generateToken(userId)
     const response = await request(app)
-        .get(`/category-items/${category}`)
+        .get('/user')
         .set('Authorization', `Bearer ${token}`)
-        .query({ nItems: 4 });
-        
-   
-        expect(response.body).toHaveProperty('selectedItems');
-        expect(response.body.selectedItems).toHaveLength(4);
-        console.log(response.body.selectedItems);
-        console.log(categoryItemsCache);
- 
-});
-it('return  1 shuffled items by category', async() => {
-    category = 'books';
-    userId= '6';
-    const token = generateToken(userId);
-    const response = await request(app)
-        .get(`/category-items/${category}`)
-        .set('Authorization', `Bearer ${token}`)
-        .query({ nItems: 5 });
-        
-   
-        expect(response.body).toHaveProperty('selectedItems');
-        expect(response.body.selectedItems).toHaveLength(1);
-        console.log(response.body.selectedItems);
-        console.log(categoryItemsCache);
- 
-});
-it('return error items by category', async() => {
-    category = 'books';
-    userId= '6';
-    const token = generateToken(userId);
-    const response = await request(app)
-        .get(`/category-items/${category}`)
-        .set('Authorization', `Bearer ${token}`)
-        .query({ nItems: 3 });
-        
-        expect(response.body).toHaveProperty('error','Nessun altro elemento disponibile');
-        
- 
-});
-it('return  4 shuffled items by category by a guest', async() => {
-    category = 'books';
-    
-    
-    const response = await request(app)
-        .get(`/category-items/${category}`)
-        .query({ nItems: 4 });
-        
-   
-        expect(response.body).toHaveProperty('selectedItems');
-        expect(response.body.selectedItems).toHaveLength(4);
-        console.log(response.body.selectedItems);
-        console.log(categoryItemsCache);
- 
-});
-it('return  1 shuffled items by category by a guest', async() => {
-    category = 'books';
-    
-    
-    const response = await request(app)
-        .get(`/category-items/${category}`)
-        .query({ nItems: 5 });
-        
-   
-        expect(response.body).toHaveProperty('selectedItems');
-        expect(response.body.selectedItems).toHaveLength(1);
-        console.log(response.body.selectedItems);
-        console.log(categoryItemsCache);
- 
-});
-it('deletes shuffled items of user', async () => {
-    category = 'books';
-    userId= '6';
-    const token = generateToken(userId);
-    
-    const response = await request(app)
-      .delete(`/reset-category-items/${category}`)
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.body).toHaveProperty('message', 'Lista resettata');
-  });
-  it('deletes shuffled items of user', async () => {
-    category = 'books';
-    const response = await request(app)
-      .delete(`/reset-category-items/${category}`)
-    expect(response.body).toHaveProperty('message', 'Lista resettata');
-  });
 
+        expect(response.body).toHaveProperty('user');
+        console.log('User:', response.body.user);
+
+});
+test('change name user',  async() => {
+    const userId = '6';
+    const token = generateToken(userId)
+    const response = await request(app)
+        .put('/update-name')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'prova', surname: 'cliente' });
+
+        expect(response.body).toHaveProperty('message', 'Name updated');
+});
+test('get user from admin',  async() => {
+    const userId = '6';
+    const adminId = '3'; // Assicurati che l'admin abbia ID 1
+    const token = generateToken(adminId)
+    const response = await request(app)
+        .get(`/user/${userId}`)
+        .set('Authorization', `Bearer ${token}`)
+
+        expect(response.body).toHaveProperty('user');
+        console.log('User:', response.body.user);
+
+});
+test('delete user',  async() => {
+    const user_id = '7';
+    const name = 'prova';
+    const surname = 'cliente';
+    const email = 'rotterluca@gmail.com';
+    const hashedPassword = 'hashedPassword';
+    const role_id = '1';
+    pool.query('INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6)',
+        [user_id, name, surname, email, hashedPassword, role_id]);
+    const userId = '7';
+    const token = generateToken(userId)
+    const response = await request(app)
+        .delete('/user')
+        .set('Authorization', `Bearer ${token}`)
+
+        expect(response.body).toHaveProperty('message', 'User deleted');
+});
+test('delete user',  async() => {
+    const user_id = '7';
+    const name = 'prova';
+    const surname = 'cliente';
+    const email = 'rotterluca@gmail.com';
+    const hashedPassword = 'hashedPassword';
+    const role_id = '1';
+    pool.query('INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6)',
+        [user_id, name, surname, email, hashedPassword, role_id]);
+    const userId = '3';
+    const token = generateToken(userId)
+    const response = await request(app)
+        .delete(`/user/${user_id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+        expect(response.body).toHaveProperty('message', 'User deleted');
 });
