@@ -377,6 +377,19 @@ app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) =>
         res.status(400).json({ message: "User not found" });
     }
 });
+//per admin: recupera id utente da email e ruolo
+app.get('/user-by-email', protect, hasPermission('manage_users'), async (req, res) => {
+    const { email, role } = req.body;
+    const resultRole = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    const role_id = resultRole.rows[0].role_id;
+    const result = await pool.query('SELECT user_id FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
+    if (result.rows.length > 0) {
+        res.json({ user_id: result.rows[0].user_id });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
 
 //eliminazione utente da parte dell'utente stesso
 app.delete('/user', protect, hasPermission('update_profile'), async (req, res) => {
@@ -489,11 +502,18 @@ app.post('/add-review', protect, hasPermission('add_review'), async (req, res) =
     res.json({ message: "Review added", review: result.rows[0] });
 });
 
-//elimina recensione
+//elimina recensione, recuperare prima id articolo /itemGetId e user_id se ad eliminazione da parte dell'admin
 app.delete('/delete-review/:id', protect, hasPermission('delete_review'), async (req, res) => {
-    const review_id = req.params.id;
-    const result = await pool.query('DELETE FROM reviews WHERE review_id = $1', [review_id]);
-    if (result.rowCount > 0) {
+    const item_id = req.params.id;
+    const role_id = req.user.role_id;
+    if( role_id == 3){
+        user_id = req.body.user_id;
+    }else{
+        user_id = req.user.user_id;
+    }
+    const result = await pool.query('SELECT review_id FROM reviews WHERE item_id = $1 AND user_id = $2', [item_id, user_id]);
+    const deleteResult = await pool.query('DELETE FROM reviews WHERE review_id = $1', [result.rows[0].review_id]);
+    if (deleteResult.rowCount > 0) {
         res.json({ message: "Review deleted" });
     } else {
         res.status(400).json({ message: "Review not found" });
@@ -506,7 +526,7 @@ app.get('/reviews/:id', async (req, res) => {
     const result = await pool.query(
         'SELECT u.name, r.description, r.evaluation, r.review_id FROM users u JOIN reviews r ON u.user_id = r.user_id WHERE r.item_id = $1',
          [item_id]);
-    res.json(result.rows);
+    res.json({reviews:result.rows});
 });
 
 //valuazione media di un articolo
@@ -519,13 +539,24 @@ app.get('/average-rating/:id', async (req, res) => {
         res.status(400).json({ message: "No reviews found" });
     }
 });
+//recupera id recensione avendo l'id dell'articolo e l'id dell'utente
+app.get('/review-id', protect, hasPermission('moderate_reviews'), async (req, res) => {
+    const { item_id, user_id } = req.body;
+    const result = await pool.query('SELECT review_id FROM reviews WHERE item_id = $1 AND user_id = $2', [item_id, user_id]);
+    if (result.rows.length > 0) {
+        res.json({ review_id: result.rows[0].review_id });
+    } else {
+        res.status(400).json({ message: "Review not found" });
+    }
+});
+
 
 //recupera recensione per id
 app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, res) => {
     const review_id = req.params.id;
     const result = await pool.query('SELECT * FROM reviews WHERE review_id = $1', [review_id]);
     if (result.rows.length > 0) {
-        res.json(result.rows[0]);
+        res.json({review:result.rows[0]});
     } else {
         res.status(400).json({ message: "Review not found" });
     }
@@ -788,6 +819,17 @@ app.get('/item/:id', async (req, res) => {
     const response = await pool.query('SELECT * FROM categories WHERE category_id = $1',[result.rows[0].category_id]);
     const category_name = response.rows[0].name;
     res.json({item: result.rows, category_name: category_name});
+});
+//recupera id articolo per nome, prezzo, descrizione, categoria
+app.get('/itemgetId', async (req, res) => {
+    const { name, price, description, category } = req.body;
+    const categoryResult = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+       
+
+    const result = await pool.query('SELECT item_id FROM items WHERE name = $1 AND price = $2 AND description = $3 AND category_id = $4',
+        [name, price, description, categoryResult.rows[0].category_id]
+    );
+    res.json({ item_id: result.rows[0] });
 });
 
 //restituisce articoli per user_id(artigiano)
