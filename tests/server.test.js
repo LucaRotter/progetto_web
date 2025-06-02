@@ -309,6 +309,19 @@ describe('POST /forgot-password and reset-password', () => {
 
     expect(response.body).toEqual({ message: 'Password updated' });
   });
+  it('should update password', async () => {
+      const userId=6;
+      const token = generateToken(userId);
+      const response = await request(app)
+          .put('/update-password')
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+              oldPassword: 'prova1',
+              newPassword: 'prova1'
+          });
+      
+      expect(response.body.message).toBe('Password updated');
+  });
 });
 
 //CATEGORIE

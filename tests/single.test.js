@@ -8,3 +8,16 @@ const { app, pool, generateToken, userState, categoryItemsCache } = require('../
 const stripe = require('stripe')(process.env.SECRET_KEY_STRIPE);
 
 
+it('should update password', async () => {
+    const userId=6;
+    const token = generateToken(userId);
+    const response = await request(app)
+        .put('/update-password')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+            oldPassword: 'prova1',
+            newPassword: 'prova1'
+        });
+    
+    expect(response.body.message).toBe('Password updated');
+});
