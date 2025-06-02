@@ -1195,7 +1195,7 @@ app.post('/create-report', protect, hasPermission('manage_report'), async (req, 
     res.json({ message: "Report created" });
 });
 
-//aggiunta admin nella segnalazione
+//aggiunta admin nella segnalazione, da fare dopo che l'admin recupera le free-reports
 app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), async (req, res) => {
     const report_id = req.params.id;
     const admin_id = req.user.user_id;
@@ -1211,17 +1211,17 @@ app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), asy
 app.get('/admin-reports', protect, hasPermission('moderate_reports'), async (req, res) => {
     const admin_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM reports WHERE admin_id = $1', [admin_id]);
-    res.json(result.rows);
+    res.json({reports:result.rows});
 });
 
 //recupera segnalazioni senza id admin
-app.get('/free-reports', async (req, res) => {
+app.get('/free-reports',protect, hasPermission('moderate_reports'), async (req, res) => {
     const result = await pool.query('SELECT * FROM reports WHERE admin_id IS NULL');
-    res.json(result.rows);
+    res.json({reports:result.rows});
 });
 
 //elimina segnalazione
-app.delete('/delete-report/:id', protect, hasPermission('moderate_report'), async (req, res) => {
+app.delete('/delete-report/:id', protect, hasPermission('moderate_reports'), async (req, res) => {
     const report_id = req.params.id;
     const result = await pool.query('DELETE FROM reports WHERE report_id = $1', [report_id]);
     if (result.rowCount > 0) {
@@ -1235,7 +1235,7 @@ app.delete('/delete-report/:id', protect, hasPermission('moderate_report'), asyn
 //gestione pagamenti
 
 //crea il link per il pagamento su stripe e alla fine reindirizza il client automaticamente sul link succes_url
-app.post("/create-checkout-session", protect, hasPermission('place-order'), async (req, res) => {
+app.post("/create-checkout-session", protect, hasPermission('place_order'), async (req, res) => {
   try {
     const items = req.body.items;
 
@@ -1258,8 +1258,8 @@ app.post("/create-checkout-session", protect, hasPermission('place-order'), asyn
       success_url: "https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg",//da cambiare
       cancel_url: "https://tuosito.com/cancel",// da cambiare
     });
-
-    res.json({ url: session.url });
+    
+    res.json({ url: session.url, id: session.id, paymentStatus: session.payment_status });
   } catch (err) {
     console.error("Errore Stripe:", err);
     res.status(500).json({ error: "Errore creazione sessione di pagamento" });
@@ -1268,8 +1268,9 @@ app.post("/create-checkout-session", protect, hasPermission('place-order'), asyn
 
 //richiesta da fare quando viene reindirizzato nella nuova pagina per vedere lo stato del pagamento
 app.get("/checkout-session/:id", async (req, res) => {
+    console.log("ID sessione:", req.params.id);
     const session = await stripe.checkout.sessions.retrieve(req.params.id);
-    res.json(session); // contiene anche payment_status
+    res.json({session}); // contiene anche payment_status
 });
 
 // Invia un'email di conferma al cliente
@@ -1281,7 +1282,7 @@ app.post('/send-confirmation-email', protect, async (req, res) => {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Conferma Ordine',
-        text: `Grazie per il tuo ordine! Dettagli:\n${orderDetails}`
+        text: `Grazie per il tuo ordine! Dettagli:\n${JSON.stringify(orderDetails, null, 2)}`
     };
 
     try {

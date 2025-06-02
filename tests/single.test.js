@@ -5,4 +5,6 @@ const path = require('path');
 const fs = require('fs');
 const { app, pool, generateToken, userState, categoryItemsCache } = require('../server2'); // Assicurati che app e generateToken siano esportati
 
+const stripe = require('stripe')(process.env.SECRET_KEY_STRIPE);
+
 

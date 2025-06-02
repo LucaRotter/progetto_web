@@ -1032,5 +1032,141 @@ describe('carts', () => {
 // REPORT
 
 describe('report', () => {
-  
+  it('should create a report of an item reported by client', async () => {
+    userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .post('/create-report')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        item_id: 1,
+        category: 'test',
+        description: 'test'
+      });
+
+    expect(response.body).toHaveProperty('message', 'Report created');
+  });
+  it('should create a general report by artisan', async () => {
+    userId = 5;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .post('/create-report')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        category: 'test artisan',
+        description: 'test artisan'
+      });
+
+    expect(response.body).toHaveProperty('message', 'Report created');
+  });
+  it('should add admin to the report', async () => {
+    userId = 3;
+    const reportId = 1;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .put(`/add-admin-report/${reportId}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(response.body).toHaveProperty('message', 'Admin added to report');
+  });
+
+  it('should get reports of an admin', async () => {
+    userId = 3;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/admin-reports')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('reports');
+    console.log(response.body.reports);
+
+  });
+
+  it('should get free reports', async () => {
+    userId = 3;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .get('/free-reports')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('reports');
+    console.log(response.body.reports);
+  });
+  it('should delete a report', async () => {
+    userId = 3;
+    const reportId = 1;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .delete(`/delete-report/${reportId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body).toHaveProperty('message', 'Report deleted');
+  });
+  afterAll(async () => {
+    await pool.query('DELETE FROM reports WHERE report_id = $1', [2]);
+  });
+
+});
+
+//PAGAMENTI
+
+describe('payments', () => {
+  let idSession;
+  const testItems = [
+    {
+      name: 'Prodotto di test',
+      price: 1500, // 15.00 €
+      quantity: 2
+    },
+    {
+      name: 'Prodotto di test 2',
+      price: 2000, // 20.00 €
+      quantity: 1
+    }
+  ];
+  it('should create a Stripe checkout session and return a URL', async () => {
+
+    const Userid = 6;
+    const token = generateToken(Userid);
+    const res = await request(app)
+      .post('/create-checkout-session')
+      .send({ items: testItems })
+      .set('Authorization', `Bearer ${token}`);
+
+
+    expect(res.body).toHaveProperty('url');
+    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty('paymentStatus');
+    idSession = res.body.id;
+    console.log('Checkout URL:', res.body.url);
+    console.log('paymentStatus:', res.body.paymentStatus);
+  });
+
+  it('should send a confirmation email', async () => {
+    const Userid = 6;
+    const token = generateToken(Userid);
+    const res = await request(app)
+      .post('/send-confirmation-email')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        orderDetails: [
+          {
+            name: 'Prodotto di test',
+            price: 1500,
+            quantity: 2
+          },
+          {
+            name: 'Prodotto di test 2',
+            price: 2000,
+            quantity: 1
+          }
+        ]
+
+
+      });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('message', 'Email di conferma inviata');
+  });
+
 });
