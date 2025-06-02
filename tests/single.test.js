@@ -7,5 +7,15 @@ const { app, pool, generateToken, userState, categoryItemsCache } = require('../
 
 
 describe('cart', () => {
-  
+    
+  it('should add an item to the cart', async () => {
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .post('/cart')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ item_id: 1, quantity: 2 });
+
+    expect(response.body).toHaveProperty('message', 'Item added to cart');
+  });
 });

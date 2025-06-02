@@ -568,13 +568,29 @@ app.get('/review/:id', protect, hasPermission('moderate_reviews'), async (req, r
 app.post('/cart', protect, hasPermission('update_cart'), async (req, res) => {
     const { item_id, quantity } = req.body;
     const user_id = req.user.user_id;
-    let result = await pool.query('SELECT item_id FROM carts WHERE user_id = $1', [user_id]);
-    if(item_id in result.rows[0].item_id){
-        await pool.query('UPDATE carts SET quantity = quantity + $1 WHERE user_id = $2 AND item_id = $3', [quantity, user_id, item_id]);
-    } else {
-        await pool.query('INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)', [user_id, item_id, quantity]);
+
+    try {
+        const result = await pool.query('SELECT item_id FROM carts WHERE user_id = $1', [user_id]);
+        const itemExists = result.rows.some(row => row.item_id === item_id);
+
+        if (itemExists) {
+            await pool.query(
+                'UPDATE carts SET quantity = quantity + $1 WHERE user_id = $2 AND item_id = $3',
+                [quantity, user_id, item_id]
+            );
+        } else {
+            await pool.query(
+                'INSERT INTO carts (user_id, item_id, quantity) VALUES ($1, $2, $3)',
+                [user_id, item_id, quantity]
+            );
+        }
+
+        res.json({ message: "Item added to cart" });
+
+    } catch (err) {
+        console.error('Error updating cart:', err);
+        res.status(500).json({ message: 'Internal server error' });
     }
-    res.json({ message: "Item added to cart" });
 });
 
 //articoli dal carrello
