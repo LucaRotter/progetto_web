@@ -5,7 +5,7 @@
 Il progetto è stato sviluppato per l’esecuzione in locale utilizzando **Docker**, garantendo portabilità e coerenza dell’ambiente tra diversi sistemi operativi.
 
 ## Requisiti
-
+Avere il file .env nella root principale del progetto
 Per clonare ed eseguire il progetto in locale, assicurati di avere installato:
 
 ### 1. Git

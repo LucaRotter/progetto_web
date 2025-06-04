@@ -17,7 +17,11 @@ La piattaforma è progettata per offrire un'esperienza completa sia agli artigia
 - **Gestione account**: Registrazione e autenticazione per due tipologie di utenti: artigiani e clienti.
 - **Processo d’ordine**: Carrello, checkout, pagamento (simulato o integrabile) e gestione degli ordini da parte dei clienti.
 - **Pannello di controllo artigiani**: Dashboard dedicata per monitorare vendite, aggiornare prodotti e gestire lo stock.
-- **Struttura cloud-ready**: Anche se il progetto gira in locale, è organizzato per supportare un futuro deploy su piattaforme cloud (es. AWS, Azure, Heroku), includendo considerazioni su scalabilità e monitoraggio.
+- **Sistema di recensioni**: Possibilità da parte dei clienti di aggiungere recensioni sui prodotti acquistati.
+- **Sistema segnalazioni**: Possibilità di effettuare segnalazioni sui prodotti oppure problemi generali.
+- **Gestione dagli admin**: Gli admin possono gestire le segnalazioni, prodotti e gli utenti registrati.
+- **Struttura cloud-ready**: Anche se il progetto gira in locale, è organizzato per supportare un futuro deploy su piattaforme cloud (es. AWS, Azure, Heroku),
+ includendo considerazioni su scalabilità e monitoraggio.
 
 ---
 
@@ -31,4 +35,5 @@ Questa piattaforma rappresenta una base solida per sviluppi futuri, con potenzia
 - [Codice Backend](docs/backend-code.md)
 - [API Endpoints (Swagger/OpenAPI)](docs/api-endpoints.md)
 - [Operazioni CRUD](docs/crud-operations.md)
+- [Schema e Documentazione Database](docs/database.md)
 - [Guida al Deploy e Monitoraggio in Cloud](docs/cloud-ops.md)
