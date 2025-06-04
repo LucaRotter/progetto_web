@@ -280,7 +280,7 @@ app.post('/register', async (req, res) => {
     let user_id = "";
 
     const maxResult = await pool.query('SELECT MAX(CAST(user_id AS INTEGER)) AS maxUser_id FROM users');
-    const maxId = maxResult.rows[0].maxUser_id;
+    const maxId = maxResult.rows[0].maxuser_id;
     const nextId = (maxId !== null ? maxId : 0) + 1;
     user_id = nextId.toString();
 
@@ -1313,10 +1313,6 @@ module.exports = {
     categoryItemsCache
 };
 
-//listen server
-app.listen(port, () => {
-    console.log(`server running on http://localhost:${port}`)
-});
 
 //chiusura connessione al database quando il server viene chiuso
 process.on('SIGINT', () => {
