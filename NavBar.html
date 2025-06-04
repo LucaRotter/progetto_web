@@ -1,4 +1,4 @@
-<header class="fixed-top ">
+<header>
     <nav class="navbar navbar-expand-sm bd-navbar">
         <div class="container-fluid flex-lg-row align-items-center m-3">
 
@@ -11,27 +11,25 @@
             </div>
 <div class="collapse navbar-collapse justify-content-center" id="navbarSearch">
   <form class="d-flex w-100 justify-content-center" id="primarysearchform" role="search">
-    <div class="d-flex align-items-stretch w-100 flex-wrap" style="max-width: 700px;">
+    <div class="d-flex align-items-stretch w-100 flex-wrap">
       
-      <!-- Bottone Filtri -->
+      
       <div class="dropdown me-2 mb-2 mb-sm-0">
         <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
                 id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           Filtri
         </button>
         <div class="dropdown-menu p-3" aria-labelledby="filterDropdown"
-             style="width: 250px; max-height: 200px; overflow-y: auto;" id="filtersContainer">
+              id="filtersContainer">
         </div>
       </div>
 
-      <!-- Campo ricerca -->
       <div class="position-relative flex-grow-1 me-2 mb-2 mb-sm-0">
         <input type="text" class="form-control w-100" id="searchfield" placeholder="Search"
                aria-label="Search" autocomplete="off">
-        <ul class="list-group w-100 mt-1 shadow" id="suggestionsList"></ul>
+        <ul class="list-group w-100 mt-1 shadow d-none" id="suggestionsList"></ul>
       </div>
 
-      <!-- Bottone cerca -->
       <button type="submit" class="searchbtn btn btn-primary mb-2 mb-sm-0">
         <i class="bi bi-search"></i>
       </button>
@@ -42,11 +40,11 @@
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
-                    <li class="nav-item me-3  d-none loggedUser" style="position: relative;">
+                    <li class=" nav-item me-3  d-none loggedUser" style="position: relative;">
+                        <div class="cart-top-item">
                         <a class="nav-link link-navbar" href="cart.html">Cart</a>
-                        <div class="d-flex justify-content-center align-items-center"
-                            style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
-                            10</div>
+                        <div class="cart-badged">
+                            10</div></div>
                     </li>
                     <li class="nav-item"><a class="nav-link link-navbar loggedUser loggedArtisan d-none"
                             data-bs-toggle="offcanvas" href="#visProfile" aria-controls="offcanvasExample">Account</a>
@@ -57,10 +55,10 @@
 
                 <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2">
                     <li class="nav-item d-none loggedUser" style="position: relative;">
+                        <div class="cart-top-item">
                         <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
-                        <div class="d-flex justify-content-center align-items-center"
-                            style="width:15px; height:15px; position:absolute; background-color:white; top:0px; right:-10px;">
-                            10</div>
+                        <div class="cart-badged">
+                            10</div></div>
                     </li>
                     <li class="nav-item"><a class="nav-link link-navbar d-none loggedUser loggedArtisan"
                             href="#visProfile" data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i
@@ -70,16 +68,20 @@
                             data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
                     </li>
                 </ul>
+                
             </div>
 
-            <!--da qua in poi è come viene dopo il collapse sotto sm-->
 
-            <button class="d-flex justify-content-center navbar-toggler d-sm-none" type="button"
-                style="height: 40px;width: 40px;" data-bs-toggle="offcanvas" href="#menusidebar" role="button"
-                aria-controls="menusidebar" href="#">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
+<div class="d-flex d-sm-none justify-content-center align-items-center" style="height: 40px; width: 40px;">
+  <a class="nav-link link-navbar notLogged" href="#loggedCanvas" data-bs-toggle="offcanvas" aria-controls="loggedCanvas">
+    <i class="bi bi-person" style="font-size: 24px;"></i>
+  </a>
+  <div class="loggedUser loggedArtisan">
+    <a class="nav-link link-navbar" href="#visProfile" data-bs-toggle="offcanvas" aria-controls="offcanvasExample">
+      <i class="bi bi-person" style="font-size: 24px;"></i>
+    </a>
+  </div>
+</div>
             <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
                 <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
                     <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
@@ -88,39 +90,51 @@
 
             <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
                 data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false"
-                aria-controls="searchCollapse" style="height: 40px;width: 40px;">
+                aria-controls="searchCollapse" style="height: 40px;width: 40px; background: linear-gradient(145deg, #d17e02, #d17e02);">
                 <i class="bi bi-search"></i>
             </button>
 
-            <div class="collapse d-sm-none " id="searchCollapse">
-                <div class="d-flex justify-content-center align-items-center search-control">
-
-                    <div style="width: 80%">
-                        <form class="d-flex justify-content-center"
-                            style="width: 100%; margin: auto;border-color: black; border-radius: 5px; border: 1px solid black;"
-                            role="search">
-                            <input type="text" class="form-control" style="border: none;" placeholder="Search"
-                                aria-label="Search"> </input>
-                            <button type="btn">
-                                <i class="bi bi-search"></i>
-                            </button>
-
-                        </form>
-                    </div>
-
-
-                    <button class="mx-1 mx-sm-3" type="btn" data-bs-dismiss="collapse" aria-label="Close">
-                        <i style="font-size: 20px;" class="bi bi-x"></i>
-                    </button>
-
-                </div>
-            </div>
+  
+            
+<div class="collapse d-sm-none" id="searchCollapse" style="background-color: #000;">
+  <div class="d-flex justify-content-center align-items-center search-control" style="background-color: #000; padding-left: 20px;">
+    
+    <div style="width: 80%" class="d-flex align-items-center gap-2">
+      
+      <div class="dropdown me-2">
+        <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
+                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Filtries
+        </button>
+        <div class="dropdown-menu p-3" id="mobileFiltersContainer">
         </div>
+      </div>
+
+      <form class="d-flex align-items-center flex-grow-1" style="border-radius: 5px; width: 100%;" role="search">
+        <input type="text" class="form-control" style="border: none;" placeholder="Search" aria-label="Search">
+        <button type="btn" style="background: none; border: none;">
+          <i class="bi bi-search"></i>
+        </button>
+      </form>
+    </div>
+
+   <button class="mx-1 mx-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="true"
+    style="background-color: #000000; border: 1px solid #000000; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+  <i class="bi bi-x" style="font-size: 24px; color: #d17e02;"></i>
+</button>
+
+<div class="d-sm-none d-flex align-items-center justify-content-end gap-2 px-2" style="height: 40px;">
+
+  </div>
+        </div>
+ 
+</div>
+</div>
+
 
     </nav>
 </header>
 
-<!--Sidebar OffCanvas di bootstrap per l'accesso personalizzato-->
 
 <div class="offcanvas offcanvas-end notLogged" tabindex="-1" id="loggedCanvas" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header mb-3"

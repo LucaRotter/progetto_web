@@ -93,74 +93,97 @@ function initFilters() {
     return;
   }
 
-  const filters  = [
-  "books",
-  "elettronics",
-  "clothing",
-  "home",
-  "garden",
-  "teck",
-  "sports",
-  "beauty",
-  "food"
-];
+  const filters = [
+    "books",
+    "electronics",
+    "clothing",
+    "home",
+    "garden",
+    "tech",
+    "sports",
+    "beauty",
+    "food"
+  ];
 
-  filters.forEach((filter, i) => {
-    const id = `filter${i + 1}`;
-    const div = document.createElement("div");
-    div.className = "form-check";
+  filtersContainer.innerHTML = "";
 
-   div.innerHTML = `
-  <div class="list-group">
-    <button type="button" class="list-group-item list-group-item-action filter-button" data-filter="${filter}">
-      ${filter}
-    </button>
-  </div>
-`;
+ 
+  const row = document.createElement("div");
+  row.className = "row g-4"; 
 
-    filtersContainer.appendChild(div);
-  });
-}
-
-suggestionsList.appendChild(suggestionsList);
-
-
- function fetchSuggestions(query) {
-  const searchField = document.getElementById("searchfield");
-  const suggestionsList = document.getElementById("suggestionsList");
-
-  if (query.length < 2) {
-    suggestionsList.style.display = "none";
-    suggestionsList.innerHTML = '';
-    return;
-  }
   
+  const col1 = document.createElement("div");
+  col1.className = "col-md-4";
 
-  // Costruisce la URL con parametro name
-  const url = `/items?name=${encodeURIComponent(query)}`;
+  const catTitle = document.createElement("h5");
+  catTitle.textContent = "Categories";
+  col1.appendChild(catTitle);
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      suggestionsList.innerHTML = '';
-      if (data.length > 0) {
-        data.forEach(item => {
-          const li = document.createElement("li");
-          li.className = "list-group-item list-group-item-action";
-          li.textContent = item.name; // Assicurati che nel DB il campo sia `name`
-          li.addEventListener("click", () => {
-            searchField.value = item.name;
-            suggestionsList.style.display = "none";
-          });
-          suggestionsList.appendChild(li);
-        });
-        suggestionsList.style.display = "block";
-      } else {
-        suggestionsList.style.display = "none";
-      }
-    })
-    .catch(err => {
-      console.error("Error in the fetch elemets:", err);
-      suggestionsList.style.display = "none";
-    });
-    }
+  const catContainer = document.createElement("div");
+  catContainer.className = "d-flex flex-wrap gap-2";
+
+  filters.forEach(filter => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn custom-btn w-100";
+    btn.dataset.filter = filter;
+    btn.textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
+    catContainer.appendChild(btn);
+  });
+
+  col1.appendChild(catContainer);
+
+  
+  const col2 = document.createElement("div");
+  col2.className = "col-md-4";
+
+  const priceTitle = document.createElement("h5");
+  priceTitle.textContent = "Price";
+  col2.appendChild(priceTitle);
+
+  const minPriceGroup = document.createElement("div");
+  minPriceGroup.className = "mb-3";
+  minPriceGroup.innerHTML = `
+    <label for="minPrice" class="form-label">Min Price</label>
+    <input type="number" class="form-control" id="minPrice" placeholder="€ Min" min="0" step="0.01">
+  `;
+
+  const maxPriceGroup = document.createElement("div");
+  maxPriceGroup.className = "mb-3";
+  maxPriceGroup.innerHTML = `
+    <label for="maxPrice" class="form-label">Max Price</label>
+    <input type="number" class="form-control" id="maxPrice" placeholder="€ Max" min="0" step="0.01">
+  `;
+
+  col2.appendChild(minPriceGroup);
+  col2.appendChild(maxPriceGroup);
+
+ 
+  const col3 = document.createElement("div");
+  col3.className = "col-md-4";
+
+  const ratingTitle = document.createElement("h5");
+  ratingTitle.textContent = "Min Rating";
+  col3.appendChild(ratingTitle);
+
+  const ratingSelect = document.createElement("select");
+  ratingSelect.className = "form-select";
+  ratingSelect.id = "minRating";
+  ratingSelect.innerHTML = `
+    <option value="">Select Rating</option>
+    <option value="1">⭐ 1 </option>
+    <option value="2">⭐⭐ 2 </option>
+    <option value="3">⭐⭐⭐ 3 </option>
+    <option value="4">⭐⭐⭐⭐ 4 </option>
+    <option value="5">⭐⭐⭐⭐⭐ 5</option>
+    
+  `;
+
+  col3.appendChild(ratingSelect);
+
+  row.appendChild(col1);
+  row.appendChild(col2);
+  row.appendChild(col3);
+
+  filtersContainer.appendChild(row);
+}
