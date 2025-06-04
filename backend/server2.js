@@ -1200,9 +1200,9 @@ app.post('/create-report', protect, hasPermission('manage_report'), async (req, 
     } 
 
     const result = await pool.query(
-        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
         [report_id, customer_id, artisan_id, item_id, category, description]);
-    res.json({ message: "Report created" });
+    res.json({ message: "Report created", report: result.rows[0] });
 });
 
 //aggiunta admin nella segnalazione, da fare dopo che l'admin recupera le free-reports

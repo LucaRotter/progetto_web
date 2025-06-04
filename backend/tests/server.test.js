@@ -248,7 +248,7 @@ describe('GET user and DELETE user', () => {
   });
 
   test('delete user', async () => {
-    const user_id = '7';
+    const user_id = '999';
     const name = 'prova';
     const surname = 'cliente';
     const email = 'rotterluca@gmail.com';
@@ -256,7 +256,7 @@ describe('GET user and DELETE user', () => {
     const role_id = '1';
     pool.query('INSERT INTO users (user_id, name, surname, email, pwd, role_id) VALUES ($1, $2, $3, $4, $5, $6)',
       [user_id, name, surname, email, hashedPassword, role_id]);
-    const userId = '7';
+    const userId = '999';
     const token = generateToken(userId)
     const response = await request(app)
       .delete('/user')
@@ -265,7 +265,7 @@ describe('GET user and DELETE user', () => {
     expect(response.body).toHaveProperty('message', 'User deleted');
   });
   test('delete user', async () => {
-    const user_id = '7';
+    const user_id = '999';
     const name = 'prova';
     const surname = 'cliente';
     const email = 'rotterluca@gmail.com';
@@ -311,17 +311,17 @@ describe('POST /forgot-password and reset-password', () => {
     expect(response.body).toEqual({ message: 'Password updated' });
   });
   it('should update password', async () => {
-      const userId=6;
-      const token = generateToken(userId);
-      const response = await request(app)
-          .put('/update-password')
-          .set('Authorization', `Bearer ${token}`)
-          .send({
-              oldPassword: 'prova1',
-              newPassword: 'prova1'
-          });
-      
-      expect(response.body.message).toBe('Password updated');
+    const userId = 6;
+    const token = generateToken(userId);
+    const response = await request(app)
+      .put('/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        oldPassword: 'prova1',
+        newPassword: 'prova1'
+      });
+
+    expect(response.body.message).toBe('Password updated');
   });
 });
 
@@ -792,68 +792,68 @@ describe('orders', () => {
     console.log(orderId1);
 
   });
-  describe('should change order state', () => {
-    it('should update order state', async () => {
-      const userId = '5';
-      const token = generateToken(userId);
-      const OrderId = '1';
-      const response = await request(app)
 
-        .put(`/update-order/${OrderId}`)
-        .set('Authorization', `Bearer ${token}`)
-      expect(response.body).toHaveProperty('message', 'Order updated');
+  it('should update order state', async () => {
+    const userId = '5';
+    const token = generateToken(userId);
+    const OrderId = orderId1;
+    const response = await request(app)
 
-    });
-    afterAll(async () => {
-      //rimetti lo stato iniziale dell'ordine
-      const OrderId = '1';
-      const resetOrderQuery = 'UPDATE orders SET state = $1 WHERE order_id = $2';
-      await pool.query(resetOrderQuery, ['confirmed', OrderId]);
-    });
-  });
-  describe('get orders', () => {
-    it('should get orders by customer', async () => {
-      const userId = '6';
-      const token = generateToken(userId);
-      const response = await request(app)
-
-        .get('/customer-orders')
-        .set('Authorization', `Bearer ${token}`)
-      expect(response.body).toHaveProperty('orders');
-
-
-    });
-    it('should get orders by artisan', async () => {
-      const userId = '5';
-      const token = generateToken(userId);
-      const response = await request(app)
-
-        .get('/artisan-orders')
-        .set('Authorization', `Bearer ${token}`)
-      expect(response.body).toHaveProperty('orders');
-
-    });
-    it('should get orders by admin', async () => {
-      const OrderId = '1';
-      const userId = '3';
-      const token = generateToken(userId);
-      const response = await request(app)
-
-        .get(`/admin-orders/${OrderId}`)
-        .set('Authorization', `Bearer ${token}`)
-      expect(response.body).toHaveProperty('orders');
-
-    });
-    it('should delete order', async () => {
-      const userId = '3';
-      const token = generateToken(userId);
-      const response = await request(app)
-        .delete(`/delete-orders/${orderId1}`)
-        .set('Authorization', `Bearer ${token}`);
-      expect(response.body).toHaveProperty('message', 'Order deleted');
-    });
+      .put(`/update-order/${OrderId}`)
+      .set('Authorization', `Bearer ${token}`)
+    expect(response.body).toHaveProperty('message', 'Order updated');
 
   });
+  afterAll(async () => {
+    //rimetti lo stato iniziale dell'ordine
+    const OrderId = orderId1;
+    const resetOrderQuery = 'UPDATE orders SET state = $1 WHERE order_id = $2';
+    await pool.query(resetOrderQuery, ['confirmed', OrderId]);
+  });
+
+
+  it('should get orders by customer', async () => {
+    const userId = '6';
+    const token = generateToken(userId);
+    const response = await request(app)
+
+      .get('/customer-orders')
+      .set('Authorization', `Bearer ${token}`)
+    expect(response.body).toHaveProperty('orders');
+
+
+  });
+  it('should get orders by artisan', async () => {
+    const userId = '5';
+    const token = generateToken(userId);
+    const response = await request(app)
+
+      .get('/artisan-orders')
+      .set('Authorization', `Bearer ${token}`)
+    expect(response.body).toHaveProperty('orders');
+
+  });
+  it('should get orders by admin', async () => {
+    const OrderId = orderId1;
+    const userId = '3';
+    const token = generateToken(userId);
+    const response = await request(app)
+
+      .get(`/admin-orders/${OrderId}`)
+      .set('Authorization', `Bearer ${token}`)
+    expect(response.body).toHaveProperty('orders');
+
+  });
+  it('should delete order', async () => {
+    const userId = '3';
+    const token = generateToken(userId);
+    const response = await request(app)
+      .delete(`/delete-orders/${orderId1}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.body).toHaveProperty('message', 'Order deleted');
+  });
+
+
 
 
 });
@@ -934,7 +934,7 @@ describe('reviews', () => {
   it('should delete a review from admin', async () => {
     await pool.query(
       'INSERT INTO reviews (review_id, item_id, user_id, description, evaluation) VALUES ($1, $2, $3, $4, $5)',
-      [1, 1, 6, 'test review', 5]
+      [999, 1, 6, 'test review', 5]
     );
     const userId = 3;
     const itemId = 1;
@@ -1046,6 +1046,8 @@ describe('carts', () => {
 // REPORT
 
 describe('report', () => {
+  let reportId1;
+  let reportId2;
   it('should create a report of an item reported by client', async () => {
     userId = 6;
     const token = generateToken(userId);
@@ -1059,6 +1061,10 @@ describe('report', () => {
       });
 
     expect(response.body).toHaveProperty('message', 'Report created');
+    expect(response.body).toHaveProperty( 'report');
+    reportId1 = response.body.report.report_id;
+    
+
   });
   it('should create a general report by artisan', async () => {
     userId = 5;
@@ -1072,10 +1078,12 @@ describe('report', () => {
       });
 
     expect(response.body).toHaveProperty('message', 'Report created');
+    expect(response.body).toHaveProperty( 'report');
+    reportId2 = response.body.report.report_id;
   });
   it('should add admin to the report', async () => {
     userId = 3;
-    const reportId = 1;
+    const reportId = reportId1;
     const token = generateToken(userId);
     const response = await request(app)
       .put(`/add-admin-report/${reportId}`)
@@ -1108,7 +1116,7 @@ describe('report', () => {
   });
   it('should delete a report', async () => {
     userId = 3;
-    const reportId = 1;
+    const reportId = reportId1;
     const token = generateToken(userId);
     const response = await request(app)
       .delete(`/delete-report/${reportId}`)
@@ -1117,7 +1125,7 @@ describe('report', () => {
     expect(response.body).toHaveProperty('message', 'Report deleted');
   });
   afterAll(async () => {
-    await pool.query('DELETE FROM reports WHERE report_id = $1', [2]);
+    await pool.query('DELETE FROM reports WHERE report_id = $1', [reportId2]);
   });
 
 });
