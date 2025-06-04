@@ -1,0 +1,5 @@
+# PANORAMICA ARCHITTETURA:descrizione generale,dipendenze, struttura del backend
+# MODULI CHIAVE
+# FLUSSI DI UTILIZZO PRINCIPALI
+# SICUREZZA
+# TESTING
