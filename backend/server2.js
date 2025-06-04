@@ -1,5 +1,5 @@
 // Importa le librerie necessarie
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
@@ -102,11 +102,20 @@ const protect = async (req, res, next) => {
     let token = req.headers.authorization;
     if (token && token.startsWith("Bearer ")) {
         try {
+
             token = token.split(" ")[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [decoded.id]);
             req.permissions = await getUserPermissions(decoded.id);
             req.user = userResult.rows[0];
+            //generazione nuovo token
+            const newToken = jwt.sign(
+                { id: decoded.id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+            res.setHeader('x-refresh-token', newToken);
+            
             next();
         } catch (error) {
             res.status(401).json({ message: "Unauthorized, invalid token" });

@@ -1,4 +1,5 @@
 //PER ESEGUIRE IL TEST SU UNA describe specifica: npx jest -t "nome della describe"
+//AVVIARE IL TEST DAL TERMINALE SU BACKEND ALTRIMENTI NON TROVA IL .env
 const request = require('supertest');
 const path = require('path');
 const fs = require('fs');
