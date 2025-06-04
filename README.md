@@ -27,6 +27,9 @@ La piattaforma è progettata per offrire un'esperienza completa sia agli artigia
 
 Questa piattaforma rappresenta una base solida per sviluppi futuri, con potenziale per integrare funzionalità avanzate come raccomandazioni intelligenti, recensioni clienti e notifiche in tempo reale.
 
+---
+
+## [USER STORIES](https://docs.google.com/document/d/1MGyGqzQ3jXNNJViPsJYFLUazYfGfusdXiqwZE6y89FY/edit?usp=sharing)
 
 ## SEZIONI
 
