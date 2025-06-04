@@ -7,7 +7,7 @@ let CartContent = [{id:123,categoria:"vestiti",nome:"Dario" ,prezzo:"20€"},
   document.body.classList.remove("js-loading");
     for (let i = 0; i < CartContent.length; i++) {
       
-      createCartElement(CartContent[i]); // passa i dati se servono
+      createCartElement(CartContent[i]);
     }
 
     document.getElementById("emptyCart").classList.add("d-none");
@@ -21,80 +21,116 @@ let CartContent = [{id:123,categoria:"vestiti",nome:"Dario" ,prezzo:"20€"},
 
   
   
-
-function createCartElement(CartContent){
-
+function createCartElement(CartContent) {
   const container = document.getElementById("item-container");
 
-  // Wrapper principale per l'item carrello
   const carItem = document.createElement("div");
-  carItem.className = "col-12 carItem d-flex align-items-start";
-
-  // Div responsive per l'immagine (a sinistra)
-  const imgWrapper = document.createElement("div");
-  imgWrapper.style.maxWidth = "120px";
-  imgWrapper.style.width = "100%";
-  imgWrapper.className = "me-3"; // margine a destra per separare dall'altro div
+  carItem.className = "col-12 carItem";
 
   const img = document.createElement("img");
   img.src = "golubirospiuniro.jpeg";
-  img.classList.add("imgOrder");
-  img.style.width = "100%";
-  img.style.height = "auto";
-  img.style.objectFit = "contain";
+  carItem.appendChild(img);
 
-  imgWrapper.appendChild(img);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.className = "content-wrapper";
 
-  // Div delle specifiche (a destra)
-  const innerDiv = document.createElement("div");
-  innerDiv.className = "d-flex flex-column w-100 p-2";
-
-  // Riga con titolo e input
   const topRow = document.createElement("div");
-  topRow.className = "d-flex align-items-center";
+  topRow.className = "top-row";
 
   const h3 = document.createElement("h3");
   h3.textContent = CartContent.categoria;
-  h3.className = "mb-0";
 
-  // Input quantità (readonly)
-  const inputGroup = document.createElement("input");
-  inputGroup.className = "input-group mb-3 ms-auto";
-  inputGroup.value = 3; // ad esempio 3 prodotti ordinati
-  inputGroup.style.textAlign = "center";
-  inputGroup.readOnly = true;
-  inputGroup.style.width = "100%";
-  inputGroup.style.maxWidth = "80px";
+  const inputQty = document.createElement("input");
+  inputQty.className = "input-qty";
+ inputQty.style.marginTop = "-5px";
+  inputQty.value = 3;
+  inputQty.readOnly = true;
 
-  // Selettore (se serve)
-  const select = document.createElement("select");
-  select.className = "form-select w-100";
-  select.id = "";
+topRow.appendChild(h3);
+topRow.appendChild(inputQty);
 
-  // Se vuoi aggiungere il select all'inputGroup, decommenta la riga sotto
-  // inputGroup.appendChild(select);
+  const name = document.createElement("p");
+  name.textContent = CartContent.nome;
 
-  topRow.appendChild(h3);
-  topRow.appendChild(inputGroup);
+  const price = document.createElement("p");
+  price.textContent = CartContent.prezzo;
 
-  // Paragrafi
-  const nome = document.createElement("p");
-  nome.textContent = CartContent.nome;
+  contentWrapper.appendChild(topRow);
+  contentWrapper.appendChild(name);
+  contentWrapper.appendChild(price);
+  contentWrapper.appendChild(inputQty);  
 
-  const prezzo = document.createElement("p");
-  prezzo.textContent = CartContent.prezzo;
 
-  // Assembla tutto
-  carItem.appendChild(imgWrapper); // immagine a sinistra
-  carItem.appendChild(innerDiv);   // specifiche a destra
+const reviewBtn = document.createElement("button" );
+reviewBtn.textContent = "Review";
+ reviewBtn.className = "btn btn-outline-primary mt-2 align-self-start";
+reviewBtn.onclick = openModal;
+
+contentWrapper.appendChild(reviewBtn);
+
+  carItem.appendChild(contentWrapper);
   container.appendChild(carItem);
-
-  innerDiv.appendChild(topRow);
-  innerDiv.appendChild(nome);
-  innerDiv.appendChild(prezzo);
-  
 }
 
 
-// funzione per spostare barra sopra dopo un minimo di grandezza 
+const description = document.getElementById("description");
+const selectValutation = document.getElementById("valutation");
 
+// Apre la finestra del report
+function openModal() {
+  document.getElementById("commentModal").style.display = "block";
+  document.getElementById("modalOverlay").style.display = "block";
+}
+
+
+// Chiude la finestra del report
+function closeModal() {
+  document.getElementById("commentModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none";
+  description.value = "";
+  description.style.border = "";
+  selectValutation.selectedIndex = 0;
+}
+
+
+// Manda il report se la descrizione è stata scritta 
+function sendReport() {
+    const description = document.getElementById("description");
+
+    let valid = true;
+    description.style.border = "";
+
+    if (!description.value.trim()) {
+      description.style.border = "2px solid red";
+      valid = false;
+    }
+    if (!valid) {
+      return; 
+    }
+    description.value = "";
+    selectType.selectedIndex = 0;
+    closeModal();
+  }
+
+
+
+// Crea per ogni reportTypes un'option che verra aggiunta alla select
+document.addEventListener("DOMContentLoaded", () => {
+  const valutationType = [
+    "⭐ 1",
+    "⭐⭐ 2",
+    "⭐⭐⭐ 3", 
+    "⭐⭐⭐⭐ 4",
+    "⭐⭐⭐⭐⭐ 5",
+  ];
+
+  const selectValutation = document.getElementById("valutation");
+  valutationType.innerHTML = ""; 
+
+  valutationType.forEach(type => {
+    const option = document.createElement("option");
+    option.value = type.toLowerCase().replace(/\s+/g, '-');
+    option.textContent = type;
+    selectValutation .appendChild(option);
+  });
+});
