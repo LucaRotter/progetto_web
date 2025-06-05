@@ -792,6 +792,7 @@ describe('orders', () => {
         address: 'Via Roma',
         civic_number: '10A',
         postal_code: '21100',
+        city : 'Varese',
         province: 'VA',
         country: 'Italia',
         phone_number: '34567890127'
