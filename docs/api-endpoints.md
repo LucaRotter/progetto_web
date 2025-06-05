@@ -111,6 +111,227 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 201 (Created)
     - 500 (Errore caricamento foto)
 
+### eliminazione di un immagine
+-Metodo: `DELETE`
+-URL: `/delete-image`
+-Descrizione: elimina un'immagine a scelta da cloudinary
+-Autenticazione: non richiesta
+-Permessi: nessuno
+-Parametri richiesti:
+    - body : publicId
+-Risposta prevista: { message: 'Immagine eliminata con successo' }
+-Codici di stato HTTP:
+    - 500 (Errore eliminazione foto)
+
+### registrazione utente
+- Metodo: `POST`
+- URL: `/register`
+- Descrizione: Crea un nuovo utente
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti:
+    - body :  name, surname, email, pwd, role
+- Risposta Prevista: { token: generateToken(newUser.user_id)}
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 400 (Ruolo non valido / User già esistente)
+    - 500 (Errore nell'invio della mail)
+
+### login utente
+- Metodo: `POST`
+- URL: `/login`
+- Descrizione: autenticazione utente
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti:
+    - body :  email, pwd, role
+- Risposta Prevista: { token } (e un numero in caso il tuolo sia admin per l'autenticazione a due fattori)
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 401 (Invalid credential)
+    - 500 (Errore nell'invio della mail) (in caso di admin)
+
+### modifica foto profilo utente
+- Metodo: `PUT`
+- URL: `/profile-picture`
+- Descrizione: aggiunge / modifica la foto profilo di un utente
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `update_profile`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - file :  path
+- Risposta Prevista: { message: "Profile picture updated" }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### get utente
+- Metodo: `GET`
+- URL: `/user`
+- Descrizione: restituisce i dati relativi all'utente
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `update_profile`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {user: result.rows[0]}
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### modifica nome utente
+- Metodo: `PUT`
+- URL: `/update-name`
+- Descrizione: modifica nome e cognome di un utente
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `update_profile`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body :  name, surname
+- Risposta Prevista: { message: "Name updated" }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### get user per admin
+- Metodo: `GET`
+- URL: `/user/:id`
+- Descrizione: restituisce ad un admin le informazioni sull'utente desiderato a partire dall'id
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `manage_users`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - params : id 
+- Risposta Prevista: {user: result.rows[0]}
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### get user_id per admin ma con email e ruolo
+- Metodo: `GET`
+- URL: `/user-by-email`
+- Descrizione: restituisce ad un admin l'id utente desiderato a partire da mail e ruolo
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `manage_users`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body : email, role 
+- Risposta Prevista: { user_id: result.rows[0].user_id }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### eliminazione user per sua volontà
+- Metodo: `DELETE`
+- URL: `/user`
+- Descrizione: elimina l'account dell'utente che fa la richiesta
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `update_profile`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: { message: "User deleted" }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+    - 500 (Errore nell'invio della mail)
+
+### eliminazione user da parte dell'admin
+- Metodo: `DELETE`
+- URL: `/user/:id`
+- Descrizione: elimina l'account dell'utente da parte di una richiesta dell'admin
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `delete_user`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - params : id
+- Risposta Prevista: { message: "User deleted" }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+    - 500 (Errore nell'invio della mail)
+
+### password dimenticata
+- Metodo: `POST`
+- URL: `/forgot-password`
+- Descrizione: manda una mail all'utente per il reset della password
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti:
+    - body :  email, role
+- Risposta Prevista: { message: "Email sent"}
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 400 (User not found)
+    - 500 (Errore nell'invio della mail) (in caso di admin)
+
+### reimporta password
+- Metodo: `POST`
+- URL: `/reset-password`
+- Descrizione: permette all'utente di aggiornare la propria password dopo averla dimenticata
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti:
+    - body :  email, newPassword, role
+- Risposta Prevista: { message: "Password updated" }
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 400 (User not found)
+
+### aggiorna password
+- Metodo: `PUT`
+- URL: `/update-password`
+- Descrizione: modifica la password dell'utente con una nuova da lui inserita
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: `update_profile`
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body :  oldPassword, newPassword
+- Risposta Prevista: { message: "Password updated" }
+- Codici di stato HTTP: 
+    - 400 (User not found)
+    - 401 (Old password is incorrect)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Crea recensione
+- Metodo: `POST`
+- URL: `/add-review`
+- Descrizione: Crea una nuova recensione relativa al un prodotto
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'add_review'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - body : item_id, description, evaluation
+- Risposta Prevista: { message: "Review added", review: result.rows[0] }
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 400 (Review already exists)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Elimina recensione
+- Metodo: `DELETE`
+- URL: `/delete-review/:id`
+- Descrizione: Elimina una recensione relativa al un prodotto
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'delete_review'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - body : user_id (opzionale)
+    - params : id
+- Risposta Prevista: { message: "Review deleted" }
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 400 (Review not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
 ### Crea segnalazione
 - Metodo: `POST`
 - URL: `/create-report`
