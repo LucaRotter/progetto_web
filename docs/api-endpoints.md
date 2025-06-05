@@ -99,16 +99,17 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
 ## CRUD --permessi 403, protect 401, post 201
 
 ### upload di un'immagine
-
-
--Metodo: POST
--URL: '/upload'
--Descrizione: cosa fa l’endpoint.,
--Autenticazione: se è necessario un token o meno.,
--Permessi: eventuali ruoli richiesti.,
--Parametri richiesti: query params, path params, body.,
--Risposta prevista: esempio di JSON restituito.,
--Codici di stato HTTP: successi ed errori gestiti.
+-Metodo: `POST`
+-URL: `/upload`
+-Descrizione: carica una nuova immagine su cloudinary
+-Autenticazione: non richiesta
+-Permessi: nessuno
+-Parametri richiesti:
+    - file : path
+-Risposta prevista: { message: 'Upload riuscito!',public_id, url }
+-Codici di stato HTTP:
+    - 201 (Created)
+    - 500 (Errore caricamento foto)
 
 ### Crea segnalazione
 - Metodo: `POST`
