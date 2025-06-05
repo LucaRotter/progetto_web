@@ -332,6 +332,195 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 401 (Unathorized)
     - 403 (Permission denied)
 
+### Elimina una categoria
+- Metodo: `DELETE`
+- URL: `/delete-category/:id`
+- Descrizione: Elimina una categoria
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'manage_categories'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : category_id
+- Risposta Prevista: {message: "Category deleted"}
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 400 (Category not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Aggiunge articolo
+- Metodo: `POST`
+- URL: `/add-item`
+- Descrizione: Aggiunge un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body : name, category, description, price, quantity, image_url
+- Risposta Prevista: {message: "Item added", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica prezzo articolo
+- Metodo: `PUT`
+- URL: `/update-price/:id`
+- Descrizione: Modifica prezzo di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - body : price
+- Risposta Prevista: {message: "Price updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica quantità articolo
+- Metodo: `PUT`
+- URL: `/update-quantity/:id`
+- Descrizione: Modifica quantità di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - body : quantity
+- Risposta Prevista: {message: "Quantity updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica immagine articolo
+- Metodo: `PUT`
+- URL: `/update-image/:id`
+- Descrizione: Modifica l'immagine di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - file : path
+- Risposta Prevista: {message: "Image updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica nome articolo
+- Metodo: `PUT`
+- URL: `/update-name/:id`
+- Descrizione: Modifica la categoria di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - body : name
+- Risposta Prevista: {message: "Name updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica categoria articolo
+- Metodo: `PUT`
+- URL: `/update-category/:id`
+- Descrizione: Modifica la categoria di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - body : category
+- Risposta Prevista: {message: "Category updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica descrizione articolo
+- Metodo: `PUT`
+- URL: `/update-description/:id`
+- Descrizione: Modifica la descrizione di un articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+    - body : description
+- Risposta Prevista: {message: "Description updated", item: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Elimina un'articolo
+- Metodo: `DELETE`
+- URL: `/delete-item/:id`
+- Descrizione: Elimina un'articolo
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'delete_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : item_id
+- Risposta Prevista: {message: "Item deleted"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Item not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+
+### Recupera l'articolo dal id
+- Metodo: `GET`
+- URL: `/item/:id`
+- Descrizione: Recupera l'articolo dal id
+- Autenticazione: No
+- Permessi: No
+- Parametri richiesti:
+    - param : item_id
+- Risposta Prevista: {item: result.rows, category_name: category_name}
+- Codici di stato HTTP: 
+    - 200 (OK)
+
+### Recupera l'articolo dal nome, prezzo, categoria e descrizione
+- Metodo: `GET`
+- URL: `/itemgetId`
+- Descrizione: Recupera l'articolo dal nome, prezzo, categoria e descrizione
+- Autenticazione: No
+- Permessi: No
+- Parametri richiesti:
+    - body : name, price, description, category
+- Risposta Prevista: {item_id: result.rows[0]}
+- Codici di stato HTTP: 
+    - 200 (OK)
+
+### Restituisce gli articoli di un artigiano
+- Metodo: `GET`
+- URL: `/user-items/`
+- Descrizione: Restituisce tutti gli articoli di un artigiano.
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'update_item'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {items: result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+    
+
 ### Restituisce gli articoli mischiati
 - Metodo: `DELETE`
 - URL: `/reset-items`
