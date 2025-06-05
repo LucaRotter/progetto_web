@@ -33,7 +33,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Avvia Docker Compose
-        run: docker compose -f docker-compose.yml up -d
+        run: docker compose -f ${{ github.workspace }}/docker-compose.yml up -d
 
       - name: 📋 Log container falliti
         if: failure()
