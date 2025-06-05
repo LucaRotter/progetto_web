@@ -498,6 +498,67 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 401 (Unathorized)
     - 403 (Permission denied)
 
+### Restituisce tutte le categorie
+- Metodo: `GET`
+- URL: `/categories`
+- Descrizione: Restituisce tutte le categorie
+- Autenticazione: No
+- Permessi: No
+- Parametri richiesti:
+- Risposta Prevista: {result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+
+### Modifica nome categoria
+- Metodo: `POST`
+- URL: `/add-category`
+- Descrizione: Crea una categoria
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'manage_categories'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body : name
+    - file : path
+- Risposta Prevista: {message: "Category added", category_id}
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica nome categoria
+- Metodo: `PUT`
+- URL: `/update-category-name/:id`
+- Descrizione: Aggiorna il nome di una categoria
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'manage_categories'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : category_id
+    - body : name
+- Risposta Prevista: {message: "Category name updated"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Category not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Modifica immagine categoria
+- Metodo: `PUT`
+- URL: `/update-category-image/:id`
+- Descrizione: Aggiorna l'immagine di una categoria
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'manage_categories'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : category_id
+    - file : path
+- Risposta Prevista: {message: "Category image updated"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Category not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
 ### Elimina una categoria
 - Metodo: `DELETE`
 - URL: `/delete-category/:id`
@@ -775,7 +836,7 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
 - Permessi: 'place_order'
 - Parametri richiesti:
     - header : Authorization: Bearer <token JWT>
-    - body : items, address, civic_number, postal_code, province, country, phone_number
+    - body : items, address, civic_number, postal_code, city, province, country, phone_number
 - Risposta Prevista: {message: "Order added", order_id: order_id}
 - Codici di stato HTTP: 
     - 201 (OK)
