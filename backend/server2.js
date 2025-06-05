@@ -1145,14 +1145,14 @@ app.put('/update-order/:id', protect, hasPermission('manage_orders'), async (req
 //recupera ordini per id utente del cliente
 app.get('/customer-orders', protect, hasPermission('view_orders'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [user_id]);
+    const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY day DESC', [user_id]);
     res.json({orders: result.rows});
 });
 
 //recupera ordini per id utente dell'artigiano
 app.get('/artisan-orders', protect, hasPermission('manage_orders'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1', [user_id]);
+    const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1 ORDER BY day DESC', [user_id]);
     res.json({orders: result.rows});
 });
 
