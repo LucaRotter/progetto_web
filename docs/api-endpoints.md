@@ -332,6 +332,177 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 401 (Unathorized)
     - 403 (Permission denied)
 
+### Restituisce gli articoli mischiati
+- Metodo: `DELETE`
+- URL: `/reset-items`
+- Descrizione: Elimina gli item che vengono restituiti in modo casuale dell'utente che sta facendo la richiesta.
+- Autenticazione: Richiesta (`Bearer token`) oppure non richiesta
+- Permessi: No
+- Parametri richiesti:
+    - header : userKey
+- Risposta Prevista: {message: "Lista resettata"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 500 (Errore interno del server)
+
+### Restituisce gli articoli mischiati
+- Metodo: `GET`
+- URL: `/random-items`
+- Descrizione: Restiusce gli item in modo casuale. Il modo in cui vengono restituti gli articolo in modo causale è unico per ogni utente registrato e non(se l'utente non è registrato si prende il suo ip come chiave).
+- Autenticazione: Richiesta (`Bearer token`) oppure non richiesta
+- Permessi: No
+- Parametri richiesti:
+    - header : userKey
+    - query :nItems
+- Risposta Prevista: {selectedItems: selectedItems.rows }
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Parametro 'nItems' non valido)
+    - 401 (Unathorized)
+    - 404 (Nessun altro elemento disponibile)
+    - 500 (Errore interno del server)
+
+### Elimina gli articoli mischiati per categoria di un utente
+- Metodo: `DELETE`
+- URL: `/reset-category-items/:name`
+- Descrizione: Elimina gli item della categoria specificata e del utente che sta effettuando la richiesta
+- Autenticazione: Richiesta (`Bearer token`) oppure non richiesta
+- Permessi: No
+- Parametri richiesti:
+    - header : userKey
+    - param : name_category
+
+- Risposta Prevista: {message: "Lista resettata" }
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 404 (Categoria non trovata)
+    - 500 (Errore interno del server)
+
+### Restituisce gli articoli mischiati per categoria
+- Metodo: `GET`
+- URL: `/category-items/:name`
+- Descrizione: Restiusce gli item in modo casuale della categoria specificata. Il modo in cui vengono restituti gli articolo in modo causale è unico per ogni utente registrato e non(se l'utente non è registrato si prende il suo ip come chiave).
+- Autenticazione: Richiesta (`Bearer token`) oppure non richiesta
+- Permessi: No
+- Parametri richiesti:
+    - header : userKey
+    - param : name_category
+    - query : numItems
+
+- Risposta Prevista: {items: result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Parametro 'nItems' non valido)
+    - 401 (Unathorized)
+    - 404 (Categoria non trovata)
+    - 500 (Errore interno del server)
+
+### Restituisce gli articoli con filtri
+- Metodo: `GET`
+- URL: `/items`
+- Descrizione: Restiusce gli item che rispettano i filtri sul nome, categoria, prezzo e valutazione minima. I filtri non devono essere per forza tutti presenti
+- Autenticazione: No
+- Permessi: No
+- Parametri richiesti:
+    - query : name, category, minPrice, maxPrice, minEvaluation
+- Risposta Prevista: {items: result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 500 (Errore interno del server)
+
+### Crea un ordine
+- Metodo: `POST`
+- URL: `/add-order`
+- Descrizione: Crea un ordine
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'place_order'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body : items, address, civic_number, postal_code, province, country, phone_number
+- Risposta Prevista: {message: "Order added", order_id: order_id}
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Aggiorna lo stato di un ordine
+- Metodo: `PUT`
+- URL: `/update-order/:id`
+- Descrizione: Aggiorna lo stato dell'ordine specificato a shipped
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'manage_orders'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : order_id
+- Risposta Prevista: {message: "Order updated"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 400 (Order not found)
+    - 403 (Permission denied)
+
+### Recupera ordine per artigiano
+- Metodo: `GET`
+- URL: `/customer-orders`
+- Descrizione: Recupera gli ordini di un cliente
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'view_orders'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {orders:result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Recupera ordine per artigiano
+- Metodo: `GET`
+- URL: `/artisan-orders`
+- Descrizione: Recupera gli ordini di un artigiano
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'view_manage_orders'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {orders:result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Recupera ordine per admin
+- Metodo: `GET`
+- URL: `/admin-orders/:id`
+- Descrizione: Recupera un ordine specifico da parte di un admin
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'view_manage_orders'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : order_id
+- Risposta Prevista: {orders:result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Order not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Elimina ordine
+- Metodo: `DELETE`
+- URL: `/delete-orders/:id`
+- Descrizione: Elimina un ordine specifico
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'view_manage_orders'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : order_id
+- Risposta Prevista: {message: "Order deleted"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Order not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
 ### Crea segnalazione
 - Metodo: `POST`
 - URL: `/create-report`
