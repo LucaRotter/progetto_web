@@ -32,16 +32,12 @@ jobs:
       - name: 🐳 Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: 🛠️ Build and start containers
-        run: docker compose -f dev/docker-compose.yml up -d --build
+      - name: Avvia Docker Compose
+        run: docker compose -f docker-compose.yml up -d
 
       - name: 📋 Log container falliti
         if: failure()
-        run: docker compose -f dev/docker-compose.yml logs
-
-      - name: 📋 Mostra log dei container falliti
-        if: failure()
-        run: docker compose logs
+        run: docker compose -f ${{ github.workspace }}/docker-compose.yml up -d
 
       - name: ⏳ Aspetta che il backend sia pronto
         run: |
@@ -71,4 +67,4 @@ jobs:
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
 
       - name: 🧹 Ferma i container
-        run: docker compose -f dev/docker-compose.yml down --volumes --remove-orphans
+        run: docker compose -f docker-compose.yml down --volumes --remove-orphans
