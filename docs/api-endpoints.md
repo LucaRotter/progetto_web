@@ -332,6 +332,104 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 401 (Unathorized)
     - 403 (Permission denied)
 
+### restituisce le recensioni di un articolo
+- Metodo: `GET`
+- URL: `/reviews/:id`
+- Descrizione: restiruisce le recensioni relative al prodotto selezionato per id
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti: 
+    - params : id
+- Risposta Prevista: {reviews:result.rows}
+
+### restituisce la valutazione media di un articolo
+- Metodo: `GET`
+- URL: `/average-rating/:id`
+- Descrizione: restiruisce la valutazione media relativa al prodotto selezionato per id
+- Autenticazione: non richiesta
+- Permessi: nessuno
+- Parametri richiesti: 
+    - params : id
+- Risposta Prevista: { average: result.rows[0].average }
+- Codici di stato HTTP: 
+    - 400 (No reviews found)
+
+### restituisce id recensione grazie ad articolo e utente
+- Metodo: `GET`
+- URL: `/review-id`
+- Descrizione: restiruisce l'id della recensione identificata dall'utente e dall'articolo
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reviews'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - params : id
+    - body : item_id, user_id
+- Risposta Prevista: { review_id: result.rows[0].review_id }
+- Codici di stato HTTP: 
+    - 400 (Review not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### recensione per id
+- Metodo: `GET`
+- URL: `/review/:id`
+- Descrizione: restiruisce la recensione relativa all'id passato per parametro
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reviews'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - params : id
+- Risposta Prevista: {review:result.rows[0]}
+- Codici di stato HTTP: 
+    - 400 (Review not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### insermento nel carrello
+- Metodo: `POST`
+- URL: `/cart`
+- Descrizione: aggiunge un articolo nel carrello (ne aumenta la quantità se già presente)
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - body : item_id, quantity
+- Risposta Prevista: { message: "Item added to cart" }
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+    - 500 (Internal server error)
+
+### get articoli
+- Metodo: `GET`
+- URL: `/cart`
+- Descrizione: restituisce tutti gli articoli nel carrello del cliente
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: nessuno
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {items:result.rows}
+- Codici di stato HTTP: 
+    - 201 (OK)
+    - 401 (Unathorized)
+
+### modifica quantità
+- Metodo: `PUT`
+- URL: `/cart/:id`
+- Descrizione: permette di modificare la quantità di un prodotto nel carrello
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - params : id
+    - body : quantity
+- Risposta Prevista: { message: "Item updated in cart" }
+- Codici di stato HTTP:
+    - 400 (Item not found in cart)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
 ### Elimina una categoria
 - Metodo: `DELETE`
 - URL: `/delete-category/:id`
