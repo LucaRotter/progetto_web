@@ -362,4 +362,68 @@ describe('payments', () => {
 
 ### Risultati test
 
+Questo report riassume i risultati dei test automatici eseguiti sul backend tramite il file `server.test.js`.
 
+---
+
+### Test Suite Eseguita
+
+- **File**: `tests/server.test.js`
+- **Durata Totale**: 18.876 secondi
+- **Suite Totali**: 1
+- **Test Totali**: 73
+- **Test Passati**: 73
+- **Test Falliti**: 0
+- **Snapshots**: 0
+
+---
+
+### 🔍 Moduli Testati
+
+### Upload Immagini
+- ✅ Upload di un file restituisce URL e publicId
+- ✅ Eliminazione immagine riuscita
+
+### Registrazione e Login
+- ✅ Registrazione utente cliente
+- ✅ Prevenzione registrazione duplicata
+- ✅ Login per ruoli C e A
+- ✅ Login come admin
+
+### Immagine Profilo
+- ✅ Aggiornamento riuscito
+
+### Utenti
+- ✅ Recupero e modifica utente
+- ✅ Cancellazione da parte di utente e admin
+
+### Recupero Password
+- ✅ Invio email reset
+- ✅ Reset e aggiornamento password
+
+### Categorie
+- ✅ Elenco, aggiunta, rinomina, aggiornamento immagine e cancellazione
+
+### Items
+- ✅ CRUD completo di item
+- ✅ Recupero per ID, filtro, utente
+- ✅ Item mescolati per utenti e ospiti, per categoria
+
+### Ordini
+- ✅ Aggiunta, aggiornamento stato, recupero per ruolo e cancellazione
+
+### Recensioni
+- ✅ Creazione, recupero per item, media voti
+- ✅ Recupero e cancellazione review da utente e admin
+
+### Carrello
+- ✅ Aggiunta, aggiornamento, recupero, cancellazione item e carrello
+
+### Segnalazioni
+- ✅ Creazione e gestione report da cliente, artigiano, admin
+
+### Pagamenti
+- ✅ Creazione sessione Stripe
+- ✅ Invio email conferma
+
+---
