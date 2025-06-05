@@ -430,6 +430,74 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
     - 401 (Unathorized)
     - 403 (Permission denied)
 
+### eliminazione articolo da carrello
+- Metodo: `DELETE`
+- URL: `/cart/:id`
+- Descrizione: Elimina un articolo dal carrello dell'utente
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - params : id
+- Risposta Prevista: { message: "Item removed from cart" }
+- Codici di stato HTTP: 
+    - 400 (Item not found in cart)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### eliminazione carrello
+- Metodo: `DELETE`
+- URL: `/delete-cart`
+- Descrizione: Elimina il carrello dell'utente
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: { message: "Items removed from cart" }
+- Codici di stato HTTP:
+    - 400 (Items not found in cart)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### numero articoli unici
+- Metodo: `GET`
+- URL: `/cart-count`
+- Descrizione: restituisce il numero di articoli unici nel carrello dell'utente
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: { count: result.rows[0].count }
+- Codici di stato HTTP:
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### numero articoli totali
+- Metodo: `GET`
+- URL: `/cart-total`
+- Descrizione: restituisce il numero di articoli totali nel carrello dell'utente
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: { total: result.rows[0].total }
+- Codici di stato HTTP:
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### numero articoli totali
+- Metodo: `GET`
+- URL: `/cart-price`
+- Descrizione: restituisce il prezzo totale del carrello dell'utente
+- Autenticazione: Authorization: Bearer <token JWT>
+- Permessi: 'update_cart'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: { totalPrice: result.rows[0].total_price }
+- Codici di stato HTTP:
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
 ### Elimina una categoria
 - Metodo: `DELETE`
 - URL: `/delete-category/:id`
