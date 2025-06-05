@@ -109,3 +109,123 @@ può generare errori durante il recupero dei permessi, restituendo uno status 50
 -Parametri richiesti: query params, path params, body.,
 -Risposta prevista: esempio di JSON restituito.,
 -Codici di stato HTTP: successi ed errori gestiti.
+
+### Crea segnalazione
+- Metodo: `POST`
+- URL: `/create-report`
+- Descrizione: Crea una nuova segnalazione
+- Autenticazione: Richiesta (`Bearer token`) oppure anonima
+- Permessi: 'manage_report'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - body :  item_id, category, description
+- Risposta Prevista: {message: "Report created", report: result.rows[0]}
+- Codici di stato HTTP: 
+    - 201 (Created)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Aggiunge l'admin alla segnalazione
+- Metodo: ` PUT`
+- URL: `/add-admin-report/:id`
+- Descrizione: aggiunge admin nella segnalazione,dopo che recupera le free-reports
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reports'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+    - param : report_id
+- Risposta Prevista: {message: "Admin added to report"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Report not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Recupera le segnalazione per admin_id
+- Metodo: `GET`
+- URL: `/admin-reports`
+- Descrizione: Recupera tutte le segnalazioni con admin_id
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reports'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {reports:result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Recupera le segnalazioni senza admin_id
+- Metodo: `GET`
+- URL: `/free-reports`
+- Descrizione: Recupera tutte le segnalazioni senza admin_id
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reports'
+- Parametri richiesti:
+    - header : Authorization: Bearer <token JWT>
+- Risposta Prevista: {reports:result.rows}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Elimina segnalazione
+- Metodo: `DELETE`
+- URL: `/delete-report/:id`
+- Descrizione: Elimina una segnalazione specifica da parte di un admin
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'moderate_reports'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - param : report_id
+- Risposta Prevista: {message: "Report deleted"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 400 (Report not found)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Creazione sessione di pagamento
+- Metodo: `POST`
+- URL: `/create-checkout-session`
+- Descrizione: Crea un sessione di pagamento con stripe per acquistare dei prodotti in un carrello
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: 'place_order'
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - body : items
+- Risposta Prevista: {url: session.url, id: session.id, paymentStatus: session.payment_status}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 500 (Errore creazione sessione di pagamento)
+    - 401 (Unathorized)
+    - 403 (Permission denied)
+
+### Richiesta informazioni sessione pagamento
+- Metodo: `GET`
+- URL: `/checkout-session/:id`
+- Descrizione: richiesta per ricevere informazioni come lo stato del pagamento quando viene reindirizzato nella nuova pagina per vedere lo stato del pagamento.
+- Autenticazione: Nessuna
+- Permessi: Nessuno
+- Parametri richiesti: 
+    - param : id_sessione
+- Risposta Prevista: {session: session}
+- Codici di stato HTTP: 
+    - 200 (OK)
+
+### Invia Email di Conferma Ordine
+
+- Metodo: `POST`
+- URL: `/send-confirmation-email`
+- Descrizione: Invia un'email di conferma ordine all'utente autenticato.
+- Autenticazione: Richiesta (`Bearer token`)
+- Permessi: Nessuno specifico, solo utente autenticato
+- Parametri richiesti: 
+    - header : Authorization: Bearer <token JWT>
+    - body : orderDetails
+- Risposta Prevista: {"message": "Email di conferma inviata"}
+- Codici di stato HTTP: 
+    - 200 (OK)
+    - 500 (errore invio email)
+    - 401 (Unathorized)
+---
