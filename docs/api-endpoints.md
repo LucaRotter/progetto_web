@@ -94,3 +94,18 @@ a fare la richiesta specifica ad una crud, all'interno di questa funzione si chi
 è presente o meno la permission richiesta
 restituisce la possibilità di continuare se i controlli vanno a buon fine, altrimenti nega la richiesta ttraverso lo status 403
 può generare errori durante il recupero dei permessi, restituendo uno status 500
+
+
+## CRUD --permessi 403, protect 401, post 201
+
+### upload di un'immagine
+
+
+-Metodo: POST
+-URL: '/upload'
+-Descrizione: cosa fa l’endpoint.,
+-Autenticazione: se è necessario un token o meno.,
+-Permessi: eventuali ruoli richiesti.,
+-Parametri richiesti: query params, path params, body.,
+-Risposta prevista: esempio di JSON restituito.,
+-Codici di stato HTTP: successi ed errori gestiti.
