@@ -34,6 +34,9 @@ jobs:
 
       - name: 🛠️ Build and start containers
         run: docker-compose -f docker-compose.yml up -d --build
+      - name: 📋 Mostra log dei container falliti
+        if: failure()
+        run: docker-compose logs
 
       - name: ⏳ Aspetta che il backend sia pronto
         run: |
@@ -48,7 +51,7 @@ jobs:
           npm test
         env:
           PG_USER: postgres
-          PG_HOST: localhost
+          PG_HOST: db
           PG_DATABASE: progetto_web
           PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           PG_PORT: 5432
