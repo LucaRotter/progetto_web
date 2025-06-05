@@ -1107,7 +1107,7 @@ app.get('/items', async (req, res) => {
 //gestione ordini
 //aggiungi ordine
 app.post('/add-order', protect, hasPermission('place_order'), async (req, res) => {
-    const { items, address, civic_number, postal_code, province, country, phone_number  } = req.body;
+    const { items, address, civic_number, postal_code, city, province, country, phone_number  } = req.body;
     const user_id = req.user.user_id;
     const maxResult = await pool.query('SELECT MAX(CAST(order_id AS INTEGER)) AS max_id FROM orders');
     const maxId = maxResult.rows[0].max_id;
@@ -1124,8 +1124,8 @@ app.post('/add-order', protect, hasPermission('place_order'), async (req, res) =
         artisan_id = artisan_id.rows[0].user_id;
 
         await pool.query(
-            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
-            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, province, country, phone_number]
+            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, city, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
+            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, city, province, country, phone_number]
         );
     }
     res.json({ message: "Order added", order_id: order_id });//l'order_id viene restituito per i test
