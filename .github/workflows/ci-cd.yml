@@ -63,10 +63,7 @@ jobs:
             sleep 3
           done
           echo "❌ Postgres non risponde dopo 10 tentativi!"
-          exit 1
-      - name: 📥 Inizializza il database manualmente
-        run: |
-          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h localhost -U postgres -d Progetto_web -f ./init/init.sql
+          exit 1 
       - name: Avvia Docker Compose
         run: docker compose -f docker-compose.yml up -d
 
@@ -83,7 +80,9 @@ jobs:
           done
           echo "❌ Il backend non risponde dopo 10 tentativi!"
           exit 1
-
+      - name: 📥 Inizializza il database manualmente
+        run: |
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h localhost -U postgres -d Progetto_web -f ./init/init_database.sql
       - name: 🧪 Esegui test backend CRUD
         run: |
           set -e
