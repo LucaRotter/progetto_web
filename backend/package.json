@@ -5,7 +5,7 @@
   "main": "server2.js",
   "scripts": {
     "start": "node server2.js",
-    "test": "jest"
+    "test": "jest --forceExit"
   },
   "keywords": [],
   "author": "ale, luca",
