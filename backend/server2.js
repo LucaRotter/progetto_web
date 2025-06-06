@@ -891,9 +891,20 @@ app.get('/itemgetId', async (req, res) => {
     res.json({ item_id: result.rows[0] });
 });
 
-//restituisce articoli per user_id(artigiano)
+//restituisce articoli per user_id(artigiano) dallo stesso artigiano
 app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) => {
     const user_id = req.user.user_id;;
+    let result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
+    for (const item of result.rows) {
+        const categoryRes = await pool.query('SELECT name FROM categories WHERE category_id = $1', [item.category_id]);
+        item.category = categoryRes.rows[0]?.name || null;
+    }
+    res.json({items: result.rows});
+});
+
+//restituisce articoli per user_id(artigiano) per vedere i prodotti di un artigiano
+app.get('/user-items/:id', async (req, res) => {
+    const user_id = req.params.id;
     let result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
     for (const item of result.rows) {
         const categoryRes = await pool.query('SELECT name FROM categories WHERE category_id = $1', [item.category_id]);
