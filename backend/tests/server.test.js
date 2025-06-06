@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { app, pool, generateToken, userState, categoryItemsCache } = require('../server2.js');  // Importa la tua app Express
 
-jest.setTimeout(20000);
+
 let server; 
 
 beforeAll(async () => {
