@@ -33,7 +33,7 @@ jobs:
         run: |
           cat <<EOF > .env
           PG_USER=postgres
-          PG_HOST=db
+          PG_HOST=localhost
           PG_DATABASE=Progetto_web
           PG_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           PG_PORT=5432
@@ -90,7 +90,7 @@ jobs:
           npm test
         env:
           PG_USER: postgres
-          PG_HOST: db
+          PG_HOST: localhost
           PG_DATABASE: Progetto_web
           PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           PG_PORT: 5432
