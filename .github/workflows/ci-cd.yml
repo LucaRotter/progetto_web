@@ -64,7 +64,9 @@ jobs:
           done
           echo "❌ Postgres non risponde dopo 10 tentativi!"
           exit 1
-
+      - name: 📥 Inizializza il database manualmente
+        run: |
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h localhost -U postgres -d Progetto_web -f ./init/init.sql
       - name: Avvia Docker Compose
         run: docker compose -f docker-compose.yml up -d
 
