@@ -1,9 +1,9 @@
 # PRESENTAZIONE PROGETTO
-# Piattaforma E-Commerce “Artigianato Online”
+# Piattaforma E-Commerce “ArtOfManual”
 
 ## Introduzione
 
-**Artigianato Online** è una piattaforma e-commerce sviluppata per supportare la vendita di prodotti artigianali realizzati da creativi locali. Il progetto nasce dall’esigenza di una startup che intende promuovere e commercializzare online oggetti unici, valorizzando il lavoro di piccoli produttori e artigiani indipendenti.
+**ArtOfManual** è una piattaforma e-commerce sviluppata per supportare la vendita di prodotti artigianali realizzati da creativi locali. Il progetto nasce dall’esigenza di una startup che intende promuovere e commercializzare online oggetti unici, valorizzando il lavoro di piccoli produttori e artigiani indipendenti.
 
 La piattaforma è progettata per offrire un'esperienza completa sia agli artigiani che ai clienti finali, coprendo tutti gli aspetti fondamentali di un marketplace: gestione degli account, pubblicazione dei prodotti, gestione degli ordini e monitoraggio delle vendite.
 
