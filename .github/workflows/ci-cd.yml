@@ -34,7 +34,7 @@ jobs:
           cat <<EOF > .env
           PG_USER=postgres
           PG_HOST=db
-          PG_DATABASE=rogetto_web
+          PG_DATABASE=Progetto_web
           PG_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           PG_PORT=5432
 
