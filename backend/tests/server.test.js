@@ -6,18 +6,9 @@ const fs = require('fs');
 const { app, pool, generateToken, userState, categoryItemsCache } = require('../server2.js');  // Importa la tua app Express
 
 
-let server; 
-
-beforeAll(async () => {
-  server = await app.listen(8000);
-});
 
 afterAll(async () => {
-  if (server) {
-    await new Promise((resolve) => server.close(resolve));
-  }
-
-  await pool.end(); 
+  await pool.end();  // chiude connessione al DB
 });
 
 let uploadedPublicId;  // variabile globale per salvare il publicId
