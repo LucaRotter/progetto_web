@@ -1317,6 +1317,10 @@ module.exports = {
     categoryItemsCache
 };
 
+//route per verificare la comunicazione con il backend
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 //chiusura connessione al database quando il server viene chiuso
 process.on('SIGINT', () => {
