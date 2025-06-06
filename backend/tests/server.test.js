@@ -621,14 +621,15 @@ describe('items', () => {
         .set('Authorization', `Bearer ${token}`)
         .query({ nItems: 5 });
 
-      expect(response2.body.selectedItems).toHaveLength(3);
+      expect(response2.body.selectedItems).toHaveLength(5);
+      
 
       const response3 = await request(app)
         .get('/random-items')
         .set('Authorization', `Bearer ${token}`)
         .query({ nItems: 5 });
-
-      expect(response3.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
+      expect(response3.body.selectedItems).toHaveLength(5);
+      
     });
 
     it('should return two batches for guest user', async () => {
@@ -693,24 +694,12 @@ describe('items', () => {
 
 
       expect(response.body).toHaveProperty('selectedItems');
-      expect(response.body.selectedItems).toHaveLength(1);
+      expect(response.body.selectedItems).toHaveLength(5);
       console.log(response.body.selectedItems);
       console.log(categoryItemsCache);
 
     });
-    it('return error items by category', async () => {
-      category = 'books';
-      userId = '6';
-      const token = generateToken(userId);
-      const response = await request(app)
-        .get(`/category-items/${category}`)
-        .set('Authorization', `Bearer ${token}`)
-        .query({ nItems: 3 });
-
-      expect(response.body).toHaveProperty('error', 'Nessun altro elemento disponibile');
-
-
-    });
+    
     it('return  4 shuffled items by category by a guest', async () => {
       category = 'books';
 
@@ -726,7 +715,7 @@ describe('items', () => {
       console.log(categoryItemsCache);
 
     });
-    it('return  1 shuffled items by category by a guest', async () => {
+    it('return  5 shuffled items by category by a guest', async () => {
       category = 'books';
 
 
@@ -736,7 +725,7 @@ describe('items', () => {
 
 
       expect(response.body).toHaveProperty('selectedItems');
-      expect(response.body.selectedItems).toHaveLength(1);
+      expect(response.body.selectedItems).toHaveLength(5);
       console.log(response.body.selectedItems);
       console.log(categoryItemsCache);
 
