@@ -61,8 +61,16 @@ jobs:
       - name: ⏳ Aspetta che il backend sia pronto
         run: |
           echo "Aspetto che il backend risponda..."
-          sleep 10
-          curl --fail http://localhost:8000 || (echo "❌ Il backend non risponde!" && exit 1)
+          for i in {1..10}; do
+            if curl --fail http://localhost:8000/health; then
+             echo "✅ Il backend è pronto!"
+             exit 0
+          fi
+          echo "⏳ Tentativo $i fallito, riprovo tra 3s..."
+          sleep 3
+          done
+          echo "❌ Il backend non risponde dopo 10 tentativi!"
+          exit 1
 
       - name: 🧪 Esegui test backend CRUD
         run: |
