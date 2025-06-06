@@ -8,8 +8,8 @@ const { app, pool, generateToken, userState, categoryItemsCache } = require('../
 
 let server; 
 
-beforeAll((done) => {
-  server = app.listen(8000, done);
+beforeAll(async () => {
+  server = await app.listen(8000);
 });
 
 afterAll(async () => {
