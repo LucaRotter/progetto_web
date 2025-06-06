@@ -388,7 +388,7 @@ app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) =>
     }
 });
 
-app.get('/user/:id', async (req, res) => {
+app.get('/userby/:id', async (req, res) => {
     const user_id = req.params.id;
     const result = await pool.query('SELECT name, surname, image_url FROM users WHERE user_id = $1', [user_id]);
     if (result.rows.length > 0) {
