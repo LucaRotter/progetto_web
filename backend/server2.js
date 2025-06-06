@@ -387,6 +387,17 @@ app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) =>
         res.status(400).json({ message: "User not found" });
     }
 });
+
+app.get('/user/:id', async (req, res) => {
+    const user_id = req.params.id;
+    const result = await pool.query('SELECT name, surname, image_url FROM users WHERE user_id = $1', [user_id]);
+    if (result.rows.length > 0) {
+        res.json({user: result.rows[0]});
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
 //per admin: recupera id utente da email e ruolo
 app.get('/user-by-email', protect, hasPermission('manage_users'), async (req, res) => {
     const { email, role } = req.body;
