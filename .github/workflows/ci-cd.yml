@@ -26,7 +26,7 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: ⬇️ Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: 📄 Crea file .env
@@ -48,42 +48,42 @@ jobs:
           APP_PASSWORD=${{ secrets.APP_PASSWORD }}
           EOF
 
-      - name: 🐳 Set up Docker
+      - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: ⏳ Aspetta che Postgres sia pronto
+      - name: Aspetta che Postgres sia pronto
         run: |
           echo "Aspetto che Postgres risponda..."
           for i in {1..10}; do
             if pg_isready -h localhost -p 5432 -U postgres; then
-              echo "✅ Postgres è pronto!"
+              echo "Postgres è pronto!"
               exit 0
             fi
-            echo "⏳ Tentativo $i fallito, riprovo tra 3s..."
+            echo "Tentativo $i fallito, riprovo tra 3s..."
             sleep 3
           done
-          echo "❌ Postgres non risponde dopo 10 tentativi!"
+          echo "Postgres non risponde dopo 10 tentativi!"
           exit 1 
       - name: Avvia Docker Compose
         run: docker compose -f docker-compose.yml up -d
 
-      - name: ⏳ Aspetta che il backend sia pronto
+      - name: Aspetta che il backend sia pronto
         run: |
           echo "Aspetto che il backend risponda..."
           for i in {1..10}; do
             if curl --fail http://localhost:8000/health; then
-              echo "✅ Il backend è pronto!"
+              echo "Il backend è pronto!"
               exit 0
             fi
-            echo "⏳ Tentativo $i fallito, riprovo tra 3s..."
+            echo "Tentativo $i fallito, riprovo tra 3s..."
             sleep 3
           done
-          echo "❌ Il backend non risponde dopo 10 tentativi!"
+          echo "Il backend non risponde dopo 10 tentativi!"
           exit 1
-      - name: 📥 Inizializza il database manualmente
+      - name: Inizializza il database manualmente
         run: |
           PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h localhost -U postgres -d Progetto_web -f ./init/init_database.sql
-      - name: 🧪 Esegui test backend CRUD
+      - name: Esegui test backend CRUD
         run: |
           set -e
           cd backend
@@ -105,9 +105,9 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
 
-      - name: 📋 Log container falliti
+      - name: Log container falliti
         if: failure()
         run: docker compose -f docker-compose.yml logs
 
-      - name: 🧹 Ferma i container
+      - name: Ferma i container
         run: docker compose -f docker-compose.yml down --volumes --remove-orphans
