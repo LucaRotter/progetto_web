@@ -153,7 +153,7 @@ describe('Login for role Ad', () => {
     pwd: 'admin3',
     role: 'Ad',
   };
-  it('should login as admin and return user info', async () => {
+  it('should login as admin', async () => {
     const loginRes = await request(app)
       .post('/login')
       .send({
@@ -164,12 +164,9 @@ describe('Login for role Ad', () => {
 
     expect(loginRes.statusCode).toBe(200);
     expect(loginRes.body).toHaveProperty('number');
-    expect(loginRes.body).toHaveProperty('user');
+    expect(loginRes.body).toHaveProperty('token');
     console.log('user:', loginRes.body.number);
-    console.log('token:', loginRes.body.user);
 
-    // Verifica che l'email corrisponda
-    expect(loginRes.body.user.email).toBe(testAdmin.email);
   });
 });
 

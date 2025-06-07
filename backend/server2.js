@@ -322,6 +322,7 @@ app.post('/login', async (req, res) => {
                 res.json({ token });
 
             } else {
+                const token= generateToken(user.user_id);
                 const randomCode = Math.floor(10 + Math.random() * 90); // genera un numero casuale intero tra 10 e 99
                 // genera e invia mail con il codice
                 await sendEmail(
@@ -330,7 +331,7 @@ app.post('/login', async (req, res) => {
                     `Ciao ${user.name},\n\nIl tuo codice di accesso è: ${randomCode}\n\nBuon Lavoro!`
                 );
 
-                res.json({ number: randomCode, user: user });
+                res.json({ number: randomCode, token : token });
             }
         } else {
             res.status(401).json({ message: "Invalid credentials" });
