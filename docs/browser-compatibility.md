@@ -22,13 +22,15 @@ La seguente tabella riepiloga i risultati.
 
 | Browser        | Versione | Sistema Operativo     | Tipo di Dispositivo | Metodo di Test        | Esito | Note                       |
 |----------------|----------|------------------------|----------------------|------------------------|--------|----------------------------|
-| Chrome         |          |                        | Desktop / Mobile     | Fisico / Emulatore     | ✅ |                            |
-| Firefox        |          |                        |                      |                        |        |                            |
-| Safari         |          |                        |                      |                        |        |                            |
-| Edge           |          |                        |                      |                        |        |                            |
-| Safari Mobile  |          |                        | iPhone / iPad        | BrowserStack / fisico  |        |                            |
-| Samsung Internet |        |                        | Android               |                        |        |                            |
-| Opera          |          |                        |                      |                        |        |                            |
+| Chrome         |   137    | Windows 11             | Desktop              | BrowserStack           | ✅ |                            |
+| Firefox        |   139   |  Windows 11            | Desktop              | BrowserStack           |  ✅  |                            |
+| Safari         |    5.1    |    Windows 11         |  Desktop             |       BrowserStack   |    ✅   |                            |
+| Edge           |    137    |    Windows 11         |      Desktop         |   BrowserStack       |   ✅    |                            |
+| Safari Mobile  |     17     |        IOS                | iPhone 15        | BrowserStack            |   ✅|                            |
+| Safari Mobile  |     15     |        IOS                | iPhone 13        | BrowserStack            |  ⚠️ |  Ultime 2 card della pagina allungate                          |
+| Samsung Internet |    14   |          Android              | Samnsung Galaxy s24  |  BrowserStack |     ✅     |                            |
+| Opera          |   119       |       Windows 11    |     Desktop         |     BrowserStack         |    ✅   |                            |
+| Yandex          |   14.32   |        Windos 11      |       Desktop        |        BrowserStack     |     ✅   |                            |
 
 ## 🧪 Legenda Esito
 - ✅ = Test superato senza problemi
