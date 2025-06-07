@@ -235,7 +235,7 @@ INSERT INTO items (item_id, name, price, description, quantity, image_url, categ
 
 INSERT INTO items (item_id, name, price, description, quantity, image_url, category_id, user_id) VALUES
 (61, 'Item 61', 12.99, 'Description for item 61', 5, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244537/gatto-siberiano_ffcfth.jpg', 1, 8),
-(62, 'Item 62', 8.50, 'Description for item 62', 7, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223836/6616718fe4a871d7278a2037_Product-Concept-What-Is-It-And-How-Can-You-Best-Use-It_lac1om.jpg', 2, 8),
+(62, 'Item 62', 8.50, 'Description for item 62', 7, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244537/gatto-siberiano_ffcfth.jpg', 2, 8),
 (63, 'Item 63', 15.00, 'Description for item 63', 3, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244537/gatto-siberiano_ffcfth.jpg', 3, 8),
 (64, 'Item 64', 20.00, 'Description for item 64', 10, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244537/gatto-siberiano_ffcfth.jpg', 4, 8),
 (65, 'Item 65', 9.99, 'Description for item 65', 2, 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244537/gatto-siberiano_ffcfth.jpg', 5, 8),
