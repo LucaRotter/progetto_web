@@ -279,3 +279,48 @@ Esempi di prodotti inseriti per test, appartenenti all'artigiano con `user_id = 
 (La lista completa contiene 30 item con varie categorie e quantità.)
 
 ---
+
+# Backup e Ripristino del Database con pgAdmin
+
+Questa guida descrive come eseguire il **backup** e il **ripristino** di un database PostgreSQL utilizzando l'interfaccia grafica di **pgAdmin**.
+
+---
+
+##  Backup del Database
+
+### Passaggi:
+
+1. Apri **pgAdmin** e connettiti al tuo server PostgreSQL.
+2. Nella barra laterale sinistra, **clic con il tasto destro sul database** da salvare.
+3. Seleziona **"Backup..."** dal menu a comparsa.
+4. Compila i campi nella finestra che appare:
+   - **Filename**: scegli il percorso e il nome del file, ad esempio:
+     ```
+     /home/utente/backup/backup_mio_database.sql
+     ```
+   - **Format**:
+     - `Plain` → file SQL leggibile (consigliato per revisioni)
+     - `Custom` → formato binario, adatto per restore parziale
+     - `Tar` → archivio compresso
+   - Altri parametri possono essere lasciati con i valori predefiniti.
+5. Clicca su **"Backup"** per avviare il salvataggio.
+
+---
+
+## Ripristino del Database (Restore)
+
+### Prerequisiti:
+
+- Avere già un file di backup `.sql`, `.backup` o `.tar`.
+- (Opzionale) Creare un nuovo database vuoto per il ripristino.
+
+### Passaggi:
+
+1. In pgAdmin, clic con il tasto destro sul database di destinazione.
+2. Seleziona **"Restore..."** dal menu.
+3. Nella finestra di ripristino:
+   - **Filename**: seleziona il file di backup precedentemente salvato.
+   - **Format**: scegli lo stesso formato usato nel backup (`Plain`, `Custom`, `Tar`).
+4. Clicca su **"Restore"** per avviare l'importazione.
+
+---
