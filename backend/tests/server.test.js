@@ -218,6 +218,49 @@ describe('GET user and DELETE user', () => {
 
     expect(response.body).toHaveProperty('message', 'Name updated');
   });
+  it('should update name of user by admin', async () => {
+    const userId=3;
+    const user_id = 6;
+    const name= "prova";
+    const surname= "cliente";
+    const token = generateToken(userId);
+    const response = await request(app)
+        .put(`/update-name/${user_id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({name: name, surname: surname})
+    
+    expect(response.body).toEqual({ message: 'Name updated' });
+});
+it('should update pwd of user by admin', async () => {
+    const userId=3;
+    const user_id = 6;
+    const newPassword= "password1";
+    
+    const token = generateToken(userId);
+    const response = await request(app)
+        .put(`/update-password/${user_id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({newPassword: newPassword})
+    
+    expect(response.body).toEqual({ message: 'Password updated' });
+});
+
+it('should update email of user by admin', async () => {
+    const userId=3;
+    const user_id = 6;
+    const email= "marketrader69@gmail.com";
+    
+    const token = generateToken(userId);
+    const response = await request(app)
+        .put(`/update-email/${user_id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({newEmail: email})
+    
+    expect(response.body).toEqual({ message: 'Email updated' });
+});
+
+
+
   test('get user from admin', async () => {
     const userId = '6';
     const adminId = '3'; // Assicurati che l'admin abbia ID 1
@@ -230,6 +273,15 @@ describe('GET user and DELETE user', () => {
     console.log('User:', response.body.user);
 
   });
+  it('should get all users for the admin', async () => {
+    const userId=3;
+    const token = generateToken(userId);
+    const response = await request(app)
+        .get('/users')
+        .set('Authorization', `Bearer ${token}`)
+    
+    expect(response.body).toHaveProperty('users');
+});
   it('get user by email e and role', async () => {
     const userId = 3;
     const token = generateToken(userId);

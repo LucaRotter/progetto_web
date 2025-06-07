@@ -73,7 +73,7 @@ category varchar(100) not null,
 description text,
 customer_id varchar(5) references users(user_id) on delete cascade on update cascade,
 artisan_id varchar(5) references users(user_id) on delete cascade on update cascade,
-item_id varchar(5) references items(item_id),
+item_id varchar(5) references items(item_id) on delete cascade on update cascade,
 admin_id varchar(5) references users(user_id)
 );
 
@@ -145,15 +145,15 @@ INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 
 --CATEGORIE
 INSERT INTO categories(category_id, name, image_url) VALUES
-('1', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749222401/libri_wk1nzn.jpg'),
-('2', 'electronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749222665/39611775-astratto-elettronico-circuito-tavola-struttura-alto-computer-e-digitale-tecnologia-concetto-su-un-buio-blu-sfondo-vettore-illustrazione-vettoriale_mj7rfw.jpg'),
-('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749222986/SS25-L6-01-Home-D-03a_1_zwyfix.avif'),
-('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223032/images_xd75go.jpg'),
-('5', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223101/AdobeStock_265155137_ctlret.jpg'),
-('6', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749222822/65293ad388e7f519253c23b6_cuu_mexygabriel_design_banner-scaled_vbvfax.jpg'),
-('7', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223157/1520199081902_b2ki4o.jpg'),
-('8', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223269/trucchi-anallergici_sradyt.webp'),
-('9', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223269/trucchi-anallergici_sradyt.webp');
+('1', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749310912/books_tqqra3.png'),
+('2', 'electronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311031/eletronics_o6cym0.png'),
+('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311257/clothes-rack_kpvqgz.png'),
+('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311164/house_qbfgmk.png'),
+('5', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311112/park_jwmpi5.png'),
+('6', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311071/digital_g10kgo.png'),
+('7', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311203/balls-sports_kisyfh.png'),
+('8', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311171/cosmetics_micd5p.png'),
+('9', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749310976/salad_ssrzpx.png');
 
 --INSERIMENTO UTENTI PER TEST
 --la password è password123

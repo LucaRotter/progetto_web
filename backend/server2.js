@@ -370,6 +370,18 @@ app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
         res.status(400).json({ message: "User not found" });
     }
 });
+//modifica nome e cognome user da parte di un admin
+app.put('/update-name/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const user_id = req.params.id;
+    const { name, surname } = req.body;
+    const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Name updated" });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
 
 //modifica nome utente
 app.put('/update-name', protect, hasPermission('update_profile'), async (req, res) => {
@@ -412,6 +424,34 @@ app.get('/user-by-email', protect, hasPermission('manage_users'), async (req, re
     const result = await pool.query('SELECT user_id FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
     if (result.rows.length > 0) {
         res.json({ user_id: result.rows[0].user_id });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//aggiorna password di un utente da parte di un admin
+app.put('/update-password/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const { newPassword } = req.body;
+    const user_id = req.params.id;
+    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+    
+    if (userResult.rows.length > 0) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE users SET pwd = $1 WHERE user_id = $2', [hashedPassword, user_id]);
+         res.json({ message: "Password updated" });    
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//aggiorna email di un utente da parte di un admin
+app.put('/update-email/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const { newEmail } = req.body;
+    const user_id = req.params.id;
+    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+    if (userResult.rows.length > 0) {
+        await pool.query('UPDATE users SET email = $1 WHERE user_id = $2', [newEmail, user_id]);
+         res.json({ message: "Email updated" });    
     } else {
         res.status(400).json({ message: "User not found" });
     }
