@@ -31,6 +31,12 @@ Questa piattaforma rappresenta una base solida per sviluppi futuri, con potenzia
 
 ## [USER STORIES](https://docs.google.com/document/d/1MGyGqzQ3jXNNJViPsJYFLUazYfGfusdXiqwZE6y89FY/edit?usp=sharing)
 
+---
+
+## [STRUTTURA PROGETTO](https://drive.google.com/drive/folders/1SDTFtTaTafw3Hd35gVZFpaQGjoVJlg5y)
+
+---
+
 ## SEZIONI
 
 - [Componenti Grafici Frontend](docs/frontend-components.md)
