@@ -8,16 +8,14 @@ const { app, pool, generateToken, userState, categoryItemsCache } = require('../
 const stripe = require('stripe')(process.env.SECRET_KEY_STRIPE);
 
 
-it('should update password', async () => {
-    const userId=6;
+it('should get all users for the admin', async () => {
+    const userId=3;
     const token = generateToken(userId);
     const response = await request(app)
-        .put('/update-password')
+        .get('/users')
         .set('Authorization', `Bearer ${token}`)
-        .send({
-            oldPassword: 'prova1',
-            newPassword: 'prova1'
-        });
     
-    expect(response.body.message).toBe('Password updated');
+    expect(response.body).toHaveProperty('users');
 });
+
+

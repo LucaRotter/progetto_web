@@ -354,6 +354,11 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
         res.status(400).json({ message: "User not found" });
     }
 });
+//ricevi tutti gli utenti
+app.get('/users', protect, hasPermission('manage_users'), async (req, res) => {
+    const result = await pool.query("SELECT * FROM users where role_id != '3'");
+    res.json({users: result.rows});
+});
 
 //ricevi utente
 app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
