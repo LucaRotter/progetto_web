@@ -2,15 +2,18 @@
 
 ## STRUTTURA GENERALE DEL BACKEND
 
-├── tests/ # Test automatici
-  ├──single.test #Test unitari
-  ├──server.test #Test di integrazione
-  ├──test.jpeg # Immagine di test
-├── .env # Variabili d'ambiente
-├── dockerfile # Immagine Docker
-├── package.json # Dipendenze e script (per Node.js)
-├── start.js # Start del server
-└── server2.js # Logica del server
+```plaintext
+📁 project-root/
+├── tests/                     # Test automatici
+│   ├── single.test            # Test unitari
+│   ├── server.test            # Test di integrazione
+│   └── test.jpeg              # Immagine di test
+├── .env                       # Variabili d'ambiente
+├── Dockerfile                 # Immagine Docker
+├── package.json               # Dipendenze e script (per Node.js)
+├── start.js                   # Start del server
+└── server2.js                 # Logica del server
+```
 
 ## DESCRIZIONE DEL PROGETTO
 
@@ -180,7 +183,7 @@ Questa sezione descrive i principali flussi funzionali supportati dal backend, d
 
 ---
 
-### 3. ✍️ Recensione di un Prodotto
+### 3.  Recensione di un Prodotto
 
 **Flusso:**
 1. L’utente autenticato accede a `POST /add-review`
@@ -193,7 +196,7 @@ Questa sezione descrive i principali flussi funzionali supportati dal backend, d
 
 ---
 
-### 4. 🚨 Segnalazione Contenuti
+### 4.  Segnalazione Contenuti
 
 **Flusso:**
 1. L’utente autenticato invia una segnalazione via `POST /create-report`
@@ -203,7 +206,7 @@ Questa sezione descrive i principali flussi funzionali supportati dal backend, d
 4. Succesivamente un admin può gestire i propri report
 ---
 
-### 5. ⚙️ Gestione Profilo Utente
+### 5.  Gestione Profilo Utente
 
 **Flusso:**
 1. L’utente accede al profilo tramite `GET /user`
@@ -212,7 +215,7 @@ Questa sezione descrive i principali flussi funzionali supportati dal backend, d
 
 ---
 
-### 6. 🔐 Autorizzazione e Permessi
+### 6.  Autorizzazione e Permessi
 
 **Flusso trasversale:**
 - Ogni rotta protetta utilizza `protect` per verificare l'autenticazione
