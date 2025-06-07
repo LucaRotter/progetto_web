@@ -225,7 +225,7 @@ describe('GET user and DELETE user', () => {
     const surname= "cliente";
     const token = generateToken(userId);
     const response = await request(app)
-        .put(`/update-name/${user_id}`)
+        .put(`/update-name-user/${user_id}`)
         .set('Authorization', `Bearer ${token}`)
         .send({name: name, surname: surname})
     

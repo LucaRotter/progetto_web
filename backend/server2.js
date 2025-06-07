@@ -371,7 +371,7 @@ app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
     }
 });
 //modifica nome e cognome user da parte di un admin
-app.put('/update-name/:id', protect, hasPermission('manage_users'), async (req, res) => {
+app.put('/update-name-user/:id', protect, hasPermission('manage_users'), async (req, res) => {
     const user_id = req.params.id;
     const { name, surname } = req.body;
     const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
