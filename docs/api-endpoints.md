@@ -1,9 +1,8 @@
-# descrizione su tutti gli endpoint, anche non crud del backend, descrivendo parametri, errori e risposte
-# dettagli tecnici
 
-# documentazione degli api-endpoints
 
-## funzioni 
+# Documentazione degli api-endpoints
+
+## FUNZIONI 
 
 ### generazione token
 ```js
@@ -51,7 +50,7 @@ prende in input la mail del destinatario, l'oggetto e il testo della mail da inv
 restituisce le informazioni riguardanti essa e può generare errore durante l'invio se qualcosa va storto
 
 
-## middleware
+## MIDDLEWARE
 
 ### gestione di richieste massime
 ```js 
