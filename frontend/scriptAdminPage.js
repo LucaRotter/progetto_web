@@ -1,6 +1,6 @@
 const token = localStorage.getItem('token');
 console.log("Token:", token);
-
+localStorage.setItem("Admin", "true")
 let selectedReport
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -189,6 +189,7 @@ function logout(){
     
     localStorage.setItem("modalità", "");
     localStorage.setItem("token", "");
+    localStorage.setItem("Admin", "")
     window.location.href ="index.html"
 }
 

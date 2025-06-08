@@ -15,6 +15,9 @@
   <div id="header"></div>
     
   <main class="container-fluid flex-grow-1" style="height: auto; padding-top: 90px;">
+    <div class="container mt-3 d-flex justify-content-end Admin d-none">
+      <button class="btn btn-danger" onclick="deleteProduct()">🗑️ Delete Product</button>
+    </div>
   <div class="container py-5" >
       <div class="row g-5">
     
@@ -35,7 +38,7 @@
       <p class="mt-3" id="Product-Description"></p>
       
     <div class="btn-wrapper d-flex flex-wrap justify-content-center align-items-center gap-2 mt-4">
-  <button class="shiny-blue-btn" style="min-width: 140px; flex: 1 1 60px;" onclick="addToCart()">🛒 Add To Cart</button>
+  <button class="shiny-blue-btn" style="min-width: 140px; flex: 1 1 60px;" onclick="addToCart()" id = "addedtoCart">🛒 Add To Cart</button>
   <button class="shiny-blue-btn" style="min-width: 140px; flex: 1 1 60px;" onclick="openModal()">❗Report</button>
 </div>
         
@@ -52,6 +55,12 @@
 </div>
   </div>
 
+   <div class="container d-flex justify-content-center gap-2 mb-2 Admin d-none">
+  <button class="btn btn-warning" onclick="toggleReviewSelection()">🧹 Manage Reviews</button>
+  <button class="btn btn-danger" id="deleteSelectedReviewsBtn" onclick="deleteSelectedReviews()" style="display: none;">
+    ❌ Delete Selected
+  </button>
+</div>
   <div class="review container-fluid mt-3 mb-5 d-flex flex-column align-items-center gap-4 p-3" style="height: auto;background-color: rgb(56, 56, 56);width: 70%; border-radius: 10px;">
     <span class="" style="color: white;">Review from others Customer</span>
     <div class="row justify-content-start w-100" id="rowContainer">

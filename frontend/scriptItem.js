@@ -1,8 +1,10 @@
 const form = document.getElementById('searchForm');
 const input = document.getElementById('searchInput');
 const btn = document.getElementById('searchBtn');
+const token=localStorage.getItem("token")
 let currentItem 
 let expanded = false;
+
 
 const params = new URLSearchParams(window.location.search);
 const product = params.get('id');
@@ -179,7 +181,19 @@ function sendReport() {
   const container = document.getElementById("rowContainer");
 
   const wrapper = document.createElement("div");
-wrapper.className = "w-100";
+  wrapper.className = "w-100 position-relative review-card mb-3"; // utile per toggle
+  wrapper.style.backgroundColor = "#2c2c2c"; // per visibilità scura
+  wrapper.style.padding = "10px";
+  wrapper.style.borderRadius = "10px";
+
+  // Checkbox nascosta per la selezione
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "review-select position-absolute";
+  checkbox.style.top = "10px";
+  checkbox.style.right = "10px";
+  checkbox.style.display = "none"; // nascosta di default
+  wrapper.appendChild(checkbox);
 
 // Crea lo span per il nome
 const span = document.createElement("span");
@@ -212,6 +226,14 @@ if (!product) {
   product = sessionStorage.getItem("pendingProductView");
 }
 
+if(localStorage.getItem("Admin")== "true"){
+
+  adminView = document.getElementsByClassName("Admin")
+  Array.from(adminView).forEach(element => {
+  element.classList.remove("d-none");
+});
+}
+
   fetch(`http://localhost:8000/item/${product}`, {
     headers: {
         'Content-Type': 'application/json'
@@ -224,6 +246,14 @@ if (!product) {
     currentItem = selectedProduct[0]
     console.log(currentItem)
     appdateItem(data.item, data.category_name);
+
+    if(data.item.quantity == 0){
+     const button = document.getElementById("addedtoCart")
+
+     button.classList.remove("shiny-blue-btn")
+     button.classList.add("UsefullButton")
+     
+    }
     addToReview()
 
   return fetch(`http://localhost:8000/userby/${currentItem.user_id}`, {
@@ -285,3 +315,81 @@ function initProfile(profile){
 
 }
 
+
+function deleteProduct() {
+  if (confirm("Are you sure you want to delete this product?")) {
+
+    console.log(currentItem)
+    fetch(`http://localhost:8000/delete-item/${currentItem.item_id}`, {
+    
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${token}`
+        }
+      })
+
+  .then(response => response.json())
+  .then(Data => {
+
+    alert("Product deleted (demo)");
+    window.location.href = "index.html";
+    
+  })
+  .catch(error => {
+    console.error(error);
+    document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
+  });
+  }
+}
+
+function toggleReviewSelection() {
+  const reviews = document.querySelectorAll('.review-card');
+  reviews.forEach(card => {
+    const checkbox = card.querySelector('.review-select');
+    if (checkbox) {
+      checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
+    }
+  });
+  const anyVisible = [...document.querySelectorAll('.review-select')].some(cb => cb.style.display !== 'none');
+  document.getElementById('deleteSelectedReviewsBtn').style.display = anyVisible ? 'inline-block' : 'none';
+}
+
+function deleteSelectedReviews() {
+  const checkboxes = document.querySelectorAll('.review-select');
+  let deleted = 0;
+  checkboxes.forEach(cb => {
+
+    if (cb.checked) {
+      cb.closest('.review-card').remove();
+      idReview = cb.closest('.review-card').id;
+      deleted++;
+
+       fetch(`http://localhost:8000/delete-review/${idReview}`, {
+    
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${token}`
+        }
+      })
+
+      .then(response => response.json())
+      .then(Data => {
+
+        alert("Product deleted (demo)");
+       
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
+      });
+        }
+  });
+
+  if (deleted === 0) {
+    alert("No reviews selected.");
+  } else {
+    alert(`${deleted} review(s) deleted.`);
+  }
+}

@@ -365,9 +365,6 @@ capInput.addEventListener("input", () => {
 });
 
 
-app.get('/cart', protect, async (req, res) => {
-    const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM carts WHERE user_id = $1', [user_id]);
-    res.json({items:result.rows});
-});
-
+  const [totalPrice, itemCount] = JSON.parse(sessionStorage.getItem("recapP"))
+  document.getElementById("itemNumber").textContent = "total " + itemCount
+  document.getElementById("totalPrice").textContent = "total product " + totalPrice

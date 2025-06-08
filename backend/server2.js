@@ -1,6 +1,6 @@
 // Importa le librerie necessarie
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');

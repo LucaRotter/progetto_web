@@ -1,6 +1,7 @@
 const token = localStorage.getItem("token");
 
 document.addEventListener("DOMContentLoaded", () => {
+   
   fetch(`http://localhost:8000/artisan-orders`, {
     headers: {
       'Content-Type': 'application/json',
