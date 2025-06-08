@@ -1213,6 +1213,13 @@ app.post('/add-order', protect, hasPermission('place_order'), async (req, res) =
 
         let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
         artisan_id = artisan_id.rows[0].user_id;
+        const oldqty = await pool.query('SELECT quantity FROM items WHERE item_id = $1', [item.item_id]);
+        const newqty = quantity - item.quantity;
+        if (newqty < 0) {
+            return res.status(400).json({ message: "Insufficient stock for item: " + item.item_id });
+        } else {
+            await pool.query('UPDATE items SET quantity = $1 WHERE item_id = $2', [newqty, item.item_id]);
+        }
 
         await pool.query(
             'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, city, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
