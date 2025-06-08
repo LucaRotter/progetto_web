@@ -88,7 +88,7 @@ description text
 create table shuffled(
 item_index INTEGER primary key,
 item_id varchar(5) references items(item_id) on delete cascade on update cascade,
-user_key varchar(16) not null,
+user_key varchar(45) not null,
 category_id varchar(5) references categories(category_id) on delete cascade on update cascade
 );
 
@@ -158,14 +158,14 @@ INSERT INTO categories(category_id, name, image_url) VALUES
 --INSERIMENTO UTENTI PER TEST
 --la password è password1, anche dopo i test
 INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
-('5', 'prova', 'artigiano', 'marketrader69@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223517/11062b_78c43fe155c041bca03b0c6e15b82110_mv2_plj72j.avif', 2),
-('7', 'prova1', 'artigiano1', 'provaartigiano@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749218011/prodotti/ptohefudfxvmdtdwmdr8.jpg', 2),
-('8', 'prova2', 'artigiano2', 'provaartigiano2@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223622/shopping_ndfr1w.jpg', 2),
-('9', 'prova3', 'artigiano3', 'provaartigiano3@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244673/avatra_jfctaq.webp', 2),
-('10', 'prova4', 'artigiano4', 'provaartigiano4@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244750/luffy_vlow4s.jpg', 2);
+('5', 'prova', 'artigiano', 'marketrader69@gmail.com', '$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223517/11062b_78c43fe155c041bca03b0c6e15b82110_mv2_plj72j.avif', 2),
+('7', 'prova1', 'artigiano1', 'provaartigiano@gmail.com', '$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749218011/prodotti/ptohefudfxvmdtdwmdr8.jpg', 2),
+('8', 'prova2', 'artigiano2', 'provaartigiano2@gmail.com', '$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223622/shopping_ndfr1w.jpg', 2),
+('9', 'prova3', 'artigiano3', 'provaartigiano3@gmail.com', '$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244673/avatra_jfctaq.webp', 2),
+('10', 'prova4', 'artigiano4', 'provaartigiano4@gmail.com', '$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749244750/luffy_vlow4s.jpg', 2);
 
 insert into users(user_id, name, surname, email, pwd, image_url, role_id )values
-('6','prova','cliente','marketrader69@gmail.com','https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223622/shopping_ndfr1w.jpg','$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi',1);
+('6','prova','cliente','marketrader69@gmail.com','$2b$10$Pvl9ML88FMovQzG9eUOSze725LNxng0iSK5MEIP9n5tTpY5/kZ1lS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223622/shopping_ndfr1w.jpg',1);
 
 --INSERIMENTO ITEM 
 INSERT INTO items(item_id, name, price, description, quantity, image_url, category_id, user_id) VALUES
