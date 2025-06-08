@@ -6,6 +6,10 @@ let expanded = false;
 
 const params = new URLSearchParams(window.location.search);
 const product = params.get('id');
+if (product) {
+  sessionStorage.setItem("pendingProductView", product);
+}
+
 let selectedProduct ;
 console.log(selectedProduct)
 console.log("ID ricevuto:",product);
@@ -17,7 +21,7 @@ function appdateItem(itemData, categoryData) {
     document.getElementById("Product-Description").textContent = itemData[0].description;
     document.getElementById("Product-image").src = itemData[0].image_url;
     document.getElementById("Product-Category").textContent = categoryData[0].name;
-    let av
+    
     getRating().then(average => {
      const av = average; // assegna il valore dentro la callback
     document.getElementById("AverageRating").textContent = av + "/5";
@@ -200,7 +204,14 @@ container.appendChild(wrapper);
 
 // Crea per ogni reportTypes un'option che verra aggiunta alla select
 document.addEventListener("DOMContentLoaded", () => {
- 
+  const params = new URLSearchParams(window.location.search);
+  let product = params.get('id');
+
+// Se non c’è nel URL, prova da sessionStorage
+if (!product) {
+  product = sessionStorage.getItem("pendingProductView");
+}
+
   fetch(`http://localhost:8000/item/${product}`, {
     headers: {
         'Content-Type': 'application/json'

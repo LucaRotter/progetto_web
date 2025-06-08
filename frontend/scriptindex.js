@@ -1,4 +1,5 @@
 let caricamentoInCorso= false
+let token = localStorage.getItem("token")
 console.log(localStorage.getItem("token"))
 
 
@@ -27,14 +28,9 @@ function logged(event){
       })
       .then(response => response.json())
       .then(Data => {
-            
-       console.log(Data)
-       console.log("token attuale" +  Data.token)
-      
 
        if(Data.token == null){
 
-        
         alert("Credenziali non valide, riprova");
         return;
         
@@ -76,10 +72,7 @@ document.getElementById('singButton').addEventListener('click', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-if (!localStorage.getItem("userKey")) {
-  const uuid = crypto.randomUUID(); // genera una chiave univoca
-  localStorage.setItem("userKey", uuid);
-}
+
 
 if (sessionStorage.getItem("loginSuccess") == "true") {
       // Mostra l'alert
@@ -102,8 +95,7 @@ if (sessionStorage.getItem("loginSuccess") == "true") {
       })
     .then(Response => Response.json())
     .then(Data =>{
-  
-      console.log(Data)
+
       for(let i= 0; i<initalNItems;i++){
         
           const list = document.getElementById("ProductList")
@@ -118,7 +110,7 @@ if (sessionStorage.getItem("loginSuccess") == "true") {
 
 
 
-const token = localStorage.getItem("token");
+token = localStorage.getItem("token");
 console.log(token)
 window.addEventListener("beforeunload", () => {
    
@@ -133,42 +125,17 @@ window.addEventListener("beforeunload", () => {
   })
 
 
-let prevScroll = $(window).scrollTop();
+function onScrollHandler() {
+  if (caricamentoInCorso) return;
 
-// utilizzato per
-
-$(window).on("scroll", function () {
-    const currentScroll = $(this).scrollTop();
-
-    if (currentScroll > prevScroll && currentScroll > 100) {
-       
-        $("#header").css("top", "-100px");
-    } else if (currentScroll < prevScroll) {
-    
-        $("#header").css("top", "0");
-    }
-    prevScroll = currentScroll;
-});
-
-//utilizzato per nascondere la barra di navigazione quando si scorre verso il basso e mostrarla quando si scorre verso l'alto e per la comparsa di nuovi elementi nel main
-
-
-$(window).on("scroll", function () {
-    
-    
-if (caricamentoInCorso) return;
-
-  const lastP = document.querySelector('#ProductList .col:last-child');
-
-    const rect = lastP.getBoundingClientRect();
-
-  if (rect.bottom + 20 < window.innerHeight) {
-
+  const last = document.querySelector('#ProductList .col:last-child');
+  if (!last) return;
+  const rect = last.getBoundingClientRect();
+  if (rect.top < window.innerHeight) {
     Loadingcard();
   }
-
-    
-});
+}
+window.addEventListener("scroll", onScrollHandler);
 
 //creazione prodotto
 
@@ -264,12 +231,15 @@ function CardPlaceholderCreation() {
 
   function Loadingcard() {
   caricamentoInCorso = true;
-
   const contenitore = document.getElementById('ProductList');
+  const nItems = getCardCountByScreenWidth();
 
-  let CurrentDefault = []
-
-  let dim= getCardCountByScreenWidth()
+  const placeholders = [];
+  for (let i = 0; i < nItems; i++) {
+    const placeholder = CardPlaceholderCreation();
+    contenitore.appendChild(placeholder);
+    placeholders.push(placeholder);
+  }
 
 
   const NItems= getCardCountByScreenWidth();
@@ -283,31 +253,30 @@ function CardPlaceholderCreation() {
       })
     .then(Response => Response.json())
     .then(Data =>{
-     
-      console.log(Data.selectedItems)
-      let i = 0
 
-      for(let j= 0; j<dim;j++){
-          let placeholder = CardPlaceholderCreation()
-          contenitore.appendChild(placeholder)
-          CurrentDefault.push(placeholder)
+    const items = Data.selectedItems;
 
-       }
-
-    CurrentDefault.forEach((element)=>{
-
-        if(i < Data.selectedItems.length){
-          const card = ProductCreation(Data.selectedItems[i]);
-          element.replaceWith(card);
-        }else{
-          element.remove();
+      placeholders.forEach((ph, index) => {
+        if (index < items.length) {
+          const card = ProductCreation(items[index]);
+          ph.replaceWith(card);
+        } else {
+          ph.remove();
         }
-        i++;
+      });
 
+      // Se non ci sono più articoli da caricare, rimuove il listener
+      if (items.length < nItems) {
+        window.removeEventListener("scroll", onScrollHandler);
+      }
+
+      caricamentoInCorso = false;
     })
-
-  
-});
+    .catch(err => {
+      console.error("Errore durante il caricamento:", err);
+      placeholders.forEach(ph => ph.remove());
+      caricamentoInCorso = false;
+    });
   }
 
 
