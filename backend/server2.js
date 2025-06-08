@@ -1360,8 +1360,8 @@ app.post("/create-checkout-session", protect, hasPermission('place_order'), asyn
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: "http://127.0.0.1:5500/prova/TrueOrder.html",//da cambiare
-      cancel_url: "http://127.0.0.1:5500/prova/index.html",// da cambiare
+      success_url: "http://127.0.0.1:5500/frontend/TrueOrder.html",//da cambiare
+      cancel_url: "http://127.0.0.1:5500/frontend/index.html",// da cambiare
     });
     
     console.log(session.url)
