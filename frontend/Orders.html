@@ -18,15 +18,15 @@
 
     <main class="container h-100" style="padding-top: 130px;">
 
-        <div class="row"  id="fullCart">
+        <div class="row" id="fullCart">
             <div class="col-12 d-flex flex-column align-items-center box-cart gap-3 container-fluid p-0 p-sm-3"
-                 id="item-container">
+                id="item-container">
 
                 <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2">
 
                     <h4 class="m-0">Your orders</h4>
 
-                  
+
 
                 </div>
 
@@ -35,29 +35,29 @@
 
     </main>
 
-     <div id="commentModal" class="comment-inline">
-    <form class="modal-content" onsubmit="sendReview(event)">
-      <h4>Report a Problem</h4>
+    <div id="commentModal" class="comment-inline">
+        <form class="modal-content" onsubmit="sendReview(event)">
+            <h4>Report a Problem</h4>
 
-      <label for="valutation">Comment</label>
-      <select id="valutation" style="width: 100%; margin-bottom: 10px;"></select>
+            <label for="valutation">Comment</label>
+            <select id="valutation" style="width: 100%; margin-bottom: 10px;"></select>
 
-      <label for="description">Description:</label>
-      <textarea id="description" rows="4" style="width: 100%; margin-bottom: 10px;"
-        placeholder="Explain your comment..."></textarea>
+            <label for="description">Description:</label>
+            <textarea id="description" rows="4" style="width: 100%; margin-bottom: 10px;"
+                placeholder="Explain your comment..."></textarea>
 
-      <button type=submit class="shiny-blue-btn" >Send Comment</button>
-    </form>
-  </div>
-  <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
-  
+            <button type=submit class="shiny-blue-btn">Send Comment</button>
+        </form>
+    </div>
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
 
-   
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
-  
+
     <script src="scriptElement.js"></script>
     <script src="scriptOrders.js"></script>
 </body>
