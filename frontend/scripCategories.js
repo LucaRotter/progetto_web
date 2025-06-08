@@ -165,13 +165,13 @@ function getCardCountByScreenWidth() {
 }
 
 window.addEventListener("beforeunload", () => {
-   
-    fetch(`http://localhost:8000/reset-category-items/${product}`, {
+
+  fetch(`http://localhost:8000/reset-category-items/${product}`, {
     method: "DELETE",
     headers: {
       'Content-Type': 'application/json',
-       ...(token && { 'authorization': `Bearer ${token}` })
+      ...(token && { 'authorization': `Bearer ${token}` })
     },
     keepalive: true
-    })
   })
+})

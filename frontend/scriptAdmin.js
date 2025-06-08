@@ -1,39 +1,39 @@
-   let Codice;
-   
-   function nextStep(event,step) {
+let Codice;
 
-    event.preventDefault()
-    const email = $(emailAdmin).val();
-    const pwd = $(pwdAdmin).val();
-    const role = "Ad";
+function nextStep(event, step) {
 
-    if (email || pwd) {
+  event.preventDefault()
+  const email = $(emailAdmin).val();
+  const pwd = $(pwdAdmin).val();
+  const role = "Ad";
 
-    console.log(email,pwd,role)
-    fetch('http://localhost:8000/login',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify({ email: email, pwd: pwd, role: role})
-      })
+  if (email || pwd) {
+
+    console.log(email, pwd, role)
+    fetch('http://localhost:8000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email, pwd: pwd, role: role })
+    })
       .then(response => response.json())
-      .then(Data=>{
+      .then(Data => {
         console.log(Data)
-         Codice = Data.number
+        Codice = Data.number
         const token = Data.token
         console.log(token)
-        localStorage.setItem("token",token) 
+        localStorage.setItem("token", token)
       })
-      .catch(error =>{
+      .catch(error => {
         console.log(error)
       })
 
-     
-    
-    $('.step').addClass('d-none'); 
+
+
+    $('.step').addClass('d-none');
     $(`#step${step}`).removeClass('d-none');
-   
+
     document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
 
     const tab = document.getElementById(`step${step}-tab`);
@@ -43,28 +43,28 @@
     tab.classList.remove('disabled');
     const steps = ['1', '2'];
 
-}else{
+  } else {
 
-        return;
-    
-    }
+    return;
+
   }
+}
 
-  function CodeControl(event){
+function CodeControl(event) {
   event.preventDefault();
-  
+
   const number = `${$('#Code1').val()}${$('#Code2').val()}`
 
-  if(number == Codice){
-   
+  if (number == Codice) {
+
     sessionStorage.setItem('loginSuccess', 'Aleksandar');
     window.location.href = 'aa.html';
 
-  }else{
+  } else {
     alert("Codice non corretto!")
   }
 
-  }
+}
 
 
 const codeInputs = document.querySelectorAll('.code-box');

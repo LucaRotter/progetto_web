@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
           price: element.price,
           quantity: element.quantity,
           image_url: element.image_url,
-          description: element.description  // importante
+          description: element.description
         });
       });
     })
@@ -232,50 +232,37 @@ async function updateProduct(productId) {
   };
 
   try {
-     fetch(`http://localhost:8000/update-name/${productId}`, {
+    fetch(`http://localhost:8000/update-name/${productId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({ name: nome })
     });
 
-     fetch(`http://localhost:8000/update-category/${productId}`, {
+    fetch(`http://localhost:8000/update-category/${productId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({ category: categoria })
     });
 
-     fetch(`http://localhost:8000/update-price/${productId}`, {
+    fetch(`http://localhost:8000/update-price/${productId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({ price: prezzoVal })
     });
 
-     fetch(`http://localhost:8000/update-quantity/${productId}`, {
+    fetch(`http://localhost:8000/update-quantity/${productId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({ quantity: quantitaVal })
     });
 
-     fetch(`http://localhost:8000/update-description/${productId}`, {
+    fetch(`http://localhost:8000/update-description/${productId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({ description })
     });
 
-    // NOTA: se l'immagine va caricata come file, questa richiede un FormData e va gestita diversamente
-    /*if (immagine.startsWith("data:image")) {
-      const imageBlob = await (await fetch(immagine)).blob();
-      const formData = new FormData();
-      formData.append("immagine", imageBlob, "image.png");
 
-      await fetch(`http://localhost:8000/update-image/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'authorization': `Bearer ${token}` // niente Content-Type con FormData
-        },
-        body: formData
-      });
-    }*/
 
     // Aggiornamento DOM come prima
     const card = document.querySelector(`[data-product-id="${productId}"]`);

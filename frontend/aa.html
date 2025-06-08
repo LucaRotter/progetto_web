@@ -12,88 +12,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="style.css">
 
-  <style>
-    .sidebar {
-      height: 100vh;
-      background-color: #0c0d0e;
-      padding-top: 1rem;
-    }
 
-    @media (max-width: 800px) {
-      .sidebar {
-        height: auto;
-      }
-    }
-
-    @media (max-width: 345px) {
-      .button-group-responsive {
-        flex-direction: column !important;
-        align-items: stretch;
-      }
-
-      .button-group-responsive .btn {
-        width: 100%;
-      }
-
-      .button-group-responsive {
-        flex-direction: column !important;
-        width: 100%;
-      }
-
-      .button-group-responsive .btn {
-        width: 100%;
-      }
-
-      .user-info {
-        word-break: break-word;
-        width: 100%;
-      }
-    }
-
-    .sidebar a {
-      color: #fff;
-      padding: 10px 20px;
-      display: block;
-      text-decoration: none;
-    }
-
-    .sidebar a:hover {
-      background-color: #000000;
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    .report {
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-
-    .report-header {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .report-body {
-      margin-left: 10px;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .site-link {
-      margin-bottom: 10px;
-    }
-  </style>
 </head>
 
 <body>
@@ -110,7 +29,6 @@
         <a href="#" onclick="showSection('report-section')"><i class="bi bi-flag"></i> Report</a>
         <a href="#" onclick="showSection('my-report-section')"><i class="bi bi-journal-check"></i> My Reports</a>
         <a href="#" onclick="showSection('users-section')"><i class="bi bi-people"></i> User</a>
-        <a href="#" onclick="showSection('site-section')"><i class="bi bi-globe"></i> Site</a>
         <div class="mt-auto p-2">
           <button class="btn btn-outline-danger w-100" onclick="logout()">
             <i class="bi bi-box-arrow-right"></i> Logout
@@ -150,39 +68,7 @@
         </div>
 
 
-        <div id="site-section" class="section">
-          <h2>Main Website Sections</h2>
-          <div class="list-group">
-            <a href="index.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-house"></i>
-              Home</a>
-            <a href="About.html" class="list-group-item list-group-item-action site-link"><i
-                class="bi bi-info-circle"></i> About</a>
-            <a href="Admin.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Adim page</a>
-            <a href="ArtisanCatalog.html" class="list-group-item list-group-item-action site-link"><i
-                class="bi bi-gear"></i> ArtisanCatalog</a>
-            <a href="ManageProduct.html" class="list-group-item list-group-item-action site-link"><i
-                class="bi bi-gear"></i> Cart</a>
-            <a href="Orders.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              ManageProduct</a>
-            <a href="Admin.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Orders</a>
-            <a href="Pay.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Pay</a>
-            <a href="pw.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i> Forgot
-              pw</a>
-            <a href="registration.html" class="list-group-item list-group-item-action site-link"><i
-                class="bi bi-gear"></i> Registration</a>
-            <a href="ricerca.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Search</a>
-            <a href="shipPage.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Ship Page</a>
-            <a href="TrueOrder.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i>
-              Order True</a>
-            <a href="User.html" class="list-group-item list-group-item-action site-link"><i class="bi bi-gear"></i> User
-              Page</a>
-            <a href="ViewProduct.html" class="list-group-item list-group-item-action site-link"><i
-                class="bi bi-gear"></i> View Product</a>
+        
 
           </div>
         </div>

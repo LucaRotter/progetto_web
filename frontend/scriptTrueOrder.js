@@ -1,9 +1,9 @@
-//ordini aggiunti
+
 const token = localStorage.getItem("token")
 
 const parsed = JSON.parse(sessionStorage.getItem("infoClient"));
 
-const itemsObj = JSON.parse(parsed.items); // ← perché è una stringa annidata
+const itemsObj = JSON.parse(parsed.items);
 console.log("Items reali:", itemsObj.items);
 
 
@@ -11,19 +11,19 @@ let address = parsed.address
 let civic_number = parsed.civic_number
 let postal_code = parsed.postal_code
 let province = parsed.province
-let country =parsed.country
+let country = parsed.country
 let phone_number = parsed.phone_number
 
 
 fetch(`http://localhost:8000/add-order`, {
-    
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ items: itemsObj.items, address:address, civic_number: civic_number, postal_code: postal_code, province:province, country:country, phone_number:phone_number })
-      })
+
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({ items: itemsObj.items, address: address, civic_number: civic_number, postal_code: postal_code, province: province, country: country, phone_number: phone_number })
+})
 
   .then(response => response.json())
   .then(Data => {
@@ -35,11 +35,11 @@ fetch(`http://localhost:8000/add-order`, {
       headers: {
         'Content-Type': 'application/json',
         'authorization': `Bearer ${token}`
-      
+
       }
     })
-   sessionStorage.removeItem("infoClient");
-    
+    sessionStorage.removeItem("infoClient");
+
   })
   .catch(error => {
     console.error(error);
@@ -48,7 +48,7 @@ fetch(`http://localhost:8000/add-order`, {
 
 
 
-    
- 
-    
+
+
+
 //a casa

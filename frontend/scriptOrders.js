@@ -1,34 +1,34 @@
- const token = localStorage.getItem("token")
- let currentItem
- 
- window.addEventListener("DOMContentLoaded", () => {
+const token = localStorage.getItem("token")
+let currentItem
 
-  fetch("http://localhost:8000/customer-orders",{
+window.addEventListener("DOMContentLoaded", () => {
 
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${token}`
-          },
-          
-      })
-      .then(response => response.json())
-      .then(Data => {
+  fetch("http://localhost:8000/customer-orders", {
 
-       const Ordini = Data.orders
-       console.log(Data.orders)
-       
-       let i = 0
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`
+    },
 
-       Ordini.forEach(order=> {
+  })
+    .then(response => response.json())
+    .then(Data => {
+
+      const Ordini = Data.orders
+      console.log(Data.orders)
+
+      let i = 0
+
+      Ordini.forEach(order => {
         console.log(order)
         getInfo(order)
-        
+
         i++
-      }); 
+      });
     }).catch(error => {
-    console.error("Si è verificato un errore:", error);
-    
-  });
+      console.error("Si è verificato un errore:", error);
+
+    });
 })
 
 function getInfo(product) {
@@ -38,28 +38,28 @@ function getInfo(product) {
       'Content-Type': 'application/json'
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    elemento = data.item
-    console.log(elemento[0])
-    
-    console.log("get info " + data)
-    createCartElement(elemento[0], data.category_name, product);
-    
-  }).catch(error => {
-    console.error("Si è verificato un errore:", error);
-    
-  });
+    .then(response => response.json())
+    .then(data => {
+      elemento = data.item
+      console.log(elemento[0])
+
+      console.log("get info " + data)
+      createCartElement(elemento[0], data.category_name, product);
+
+    }).catch(error => {
+      console.error("Si è verificato un errore:", error);
+
+    });
 }
-  
-function createCartElement(CartContent, Category,product) {
+
+function createCartElement(CartContent, Category, product) {
   const container = document.getElementById("item-container");
 
 
   const carItem = document.createElement("div");
   carItem.className = "col-12 carItem";
-  carItem.setAttribute("id",CartContent.item_id)
-  
+  carItem.setAttribute("id", CartContent.item_id)
+
 
   const img = document.createElement("img");
   img.src = CartContent.image_url;
@@ -75,25 +75,25 @@ function createCartElement(CartContent, Category,product) {
   h3.textContent = Category;
 
   const statusWrapper = document.createElement("div");
-statusWrapper.className = "status-wrapper";
+  statusWrapper.className = "status-wrapper";
 
-const statusDot = document.createElement("span");
-statusDot.className = "status-dot";
-statusWrapper.appendChild(statusDot);
+  const statusDot = document.createElement("span");
+  statusDot.className = "status-dot";
+  statusWrapper.appendChild(statusDot);
 
-const statusText = document.createElement("span");
-statusText.className = "status-text";
-statusText.textContent = product.state ? "shipped" : "confirmed";
-statusWrapper.appendChild(statusText);
+  const statusText = document.createElement("span");
+  statusText.className = "status-text";
+  statusText.textContent = product.state ? "shipped" : "confirmed";
+  statusWrapper.appendChild(statusText);
 
-if (product.state === "shipped") {
-  statusDot.className = "status-dotnot not-shipped"; 
-  statusText.textContent = "shipped";
-} else {
-  statusDot.className = "status-dot shipped"; 
-  statusText.textContent = "not shipped";
-}
-h3.appendChild(statusWrapper);
+  if (product.state === "shipped") {
+    statusDot.className = "status-dotnot not-shipped";
+    statusText.textContent = "shipped";
+  } else {
+    statusDot.className = "status-dot shipped";
+    statusText.textContent = "not shipped";
+  }
+  h3.appendChild(statusWrapper);
 
 
   const inputQty = document.createElement("input");
@@ -141,7 +141,7 @@ const selectValutation = document.getElementById("valutation");
 
 function openModal(item) {
 
-  currentItem = item 
+  currentItem = item
   document.getElementById("commentModal").style.display = "block";
   document.getElementById("modalOverlay").style.display = "block";
 
@@ -161,67 +161,67 @@ function closeModal() {
 // Manda il report se la descrizione è stata scritta 
 function sendReview(event) {
   event.preventDefault()
-    let description = document.getElementById("description");
-    let evaluation = document.getElementById("valutation")
-    console.log(description,evaluation)
-    let valid = true;
-    description.style.border = "";
+  let description = document.getElementById("description");
+  let evaluation = document.getElementById("valutation")
+  console.log(description, evaluation)
+  let valid = true;
+  description.style.border = "";
 
-    if (!description.value.trim()) {
-      description.style.border = "2px solid red";
-      valid = false;
-    }
-    if (!valid) {
-      return; 
-    }
+  if (!description.value.trim()) {
+    description.style.border = "2px solid red";
+    valid = false;
+  }
+  if (!valid) {
+    return;
+  }
 
-    
 
-    description = description.value
-    evaluation = evaluation.value
 
-    const numero = parseInt(evaluation.charAt(evaluation.length - 1), 10);
-    
-    fetch(`http://localhost:8000/add-review`, {
+  description = description.value
+  evaluation = evaluation.value
+
+  const numero = parseInt(evaluation.charAt(evaluation.length - 1), 10);
+
+  fetch(`http://localhost:8000/add-review`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ item_id: currentItem , description: description, evaluation: numero })
+    body: JSON.stringify({ item_id: currentItem, description: description, evaluation: numero })
   })
 
-  .then(response => response.json())
-  .then(Data => {
+    .then(response => response.json())
+    .then(Data => {
 
-  console.log(Data)
-    
-  })
-  .catch(error => {
-    console.error("Si è verificato un errore:", error);
-    
-  });
+      console.log(Data)
 
-    closeModal();
-  }
-  
-// Crea per ogni reportTypes un'option che verra aggiunta alla select
+    })
+    .catch(error => {
+      console.error("Si è verificato un errore:", error);
+
+    });
+
+  closeModal();
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const valutationType = [
     "⭐ 1",
     "⭐⭐ 2",
-    "⭐⭐⭐ 3", 
+    "⭐⭐⭐ 3",
     "⭐⭐⭐⭐ 4",
     "⭐⭐⭐⭐⭐ 5",
   ];
 
   const selectValutation = document.getElementById("valutation");
-  valutationType.innerHTML = ""; 
+  valutationType.innerHTML = "";
 
   valutationType.forEach(type => {
     const option = document.createElement("option");
     option.value = type.toLowerCase().replace(/\s+/g, '-');
     option.textContent = type;
-    selectValutation .appendChild(option);
+    selectValutation.appendChild(option);
   });
 });

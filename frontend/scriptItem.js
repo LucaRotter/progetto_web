@@ -1,8 +1,8 @@
 const form = document.getElementById('searchForm');
 const input = document.getElementById('searchInput');
 const btn = document.getElementById('searchBtn');
-const token=localStorage.getItem("token")
-let currentItem 
+const token = localStorage.getItem("token")
+let currentItem
 let expanded = false;
 
 
@@ -12,27 +12,27 @@ if (product) {
   sessionStorage.setItem("pendingProductView", product);
 }
 
-let selectedProduct ;
+let selectedProduct;
 console.log(selectedProduct)
-console.log("ID ricevuto:",product);
+console.log("ID ricevuto:", product);
 
 
 function appdateItem(itemData, categoryData) {
-    document.getElementById("Product-Name").textContent = itemData[0].name;
-    document.getElementById("Product-Price").textContent = itemData[0].price + " €";
-    document.getElementById("Product-Description").textContent = itemData[0].description;
-    document.getElementById("Product-image").src = itemData[0].image_url;
-    document.getElementById("Product-Category").textContent = categoryData[0].name;
-    
-    getRating().then(average => {
-     const av = average; // assegna il valore dentro la callback
-    document.getElementById("AverageRating").textContent = av + "/5";
-      
-    });
-    
+  document.getElementById("Product-Name").textContent = itemData[0].name;
+  document.getElementById("Product-Price").textContent = itemData[0].price + " €";
+  document.getElementById("Product-Description").textContent = itemData[0].description;
+  document.getElementById("Product-image").src = itemData[0].image_url;
+  document.getElementById("Product-Category").textContent = categoryData[0].name;
 
-    document.body.classList.remove("js-loading");
-}   
+  getRating().then(average => {
+    const av = average;
+    document.getElementById("AverageRating").textContent = av + "/5";
+
+  });
+
+
+  document.body.classList.remove("js-loading");
+}
 
 async function getRating() {
   try {
@@ -52,66 +52,66 @@ async function getRating() {
   }
 }
 
-function addToCart(){
+function addToCart() {
 
-const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-fetch(`http://localhost:8000/cart`, {
-    
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ item_id: product, quantity: 1 })
-      })
+  fetch(`http://localhost:8000/cart`, {
 
-  .then(response => response.json())
-  .then(Data => {
-
-    console.log(Data)
-    innerNumCarts()
-    
-    
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ item_id: product, quantity: 1 })
   })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
-  });
+
+    .then(response => response.json())
+    .then(Data => {
+
+      console.log(Data)
+      innerNumCarts()
+
+
+    })
+    .catch(error => {
+      console.error(error);
+      document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
+    });
 
 }
 
-function addToReview(){
+function addToReview() {
 
-console.log(currentItem)
-  
-const token = localStorage.getItem("token");
-fetch(`http://localhost:8000/reviews/${currentItem.item_id}`, {
-    
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${token}`
-        },
-       
+  console.log(currentItem)
+
+  const token = localStorage.getItem("token");
+  fetch(`http://localhost:8000/reviews/${currentItem.item_id}`, {
+
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`
+    },
+
+  })
+
+    .then(response => response.json())
+    .then(Data => {
+
+      console.log(Data.reviews)
+      const reviews = Data.reviews
+      reviews.forEach(review => {
+        createReview(review)
       })
 
-  .then(response => response.json())
-  .then(Data => {
-
-    console.log(Data.reviews)
-    const reviews = Data.reviews
-    reviews.forEach(review =>{
-      createReview(review)
-  })
-    
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
-  });
+    })
+    .catch(error => {
+      console.error(error);
+      document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
+    });
 }
 
-  function openModal() {
+function openModal() {
   document.getElementById("reportModal").style.display = "block";
   document.getElementById("modalOverlay").style.display = "block";
 }
@@ -127,29 +127,29 @@ function closeModal() {
 // Manda il report se la descrizione è stata scritta 
 function sendReport() {
 
-    const selection = document.getElementById("type").value
-    description = document.getElementById("description")
-    console.log("Invio del report");
-     // Previene il comportamento predefinito del form
+  const selection = document.getElementById("type").value
+  description = document.getElementById("description")
+  console.log("Invio del report");
+  // Previene il comportamento predefinito del form
 
-    let valid = true;
-    description.style.border = "";
+  let valid = true;
+  description.style.border = "";
 
-    if (!description.value.trim()) {
-      description.style.border = "2px solid red";
-      valid = false;
-    }
-    if (!valid) {
-      return; 
-    }
-    description =  description.value;
+  if (!description.value.trim()) {
+    description.style.border = "2px solid red";
+    valid = false;
+  }
+  if (!valid) {
+    return;
+  }
+  description = description.value;
 
   const token = localStorage.getItem("token");
   console.log("Token:", token);
 
   const product = selectedProduct[0].item_id;
- 
- 
+
+
 
   fetch(`http://localhost:8000/create-report`, {
     method: 'POST',
@@ -160,29 +160,29 @@ function sendReport() {
     body: JSON.stringify({ item_id: product, category: selection, description: description })
   })
 
-  .then(response => response.json())
-  .then(Data => {
+    .then(response => response.json())
+    .then(Data => {
 
-  console.log(Data)
-  
-    
-  })
-  .catch(error => {
-    console.error("Si è verificato un errore:", error);
-    
-  });
-
-    closeModal();
-  }
+      console.log(Data)
 
 
-  function createReview(ReviewContent){
+    })
+    .catch(error => {
+      console.error("Si è verificato un errore:", error);
+
+    });
+
+  closeModal();
+}
+
+
+function createReview(ReviewContent) {
 
   const container = document.getElementById("rowContainer");
 
   const wrapper = document.createElement("div");
-  wrapper.className = "w-100 position-relative review-card mb-3"; // utile per toggle
-  wrapper.style.backgroundColor = "#2c2c2c"; // per visibilità scura
+  wrapper.className = "w-100 position-relative review-card mb-3";
+  wrapper.style.backgroundColor = "#2c2c2c";
   wrapper.style.padding = "10px";
   wrapper.style.borderRadius = "10px";
 
@@ -192,28 +192,28 @@ function sendReport() {
   checkbox.className = "review-select position-absolute";
   checkbox.style.top = "10px";
   checkbox.style.right = "10px";
-  checkbox.style.display = "none"; // nascosta di default
+  checkbox.style.display = "none";
   wrapper.appendChild(checkbox);
 
-// Crea lo span per il nome
-const span = document.createElement("span");
-span.className = "w-100";
-span.style.color = "white";
-span.textContent = ReviewContent.name;
+  // Crea lo span per il nome
+  const span = document.createElement("span");
+  span.className = "w-100";
+  span.style.color = "white";
+  span.textContent = ReviewContent.name;
 
-// Crea la textarea disabilitata
-const textarea = document.createElement("textarea");
-textarea.className = "form-control w-100";
-textarea.textContent= ReviewContent.description
-textarea.setAttribute("aria-label", "With textarea");
-textarea.disabled = true;
+  // Crea la textarea disabilitata
+  const textarea = document.createElement("textarea");
+  textarea.className = "form-control w-100";
+  textarea.textContent = ReviewContent.description
+  textarea.setAttribute("aria-label", "With textarea");
+  textarea.disabled = true;
 
-// Aggiungi span e textarea al wrapper
-wrapper.appendChild(span);
-wrapper.appendChild(textarea);
+  // Aggiungi span e textarea al wrapper
+  wrapper.appendChild(span);
+  wrapper.appendChild(textarea);
 
-// Aggiungi il blocco al contenitore
-container.appendChild(wrapper);
+  // Aggiungi il blocco al contenitore
+  container.appendChild(wrapper);
 }
 
 // Crea per ogni reportTypes un'option che verra aggiunta alla select
@@ -221,99 +221,99 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   let product = params.get('id');
 
-// Se non c’è nel URL, prova da sessionStorage
-if (!product) {
-  product = sessionStorage.getItem("pendingProductView");
-}
+  // Se non c’è nel URL, prova da sessionStorage
+  if (!product) {
+    product = sessionStorage.getItem("pendingProductView");
+  }
 
-if(localStorage.getItem("Admin")== "true"){
+  if (localStorage.getItem("Admin") == "true") {
 
-  adminView = document.getElementsByClassName("Admin")
-  Array.from(adminView).forEach(element => {
-  element.classList.remove("d-none");
-});
-}
+    adminView = document.getElementsByClassName("Admin")
+    Array.from(adminView).forEach(element => {
+      element.classList.remove("d-none");
+    });
+  }
 
   fetch(`http://localhost:8000/item/${product}`, {
     headers: {
-        'Content-Type': 'application/json'
+      'Content-Type': 'application/json'
     }
-})
-.then(response => response.json())
-.then(data => {
-    console.log("Dati ricevuti:", data);
-    selectedProduct = data.item
-    currentItem = selectedProduct[0]
-    console.log(currentItem)
-    appdateItem(data.item, data.category_name);
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Dati ricevuti:", data);
+      selectedProduct = data.item
+      currentItem = selectedProduct[0]
+      console.log(currentItem)
+      appdateItem(data.item, data.category_name);
 
-    console.log(currentItem.quantity)
-    if(currentItem.quantity == 0){
-     const button = document.getElementById("addedtoCart")
+      console.log(currentItem.quantity)
+      if (currentItem.quantity == 0) {
+        const button = document.getElementById("addedtoCart")
 
-     button.classList.remove("shiny-blue-btn")
-     button.classList.add("UsefullButton")
-     button.disabled= true
-     
-    }
-    addToReview()
+        button.classList.remove("shiny-blue-btn")
+        button.classList.add("UsefullButton")
+        button.disabled = true
 
-  return fetch(`http://localhost:8000/userby/${currentItem.user_id}`, {
-      headers: {
-        'Content-Type': 'application/json'
       }
+      addToReview()
+
+      return fetch(`http://localhost:8000/userby/${currentItem.user_id}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Dati utente ricevuti:", data);
+      initProfile(data.user);
+    })
+    .catch(error => {
+      console.error("Si è verificato un errore:", error);
     });
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log("Dati utente ricevuti:", data);
-    initProfile(data.user);
-  })
-  .catch(error => {
-    console.error("Si è verificato un errore:", error);
-  });
 });
 
-  const reportTypes = [
-    "Inappropriate content",
-    "Spam or unsolicited advertising",
-    "False or misleading information",
-    "Counterfeit product",
-    "Missing or incorrect image/description",
-    "Safety concerns",
-    "Copyright infringement",
-    "Other (general report)"
-  ];
-
-  
+const reportTypes = [
+  "Inappropriate content",
+  "Spam or unsolicited advertising",
+  "False or misleading information",
+  "Counterfeit product",
+  "Missing or incorrect image/description",
+  "Safety concerns",
+  "Copyright infringement",
+  "Other (general report)"
+];
 
 
-  const selectType = document.getElementById("type");
-  selectType.innerHTML = ""; 
-
-  reportTypes.forEach(type => {
-    const option = document.createElement("option");
-    option.value = type.toLowerCase().replace(/\s+/g, '-');
-    option.textContent = type;
-    selectType.appendChild(option);
-  });
 
 
-function sendToArtisan(){
+const selectType = document.getElementById("type");
+selectType.innerHTML = "";
 
-console.log(currentItem.user_id)
-window.location.href= `ArtisanCatalog.html?A=${currentItem.user_id}`
+reportTypes.forEach(type => {
+  const option = document.createElement("option");
+  option.value = type.toLowerCase().replace(/\s+/g, '-');
+  option.textContent = type;
+  selectType.appendChild(option);
+});
+
+
+function sendToArtisan() {
+
+  console.log(currentItem.user_id)
+  window.location.href = `ArtisanCatalog.html?A=${currentItem.user_id}`
 
 
 
 }
 
-function initProfile(profile){
-    const nome = document.getElementById("nomeArtisan");
-    const image = document.getElementById("imageprofile")
+function initProfile(profile) {
+  const nome = document.getElementById("nomeArtisan");
+  const image = document.getElementById("imageprofile")
 
-    nome.textContent= profile.name + " " + profile.surname
-    image.src = profile.image_url
+  nome.textContent = profile.name + " " + profile.surname
+  image.src = profile.image_url
 
 }
 
@@ -323,25 +323,25 @@ function deleteProduct() {
 
     console.log(currentItem)
     fetch(`http://localhost:8000/delete-item/${currentItem.item_id}`, {
-    
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': `Bearer ${token}`
-        }
+
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${token}`
+      }
+    })
+
+      .then(response => response.json())
+      .then(Data => {
+
+        alert("Product deleted (demo)");
+        window.location.href = "index.html";
+
       })
-
-  .then(response => response.json())
-  .then(Data => {
-
-    alert("Product deleted (demo)");
-    window.location.href = "index.html";
-    
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
-  });
+      .catch(error => {
+        console.error(error);
+        document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
+      });
   }
 }
 
@@ -367,8 +367,8 @@ function deleteSelectedReviews() {
       idReview = cb.closest('.review-card').id;
       deleted++;
 
-       fetch(`http://localhost:8000/delete-review/${idReview}`, {
-    
+      fetch(`http://localhost:8000/delete-review/${idReview}`, {
+
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -376,17 +376,17 @@ function deleteSelectedReviews() {
         }
       })
 
-      .then(response => response.json())
-      .then(Data => {
+        .then(response => response.json())
+        .then(Data => {
 
-        alert("Product deleted (demo)");
-       
-      })
-      .catch(error => {
-        console.error(error);
-        document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
-      });
-        }
+          alert("Product deleted (demo)");
+
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById("contenuto").textContent = "Errore: prodotto non rimosso";
+        });
+    }
   });
 
   if (deleted === 0) {

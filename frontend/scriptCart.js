@@ -3,48 +3,48 @@ localStorage.setItem("cart", JSON.stringify({ items: [] }));
 let cart
 const token = localStorage.getItem("token");
 
-  window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
 
 
-  fetch("http://localhost:8000/cart",{
+  fetch("http://localhost:8000/cart", {
 
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${token}`
-          },
-          
-      })
-      .then(response => response.json())
-      .then(Data => {
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`
+    },
 
-       cart = Data.items 
-       if (cart.length === 0) {
-      document.getElementById("emptyCart").classList.remove("d-none");
-      document.getElementById("fullCart").classList.add("d-none");
-      
-      return;
-    }
-    
-    return Promise.all(cart.map(cartItem => getInfo(cartItem)))
-      .then(() => {
-        document.getElementById("emptyCart").classList.add("d-none");
-        document.getElementById("fullCart").classList.remove("d-none");
-
-        console.log(sessionStorage.getItem("cart"))
-        updateCartReview(); 
-        
-      });
   })
-  .catch(error => {
-    console.error("Errore nel caricamento del carrello:", error);
-    
-  });
+    .then(response => response.json())
+    .then(Data => {
+
+      cart = Data.items
+      if (cart.length === 0) {
+        document.getElementById("emptyCart").classList.remove("d-none");
+        document.getElementById("fullCart").classList.add("d-none");
+
+        return;
+      }
+
+      return Promise.all(cart.map(cartItem => getInfo(cartItem)))
+        .then(() => {
+          document.getElementById("emptyCart").classList.add("d-none");
+          document.getElementById("fullCart").classList.remove("d-none");
+
+          console.log(sessionStorage.getItem("cart"))
+          updateCartReview();
+
+        });
+    })
+    .catch(error => {
+      console.error("Errore nel caricamento del carrello:", error);
+
+    });
 });
 
 
 //crea i contenitori per il cart
 
-function createCartElement(CartContent, maxQuantity,category) {
+function createCartElement(CartContent, maxQuantity, category) {
   console.log("sono qui");
   const container = document.getElementById("item-container");
 
@@ -105,71 +105,71 @@ function createCartElement(CartContent, maxQuantity,category) {
     if (value > 1) {
       quantityInput.value = value - 1;
       const id = quantityInput.id
-      const quantity = value-1
-      
-      fetch(`http://localhost:8000/cart/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ quantity })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Upload riuscito:", data);
-      updateCartReview()
-    })
-    .catch(error => {
-      console.error("Errore durante l'upload:", error);
-    });
+      const quantity = value - 1
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
-    const itemIndex = cart.items.findIndex(item => item.item_id === id);
-    if (itemIndex !== -1) {
-    cart.items[itemIndex].quantity = quantity;
-    localStorage.setItem("cart", JSON.stringify(cart));
+      fetch(`http://localhost:8000/cart/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ quantity })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Upload riuscito:", data);
+          updateCartReview()
+        })
+        .catch(error => {
+          console.error("Errore durante l'upload:", error);
+        });
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
+      const itemIndex = cart.items.findIndex(item => item.item_id === id);
+      if (itemIndex !== -1) {
+        cart.items[itemIndex].quantity = quantity;
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
     }
-  }
   });
 
   increaseBtn.addEventListener("click", function () {
     let value = parseInt(quantityInput.value, 10);
     let max = maxQuantity
-   
+
     if (value < max) {
-    quantityInput.value = value + 1;
-    const id = quantityInput.id
-    const quantity = value+1
-    
-    fetch(`http://localhost:8000/cart/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ quantity })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Upload riuscito:", data);
-      updateCartReview()
+      quantityInput.value = value + 1;
+      const id = quantityInput.id
+      const quantity = value + 1
 
-    })
-    .catch(error => {
-      console.error("Errore durante l'upload:", error);
-    });
+      fetch(`http://localhost:8000/cart/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ quantity })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Upload riuscito:", data);
+          updateCartReview()
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
-    const itemIndex = cart.items.findIndex(item => item.item_id === id);
-    if (itemIndex !== -1) {
-    cart.items[itemIndex].quantity = quantity;
-    localStorage.setItem("cart", JSON.stringify(cart));
+        })
+        .catch(error => {
+          console.error("Errore durante l'upload:", error);
+        });
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
+      const itemIndex = cart.items.findIndex(item => item.item_id === id);
+      if (itemIndex !== -1) {
+        cart.items[itemIndex].quantity = quantity;
+        localStorage.setItem("cart", JSON.stringify(cart));
       }
     }
   });
 
-  
+
   topRow.appendChild(h3);
 
   // Categoria
@@ -203,21 +203,21 @@ function createCartElement(CartContent, maxQuantity,category) {
     });
   });
 
-  innerDiv.appendChild(topRow);      
-  innerDiv.appendChild(p);           
-  innerDiv.appendChild(prezzo);      
-  innerDiv.appendChild(inputGroup);  
-  innerDiv.appendChild(button);      
+  innerDiv.appendChild(topRow);
+  innerDiv.appendChild(p);
+  innerDiv.appendChild(prezzo);
+  innerDiv.appendChild(inputGroup);
+  innerDiv.appendChild(button);
 
   // Assembla tutto
   carItem.appendChild(img);
   container.appendChild(carItem);
   carItem.appendChild(innerDiv);
- 
+
 }
 
-function buyCart(){
-  
+function buyCart() {
+
   const cartItems = document.getElementsByClassName("cartItem");
   let total = 0;
   let nitems = 0;
@@ -230,48 +230,48 @@ function buyCart(){
     nitems++;
   });
 
-  if(nitems!=0){
- window.location.href= "pay.html"
+  if (nitems != 0) {
+    window.location.href = "pay.html"
   }
- 
-      
+
+
 
 }
 
 function getInfo(product) {
-  
+
   return fetch(`http://localhost:8000/item/${product.item_id}`, {
     headers: {
       'Content-Type': 'application/json'
     }
   })
-  .then(response => response.json())
-  .then(data => {
- 
-    elemento = data.item
-    category = data.category_name
-    elementoPassed = elemento[0];
+    .then(response => response.json())
+    .then(data => {
 
-    
-    imgitem = elementoPassed.image_url
-    const maxQuantity = elementoPassed.quantity
-    const { image_url, prezzo, ...rest } = elementoPassed;
+      elemento = data.item
+      category = data.category_name
+      elementoPassed = elemento[0];
 
-    const itemWithQuantity = {
-      ...rest,
-      quantity: product.quantity
-    };
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
-    
-    cart.items.push(itemWithQuantity)
+      imgitem = elementoPassed.image_url
+      const maxQuantity = elementoPassed.quantity
+      const { image_url, prezzo, ...rest } = elementoPassed;
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    
-    console.log(cart)
+      const itemWithQuantity = {
+        ...rest,
+        quantity: product.quantity
+      };
 
-    createCartElement(itemWithQuantity,maxQuantity,category);
-  });
+      const cart = JSON.parse(localStorage.getItem("cart")) || { items: [] };
+
+      cart.items.push(itemWithQuantity)
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      console.log(cart)
+
+      createCartElement(itemWithQuantity, maxQuantity, category);
+    });
 }
 
 function updateCartReview() {
@@ -282,7 +282,7 @@ function updateCartReview() {
 
   console.log("Aggiornamento carrello..." + cartItems.length);
 
-    Array.from(cartItems).forEach(item => {
+  Array.from(cartItems).forEach(item => {
     // Legge il prezzo
     const priceText = item.querySelector("p:nth-child(3)").textContent;
     const price = parseFloat(priceText.replace("€", "").trim());
@@ -297,10 +297,10 @@ function updateCartReview() {
   });
 
   // Aggiorna l'interfaccia
-   document.getElementById("totalPrice").textContent = `€${total.toFixed(2)}`;
-  let totalP  = `€${total.toFixed(2)}`;
-   document.getElementById("itemCount").textContent =nitems
-  let nItemsP  =  nitems;
+  document.getElementById("totalPrice").textContent = `€${total.toFixed(2)}`;
+  let totalP = `€${total.toFixed(2)}`;
+  document.getElementById("itemCount").textContent = nitems
+  let nItemsP = nitems;
   sessionStorage.setItem("recapP", JSON.stringify([totalP, nItemsP]));
   console.log("Totale articoli:", nitems, " - Prezzo totale:", total);
 }

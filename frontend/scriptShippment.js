@@ -1,7 +1,7 @@
 const token = localStorage.getItem("token");
 
 document.addEventListener("DOMContentLoaded", () => {
-   
+
   fetch(`http://localhost:8000/artisan-orders`, {
     headers: {
       'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Stato ordine
+
 function getStatusClass(purchased) {
   return purchased ? 'purchased' : 'shipped';
 }
@@ -44,7 +44,7 @@ function renderOrders(Order) {
       const card = document.createElement("div");
       card.className = "order-card border rounded p-3 mb-4";
 
-      // Header ordine
+     
       const header = document.createElement("div");
       header.className = "order-header d-flex justify-content-between align-items-center";
 
@@ -62,13 +62,11 @@ function renderOrders(Order) {
       header.appendChild(status);
       card.appendChild(header);
 
-      // Dettagli prodotti
       const detailsDiv = document.createElement("div");
       detailsDiv.className = "order-details mt-3";
 
       const orderProducts = Order.filter(o => o.order_id === order.order_id);
 
-      // Fetch multipli per ogni item_id
       let fetches = [];
 
       orderProducts.forEach(p => {
@@ -104,7 +102,7 @@ function renderOrders(Order) {
         fetches.push(fetchPromise);
       });
 
-      // Dopo tutti i fetch, aggiungi i dettagli e il bottone
+      // Alla fine di tutte le fetch crea bottone con dettagli
       Promise.all(fetches).then(() => {
         card.appendChild(detailsDiv);
 

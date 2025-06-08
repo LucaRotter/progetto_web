@@ -23,7 +23,7 @@ if (emailFromUrl) {
 console.log("Step:", step);
 console.log("Email attuale:", email);
 
-// --- STEP 1: INVIO EMAIL RESET ---
+// -step 1 invio email
 if (step === "step1") {
   emailForm.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -41,7 +41,7 @@ if (step === "step1") {
       .then(response => response.json())
       .then(data => {
         console.log("Dati ricevuti (email inviata):", data);
-        // L'utente riceverà il link via email
+        
       })
       .catch(error => {
         console.error("Errore invio email:", error);
@@ -49,7 +49,7 @@ if (step === "step1") {
   });
 }
 
-// --- STEP 2: RESET PASSWORD ---
+// step 2 reset pw
 if (step === "step2") {
   document.getElementById("formReset").addEventListener("submit", function (event) {
     event.preventDefault();
@@ -70,9 +70,7 @@ if (step === "step2") {
       .then(response => response.json())
       .then(data => {
         console.log("Password aggiornata con successo:", data);
-        // Pulizia dati se vuoi
         localStorage.removeItem("email");
-        // Redirect
         window.location.href = "index.html";
       })
       .catch(error => {

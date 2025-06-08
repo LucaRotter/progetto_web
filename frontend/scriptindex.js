@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         list.appendChild(ProductCreation(Data.selectedItems[i]))
 
       }
-      
+
 
     })
 
@@ -77,7 +77,7 @@ function logged(event) {
         window.location.href = "ManageProduct.html"
         return;
       }
-      
+
 
     })
     .catch(error => {
@@ -130,7 +130,7 @@ function ProductCreation(Data) {
   const img = document.createElement('img');
   img.src = Data.image_url;
   img.className = 'card-img-top img-card';
-  //img.alt = Data.image.alt;
+
 
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body d-flex-column w-100 p-2';
@@ -235,7 +235,7 @@ function Loadingcard() {
           ph.remove();
         }
 
-        
+
       });
 
       // Se non ci sono più articoli da caricare, rimuove il listener

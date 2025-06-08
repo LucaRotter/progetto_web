@@ -11,44 +11,44 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-fetch(`http://localhost:8000/free-reports`, {
+  fetch(`http://localhost:8000/free-reports`, {
     headers: {
       'Content-Type': 'application/json',
       'authorization': `Bearer ${token}`
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    elemento = data.reports
-    creationReport(elemento)
-    
-  }).catch(error => {
-    console.error("Si è verificato un errore:", error);
-    
-  });
+    .then(response => response.json())
+    .then(data => {
+      elemento = data.reports
+      creationReport(elemento)
 
-   fetch('http://localhost:8000/admin-reports', {
+    }).catch(error => {
+      console.error("Si è verificato un errore:", error);
+
+    });
+
+  fetch('http://localhost:8000/admin-reports', {
     headers: {
       'Content-Type': 'application/json',
       'authorization': `Bearer ${token}`
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    createMyReports(data.reports);
-  })
-  .catch(error => {
-    console.error("Errore nei miei report:", error);
-  });
+    .then(response => response.json())
+    .then(data => {
+      createMyReports(data.reports);
+    })
+    .catch(error => {
+      console.error("Errore nei miei report:", error);
+    });
 
 })
 
 fetch('http://localhost:8000/users', {
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${token}`
-    }
-  })
+  headers: {
+    'Content-Type': 'application/json',
+    'authorization': `Bearer ${token}`
+  }
+})
   .then(response => response.json())
   .then(data => {
     renderUsers(data.users);
@@ -66,7 +66,7 @@ function showSection(sectionId) {
 
 function deleteReport(id) {
 
-if (!confirm(`Sei sicuro di voler eliminare la segnalazione #${id}?`)) {
+  if (!confirm(`Sei sicuro di voler eliminare la segnalazione #${id}?`)) {
     return;
   }
 
@@ -77,23 +77,23 @@ if (!confirm(`Sei sicuro di voler eliminare la segnalazione #${id}?`)) {
       'authorization': `Bearer ${token}`
     }
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Errore nella cancellazione del report");
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Rimuovi da entrambi i container se esiste
-    const reportEl = document.getElementById(id);
-    if (reportEl) reportEl.remove();
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Errore nella cancellazione del report");
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Rimuovi da entrambi i container se esiste
+      const reportEl = document.getElementById(id);
+      if (reportEl) reportEl.remove();
 
-    alert(`Report #${id} eliminato con successo`);
-  })
-  .catch(error => {
-    console.error("Errore durante l'eliminazione:", error);
-    alert("Errore durante l'eliminazione del report");
-  });
+      alert(`Report #${id} eliminato con successo`);
+    })
+    .catch(error => {
+      console.error("Errore durante l'eliminazione:", error);
+      alert("Errore durante l'eliminazione del report");
+    });
 }
 
 function addAdminGlobal() {
@@ -102,7 +102,7 @@ function addAdminGlobal() {
 
 function takeCharge(id) {
 
-    selectedReport = id
+  selectedReport = id
   fetch(`http://localhost:8000/add-admin-report/${id}`, {
     method: 'PUT',
     headers: {
@@ -110,44 +110,44 @@ function takeCharge(id) {
       'authorization': `Bearer ${token}`
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
 
-     
-    const reportEl = document.getElementById(id);
-    if (reportEl) reportEl.remove();
 
-    fetch(`http://localhost:8000/admin-reports`, {
-    headers: {
-        'Content-Type': 'application/json',
-        'authorization': `Bearer ${token}`
-    }
-        })
+      const reportEl = document.getElementById(id);
+      if (reportEl) reportEl.remove();
+
+      fetch(`http://localhost:8000/admin-reports`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${token}`
+        }
+      })
         .then(response => response.json())
         .then(data => {
 
-            const container = document.getElementById('my-reports-container');
-            container.innerHTML = "";
-            console.log("Dati ricevuti:", data);
-            
-            createMyReports(data.reports)
+          const container = document.getElementById('my-reports-container');
+          container.innerHTML = "";
+          console.log("Dati ricevuti:", data);
+
+          createMyReports(data.reports)
         })
         .catch(error => {
-            console.error("Si è verificato un errore:", error);
+          console.error("Si è verificato un errore:", error);
         })
-    
-  })
-  .catch(error => {
-    console.error("Errore nel prendere in carico il report:", error);
-    alert("Non è stato possibile prendere in carico il report.");
-  });
+
+    })
+    .catch(error => {
+      console.error("Errore nel prendere in carico il report:", error);
+      alert("Non è stato possibile prendere in carico il report.");
+    });
 }
 
 
 
-function creationReport(reports){
- const container = document.getElementById('reports-container');
+function creationReport(reports) {
+  const container = document.getElementById('reports-container');
   reports.forEach(report => {
     const div = document.createElement('div');
     div.classList.add('report');
@@ -184,22 +184,22 @@ function creationReport(reports){
     container.appendChild(div);
   });
 }
- 
-function logout(){
-    
-    localStorage.setItem("modalità", "");
-    localStorage.setItem("token", "");
-    localStorage.setItem("Admin", "")
-    window.location.href ="index.html"
+
+function logout() {
+
+  localStorage.setItem("modalità", "");
+  localStorage.setItem("token", "");
+  localStorage.setItem("Admin", "")
+  window.location.href = "index.html"
 }
 
-  
 
-function createMyReports(reports){
 
-    const myReportsContainer = document.getElementById('my-reports-container');
+function createMyReports(reports) {
 
-    reports.forEach(report => {
+  const myReportsContainer = document.getElementById('my-reports-container');
+
+  reports.forEach(report => {
 
     const div = document.createElement('div');
     div.classList.add('report');
@@ -207,8 +207,8 @@ function createMyReports(reports){
 
     const header = document.createElement('div');
     header.classList.add('report-header');
-    header.textContent = `Segnalazione da: ${report.report_id}`; 
-        
+    header.textContent = `Segnalazione da: ${report.report_id}`;
+
     const body = document.createElement('div');
     body.classList.add('report-body', 'mb-2');
     body.textContent = report.category;
@@ -227,9 +227,9 @@ function createMyReports(reports){
     div.appendChild(buttonGroup);
 
     myReportsContainer.appendChild(div);
-    })
+  })
 
-    alert(`Hai preso in carico il report #${selectedReport}`);
+  alert(`Hai preso in carico il report #${selectedReport}`);
 }
 
 function modifyUser(nome) {
@@ -284,8 +284,8 @@ function renderUsers(users) {
 
 function deleteUser(user) {
   if (!confirm(`Sei sicuro di voler eliminare ${user.name}?`)) return;
-    console.log(user.user_id)
-  // Facoltativo: chiamata al backend per eliminare dal DB
+  console.log(user.user_id)
+
   fetch(`http://localhost:8000/user/${user.user_id}`, {
     method: 'DELETE',
     headers: {
@@ -293,20 +293,20 @@ function deleteUser(user) {
       'authorization': `Bearer ${localStorage.getItem('token')}`
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log("Utente eliminato:", data);
+    .then(response => response.json())
+    .then(data => {
+      console.log("Utente eliminato:", data);
 
-    // Rimuovi dal DOM il div con id corrispondente
-    const div = document.getElementById(user.id);
-    if (div) div.remove();
 
-    alert(`Utente ${user.name} eliminato con successo`);
-  })
-  .catch(error => {
-    console.error("Errore:", error);
-    alert("Errore durante l'eliminazione dell'utente");
-  });
+      const div = document.getElementById(user.id);
+      if (div) div.remove();
+
+      alert(`Utente ${user.name} eliminato con successo`);
+    })
+    .catch(error => {
+      console.error("Errore:", error);
+      alert("Errore durante l'eliminazione dell'utente");
+    });
 }
 
 function modifyUser(user) {
@@ -333,10 +333,10 @@ function toggleField(fieldId, button) {
   if (input.disabled) {
     input.disabled = false;
     input.focus();
-    button.innerText = "💾"; // Salva
+    button.innerText = "💾";
   } else {
     input.disabled = true;
-    button.innerText = "✏"; // Modifica
+    button.innerText = "✏";
   }
 }
 

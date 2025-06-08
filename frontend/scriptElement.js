@@ -260,10 +260,10 @@ function reg() {
 }
 
 function updateNavbarLogoLink() {
-  const role = localStorage.getItem("modalità"); // "C" o "A"
+  const role = localStorage.getItem("modalità"); 
   const titleElement = document.querySelector(".navbar-brand");
 
-  if (!titleElement) return; // se non c’è il logo/titolo
+  if (!titleElement) return; 
 
   if (role === "A") {
     // artigiano
