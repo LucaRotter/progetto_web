@@ -1,6 +1,5 @@
 // Importa le librerie necessarie
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
@@ -12,7 +11,7 @@ const multer = require('multer'); // Includi multer per la gestione dei file
 const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);//include stripe per i pagamenti
 const fs = require('fs');
 const { get } = require('http');
-
+//aggiungere csrf per la protezione CSRF ?
 
 
 // INIZIALIZZAZIONE DEL SERVER E CONFIGURAZIONE DELLE VARIABILI DA USARE
@@ -51,11 +50,10 @@ app.use((req, res, next) => {
 const pool = new Pool({
   user: process.env.PG_USER,              
   host: process.env.PG_HOST,               
-  database: process.env.PG_DATABASE,        
+  database: process.env.PG_DATABASE,       
   password: process.env.PG_PASSWORD,       
   port: process.env.PG_PORT,
 });
-
 
 //JWT Token
 const generateToken = (id) => {
@@ -104,20 +102,11 @@ const protect = async (req, res, next) => {
     let token = req.headers.authorization;
     if (token && token.startsWith("Bearer ")) {
         try {
-
             token = token.split(" ")[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [decoded.id]);
             req.permissions = await getUserPermissions(decoded.id);
             req.user = userResult.rows[0];
-            //generazione nuovo token
-            const newToken = jwt.sign(
-                { id: decoded.id },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-            res.setHeader('x-refresh-token', newToken);
-            
             next();
         } catch (error) {
             res.status(401).json({ message: "Unauthorized, invalid token" });
@@ -266,6 +255,7 @@ app.delete('/delete-image', async (req, res) => {
 //registrazione utente
 app.post('/register', async (req, res) => {
     const { name, surname, email, pwd, role } = req.body;
+    console.log(name,surname,email,pwd,role)
     const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
     const role_id = result1.rows[0].role_id;
     const hashedPassword = await bcrypt.hash(pwd, 10);
@@ -312,15 +302,25 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, pwd, role } = req.body;
     const result = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
+    console.log(result)
     const role_id = result.rows[0]?.role_id;
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
+    console.log("lunghezza" + userResult.rows.length)
     
 
     if (userResult.rows.length > 0) {
+    
+        console.log(role)
         const user = userResult.rows[0];
+        console.log(user)
+        console.log(pwd)
         if (await bcrypt.compare(pwd, user.pwd)) {
+            console.log("non corretta")
+
             if(role_id != 3){
+                console.log("sono arrivato qua")
                 const token= generateToken(user.user_id);
+                console.log("token" +token)
                 res.json({ token });
 
             } else {
@@ -333,10 +333,10 @@ app.post('/login', async (req, res) => {
                     `Ciao ${user.name},\n\nIl tuo codice di accesso è: ${randomCode}\n\nBuon Lavoro!`
                 );
 
-                res.json({ number: randomCode, token : token });
+                res.json({ number: randomCode, token: token });
             }
         } else {
-            res.status(401).json({ message: "Invalid credentials" });
+            res.status(401).json({ message: "Invalid credentials 1" });
         }
     } else {
         res.status(401).json({ message: "Invalid credentials" });
@@ -356,40 +356,26 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
         res.status(400).json({ message: "User not found" });
     }
 });
-//ricevi tutti gli utenti
-app.get('/users', protect, hasPermission('manage_users'), async (req, res) => {
-    const result = await pool.query("SELECT * FROM users where role_id != '3'");
-    res.json({users: result.rows});
-});
 
 //ricevi utente
 app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT user_id, name, surname, email FROM users WHERE user_id = $1', [user_id]);
+
+    const result = await pool.query('SELECT user_id, name, surname, email, image_url FROM users WHERE user_id = $1', [user_id]);
     if (result.rows.length > 0) {
         res.json({user: result.rows[0]});
     } else {
         res.status(400).json({ message: "User not found" });
     }
 });
-//modifica nome e cognome user da parte di un admin
-app.put('/update-name-user/:id', protect, hasPermission('manage_users'), async (req, res) => {
-    const user_id = req.params.id;
-    const { name, surname } = req.body;
-    const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
-    if (result.rowCount > 0) {
-        res.json({ message: "Name updated" });
-    } else {
-        res.status(400).json({ message: "User not found" });
-    }
-});
-
 
 //modifica nome utente
 app.put('/update-name', protect, hasPermission('update_profile'), async (req, res) => {
     const { name, surname } = req.body;
+    console.log(name, surname)
     const user_id = req.user.user_id;
     const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
+    console.log(result)
     if (result.rowCount > 0) {
         res.json({ message: "Name updated" });
     } else {
@@ -407,17 +393,6 @@ app.get('/user/:id', protect, hasPermission('manage_users'), async (req, res) =>
         res.status(400).json({ message: "User not found" });
     }
 });
-
-app.get('/userby/:id', async (req, res) => {
-    const user_id = req.params.id;
-    const result = await pool.query('SELECT name, surname, image_url FROM users WHERE user_id = $1', [user_id]);
-    if (result.rows.length > 0) {
-        res.json({user: result.rows[0]});
-    } else {
-        res.status(400).json({ message: "User not found" });
-    }
-});
-
 //per admin: recupera id utente da email e ruolo
 app.get('/user-by-email', protect, hasPermission('manage_users'), async (req, res) => {
     const { email, role } = req.body;
@@ -426,34 +401,6 @@ app.get('/user-by-email', protect, hasPermission('manage_users'), async (req, re
     const result = await pool.query('SELECT user_id FROM users WHERE email = $1 AND role_id = $2', [email, role_id]);
     if (result.rows.length > 0) {
         res.json({ user_id: result.rows[0].user_id });
-    } else {
-        res.status(400).json({ message: "User not found" });
-    }
-});
-
-//aggiorna password di un utente da parte di un admin
-app.put('/update-password/:id', protect, hasPermission('manage_users'), async (req, res) => {
-    const { newPassword } = req.body;
-    const user_id = req.params.id;
-    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-    
-    if (userResult.rows.length > 0) {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await pool.query('UPDATE users SET pwd = $1 WHERE user_id = $2', [hashedPassword, user_id]);
-         res.json({ message: "Password updated" });    
-    } else {
-        res.status(400).json({ message: "User not found" });
-    }
-});
-
-//aggiorna email di un utente da parte di un admin
-app.put('/update-email/:id', protect, hasPermission('manage_users'), async (req, res) => {
-    const { newEmail } = req.body;
-    const user_id = req.params.id;
-    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-    if (userResult.rows.length > 0) {
-        await pool.query('UPDATE users SET email = $1 WHERE user_id = $2', [newEmail, user_id]);
-         res.json({ message: "Email updated" });    
     } else {
         res.status(400).json({ message: "User not found" });
     }
@@ -488,8 +435,11 @@ app.delete('/user', protect, hasPermission('update_profile'), async (req, res) =
 //eliminazione utente da parte dell'admin
 app.delete('/user/:id', protect, hasPermission('delete_user'), async (req, res) => {
     const user_id = req.params.id;
+    console.log(user_id)
     const email = await pool.query('SELECT email FROM users WHERE user_id = $1', [user_id]);
+    console.log(email)
     const result = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
+    console.log(result)
     //aggiunta mail
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -527,7 +477,7 @@ app.post('/forgot-password', async (req, res) => {
         sendEmail(
             email,
             'Recupero Password',
-            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n((aggiungi link))\n\nGrazie!`
+            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n http://127.0.0.1:5500/prova/resetPWD.html?email=${email}&role=${role} \n\nGrazie!`
         );
 
         res.json({ message: "Email sent"});
@@ -536,11 +486,12 @@ app.post('/forgot-password', async (req, res) => {
     }
 });
 
+
 //reimposta password
 app.post('/reset-password', async (req, res) => {
     const { email, newPassword, role } = req.body;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]);; //fare la query per recuperare l'id del ruolo
+    const result1 = await pool.query('SELECT role_id FROM roles WHERE name = $1', [role]); //fare la query per recuperare l'id del ruolo
     const role_id = result1.rows[0].role_id;
     const result = await pool.query('UPDATE users SET pwd = $1 WHERE email = $2 AND role_id = $3', [hashedPassword, email, role_id]);
     if (result.rowCount > 0) {
@@ -575,6 +526,7 @@ app.put('/update-password', protect, hasPermission('update_profile'), async (req
 //aggiungi recensione
 app.post('/add-review', protect, hasPermission('add_review'), async (req, res) => {
     const { item_id, description, evaluation } = req.body;
+    console.log(item_id, description, evaluation)
     const user_id = req.user.user_id;
     const count = await pool.query('SELECT * FROM reviews WHERE item_id = $1 AND user_id = $2', [item_id, user_id]);
     if (count.rows.length > 0) {
@@ -612,6 +564,7 @@ app.delete('/delete-review/:id', protect, hasPermission('delete_review'), async 
 //recensioni relative ad un articolo
 app.get('/reviews/:id', async (req, res) => {
     const item_id = req.params.id;
+    console.log(item_id)
     const result = await pool.query(
         'SELECT u.name, r.description, r.evaluation, r.review_id FROM users u JOIN reviews r ON u.user_id = r.user_id WHERE r.item_id = $1',
          [item_id]);
@@ -815,15 +768,18 @@ app.delete('/delete-category/:id', protect, hasPermission('manage_categories'), 
 
 //aggiungi articolo
 app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
-    console.log('qui1');
+    
     const { name, category, description, price, quantity, image_url } = req.body;
     const user_id = req.user.user_id;
     const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM items');
     const maxId = maxResult.rows[0].max_id;
     const nextId = (maxId !== null ? maxId : 0) + 1;
-    const item_id = nextId.toString();
+    const item_id = nextId.toString();console.log(name, category, description, price, quantity, image_url)
     const tmp = await pool.query('SELECT category_id FROM categories WHERE name = $1', [category]);
+    console.log(tmp.rows[0])
     const category_id = tmp.rows[0].category_id;
+    
+    
 
     const result = await pool.query(
         'INSERT INTO items (item_id, user_id, name, category_id, description, price, quantity, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)RETURNING *', 
@@ -842,6 +798,7 @@ app.put('/update-price/:id', protect, hasPermission('update_item'), async (req, 
         res.status(400).json({ message: "Item not found" });
     }
 });
+
 
 //modifica quantità articolo
 app.put('/update-quantity/:id', protect, hasPermission('update_item'), async (req, res) => {
@@ -939,21 +896,9 @@ app.get('/itemgetId', async (req, res) => {
     res.json({ item_id: result.rows[0] });
 });
 
-
-//restituisce articoli per user_id(artigiano) dallo stesso artigiano
+//restituisce articoli per user_id(artigiano)
 app.get('/user-items/',protect, hasPermission('update_item'), async (req, res) => {
-    const user_id = req.user.user_id;;
-    let result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
-    for (const item of result.rows) {
-        const categoryRes = await pool.query('SELECT name FROM categories WHERE category_id = $1', [item.category_id]);
-        item.category = categoryRes.rows[0]?.name || null;
-    }
-    res.json({items: result.rows});
-});
-
-//restituisce articoli per user_id(artigiano) per vedere i prodotti di un artigiano
-app.get('/user-items/:id', async (req, res) => {
-    const user_id = req.params.id;
+    const user_id = req.user.user_id;
     let result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
     for (const item of result.rows) {
         const categoryRes = await pool.query('SELECT name FROM categories WHERE category_id = $1', [item.category_id]);
@@ -1016,7 +961,7 @@ app.get('/random-items', async (req, res) => {
         );
        
         const selectedItems = await pool.query('SELECT * FROM items WHERE item_id = ANY($1)', [selectedItems_id.rows.map(row => row.item_id)]);
-
+        console.log(selectedItems)
         userState.set(userKey, { index: endIndex + 1, indexMax: indexMax });
         console.log("Stato utente aggiornato:", userState.get(userKey));
 
@@ -1034,7 +979,7 @@ const categoryItemsCache = new Map();
 
 app.delete('/reset-category-items/:name', async (req, res) => {
     const userKey = getUserKey(req);
-    
+    console.log("tua madre")
     const categoryName = req.params.name;
     const result =  await pool.query('SELECT category_id FROM categories WHERE name = $1', [categoryName]);
     if (result.rows.length === 0) {
@@ -1058,6 +1003,7 @@ app.get('/category-items/:name', async (req, res) => {
     const userKey = getUserKey(req);
     const nItems = parseInt(req.query.nItems, 10);
     const categoryName = req.params.name;
+    console.log(nItems,categoryName,userKey)
     const result = await pool.query('SELECT category_id FROM categories WHERE name = $1', [categoryName]);
     if (result.rows.length === 0) {
         return res.status(404).json({ error: "Categoria non trovata" });
@@ -1065,7 +1011,7 @@ app.get('/category-items/:name', async (req, res) => {
     const category_id = result.rows[0].category_id;
     const key = `${userKey}-${category_id}`;
     
-    
+    console.log("creato userket")
 
     if (!nItems || isNaN(nItems)) {
         return res.status(400).json({ error: "Parametro 'nItems' non valido" });
@@ -1073,6 +1019,7 @@ app.get('/category-items/:name', async (req, res) => {
 
     try {
         if (!categoryItemsCache.has(key)) {
+             console.log("creato userke222t")
             
             const result = await pool.query('SELECT item_id FROM items WHERE category_id = $1', [category_id]);
             const shuffled = result.rows.sort(() => 0.5 - Math.random());
@@ -1088,7 +1035,6 @@ app.get('/category-items/:name', async (req, res) => {
             for (let i = 0; i < shuffled.length; i++) {
                 await pool.query('INSERT INTO shuffled (item_index, user_key, item_id, category_id) VALUES ($1, $2, $3, $4)', [i+index, userKey, shuffled[i].item_id, category_id]);
             }
-
 
         }
 
@@ -1122,6 +1068,8 @@ app.get('/category-items/:name', async (req, res) => {
 //articoli con i filtri
 app.get('/items', async (req, res) => {
     const { name, category, minPrice, maxPrice, minEvaluation } = req.query;
+
+    console.log(name, category, minPrice, maxPrice, minEvaluation)
     const params = [];
     let count = 1;
 
@@ -1177,12 +1125,13 @@ app.get('/items', async (req, res) => {
         console.error("Errore durante il recupero degli articoli:",  err.message, err.stack);
         res.status(500).json({ error: "Errore interno del server" });
     }
+    console.log(params.lenght)
 });
 
 //gestione ordini
 //aggiungi ordine
 app.post('/add-order', protect, hasPermission('place_order'), async (req, res) => {
-    const { items, address, civic_number, postal_code, city, province, country, phone_number  } = req.body;
+    const { items, address, civic_number, postal_code, province, country, phone_number} = req.body;
     const user_id = req.user.user_id;
     const maxResult = await pool.query('SELECT MAX(CAST(order_id AS INTEGER)) AS max_id FROM orders');
     const maxId = maxResult.rows[0].max_id;
@@ -1197,12 +1146,13 @@ app.post('/add-order', protect, hasPermission('place_order'), async (req, res) =
 
         let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
         artisan_id = artisan_id.rows[0].user_id;
-
+        
         await pool.query(
-            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, city, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
-            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, city, province, country, phone_number]
+            'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
+            [order_id, user_id, artisan_id, item.item_id, item.quantity, day, time, 'confirmed', address, civic_number, postal_code, province, country, phone_number]
         );
     }
+    console.log()
     res.json({ message: "Order added", order_id: order_id });//l'order_id viene restituito per i test
 });
 
@@ -1220,14 +1170,14 @@ app.put('/update-order/:id', protect, hasPermission('manage_orders'), async (req
 //recupera ordini per id utente del cliente
 app.get('/customer-orders', protect, hasPermission('view_orders'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY day DESC', [user_id]);
+    const result = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [user_id]);
     res.json({orders: result.rows});
 });
 
 //recupera ordini per id utente dell'artigiano
 app.get('/artisan-orders', protect, hasPermission('manage_orders'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1 ORDER BY day DESC', [user_id]);
+    const result = await pool.query('SELECT * FROM orders WHERE artisan_id = $1', [user_id]);
     res.json({orders: result.rows});
 });
 
@@ -1275,9 +1225,9 @@ app.post('/create-report', protect, hasPermission('manage_report'), async (req, 
     } 
 
     const result = await pool.query(
-        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6)',
         [report_id, customer_id, artisan_id, item_id, category, description]);
-    res.json({ message: "Report created", report: result.rows[0] });
+    res.json({ message: "Report created" });
 });
 
 //aggiunta admin nella segnalazione, da fare dopo che l'admin recupera le free-reports
@@ -1292,7 +1242,7 @@ app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), asy
     }
 });
 
-//recupera segnalazioni per id admin
+//recupera segnalazioni per id admin 
 app.get('/admin-reports', protect, hasPermission('moderate_reports'), async (req, res) => {
     const admin_id = req.user.user_id;
     const result = await pool.query('SELECT * FROM reports WHERE admin_id = $1', [admin_id]);
@@ -1325,25 +1275,30 @@ app.post("/create-checkout-session", protect, hasPermission('place_order'), asyn
     const items = req.body.items;
 
     // Mappa gli articoli per Stripe
-    const line_items = items.map(item => ({
-      price_data: {
+   const line_items = items.map(item => {
+   const unitAmount = Math.round(item.price * 100); 
+
+    return {
+        price_data: {
         currency: "eur",
         product_data: {
-          name: item.name,
+            name: item.name,
         },
-        unit_amount: item.price, // in centesimi
-      },
-      quantity: item.quantity,
-    }));
+        unit_amount: unitAmount, // in centesimi
+        },
+        quantity: item.quantity,
+    };
+    });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: "https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg",//da cambiare
-      cancel_url: "https://tuosito.com/cancel",// da cambiare
+      success_url: "http://127.0.0.1:5500/prova/TrueOrder.html",//da cambiare
+      cancel_url: "http://127.0.0.1:5500/prova/index.html",// da cambiare
     });
     
+    console.log(session.url)
     res.json({ url: session.url, id: session.id, paymentStatus: session.payment_status });
   } catch (err) {
     console.error("Errore Stripe:", err);
@@ -1388,9 +1343,9 @@ module.exports = {
     categoryItemsCache
 };
 
-//route per verificare la comunicazione con il backend
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+//listen server
+app.listen(port, () => {
+    console.log(`server running on http://localhost:${port}`)
 });
 
 //chiusura connessione al database quando il server viene chiuso
@@ -1399,4 +1354,69 @@ process.on('SIGINT', () => {
         console.log('Pool chiuso');
         process.exit(0);
     });
+});
+
+//restituisce articoli per user_id(artigiano) per vedere i prodotti di un artigiano
+app.get('/user-items/:id', async (req, res) => {
+    const user_id = req.params.id;
+    let result = await pool.query('SELECT * FROM items WHERE user_id = $1', [user_id]);
+    for (const item of result.rows) {
+        const categoryRes = await pool.query('SELECT name FROM categories WHERE category_id = $1', [item.category_id]);
+        item.category = categoryRes.rows[0]?.name || null;
+    }
+    res.json({items: result.rows});
+});
+
+app.get('/userby/:id', async (req, res) => {
+    const user_id = req.params.id;
+    const result = await pool.query('SELECT name, surname, image_url FROM users WHERE user_id = $1', [user_id]);
+    if (result.rows.length > 0) {
+        res.json({user: result.rows[0]});
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+app.get('/users', protect, hasPermission('manage_users'), async (req, res) => {
+    const result = await pool.query("SELECT * FROM users where role_id != '3'");
+    res.json({users: result.rows});
+});
+
+app.put('/update-name-user/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const user_id = req.params.id;
+    const { name, surname } = req.body;
+    const result = await pool.query('UPDATE users SET name = $1, surname = $2 WHERE user_id = $3', [name, surname, user_id]);
+    if (result.rowCount > 0) {
+        res.json({ message: "Name updated" });
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//aggiorna password di un utente da parte di un admin
+app.put('/update-password/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const { newPassword } = req.body;
+    const user_id = req.params.id;
+    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+    
+    if (userResult.rows.length > 0) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE users SET pwd = $1 WHERE user_id = $2', [hashedPassword, user_id]);
+         res.json({ message: "Password updated" });    
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
+});
+
+//aggiorna email di un utente da parte di un admin
+app.put('/update-email/:id', protect, hasPermission('manage_users'), async (req, res) => {
+    const { newEmail } = req.body;
+    const user_id = req.params.id;
+    const userResult = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+    if (userResult.rows.length > 0) {
+        await pool.query('UPDATE users SET email = $1 WHERE user_id = $2', [newEmail, user_id]);
+         res.json({ message: "Email updated" });    
+    } else {
+        res.status(400).json({ message: "User not found" });
+    }
 });
