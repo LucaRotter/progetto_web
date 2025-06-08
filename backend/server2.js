@@ -1214,7 +1214,7 @@ app.post('/add-order', protect, hasPermission('place_order'), async (req, res) =
         let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
         artisan_id = artisan_id.rows[0].user_id;
         const oldqty = await pool.query('SELECT quantity FROM items WHERE item_id = $1', [item.item_id]);
-        const newqty = quantity - item.quantity;
+        const newqty = oldqty.rows[0].quantity - item.quantity;
         if (newqty < 0) {
             return res.status(400).json({ message: "Insufficient stock for item: " + item.item_id });
         } else {
