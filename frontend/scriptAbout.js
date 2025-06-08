@@ -22,6 +22,8 @@ function sendReport(){
 // Manda il report se la descrizione è stata scritta 
   console.log("Invio del report");
  let description = document.getElementById("description")
+ let category = document.getElementById("type").value
+
  const token = localStorage.getItem("token")
 
     let valid = true;
@@ -38,13 +40,13 @@ function sendReport(){
   description = description.value
  
 
-  fetch(`http://localhost:8000//free-reports`, {
+  fetch(`http://localhost:8000/create-report`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { 'authorization': `Bearer ${token}` })
+      'authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ item_id: product, category: category, description: description })
+    body: JSON.stringify({ item_id : null, category: category, description: description })
   })
 
   .then(response => response.json())
@@ -110,4 +112,3 @@ document.addEventListener("DOMContentLoaded", () => {
     selectType.appendChild(option);
   });
 });
-

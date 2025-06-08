@@ -56,6 +56,20 @@ const pool = new Pool({
   port: process.env.PG_PORT,
 });
 
+//pulizia shuffled
+async function startServer() {
+  try {
+    await pool.query("DELETE FROM shuffled");
+    console.log("Tabella 'shuffled' svuotata all'avvio.");
+
+  } catch (err) {
+    console.error("Errore durante la pulizia iniziale:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
+
 
 //JWT Token
 const generateToken = (id) => {
@@ -527,7 +541,7 @@ app.post('/forgot-password', async (req, res) => {
         sendEmail(
             email,
             'Recupero Password',
-            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n((aggiungi link))\n\nGrazie!`
+            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n http://127.0.0.1:5500/prova/resetPWD.html?email=${email}&role=${role} \n\nGrazie!`
         );
 
         res.json({ message: "Email sent"});
@@ -975,7 +989,7 @@ app.delete('/reset-items', async (req, res) => {
 
 app.get('/random-items', async (req, res) => {
     const userKey = getUserKey(req);
-    console.log("Utente:", userKey);
+    
 
     const nItems = parseInt(req.query.nItems, 10);
     
@@ -1199,6 +1213,13 @@ app.post('/add-order', protect, hasPermission('place_order'), async (req, res) =
 
         let artisan_id = await pool.query('SELECT user_id FROM items WHERE item_id = $1', [item.item_id]);
         artisan_id = artisan_id.rows[0].user_id;
+        const oldqty = await pool.query('SELECT quantity FROM items WHERE item_id = $1', [item.item_id]);
+        const newqty = oldqty.rows[0].quantity - item.quantity;
+        if (newqty < 0) {
+            return res.status(400).json({ message: "Insufficient stock for item: " + item.item_id });
+        } else {
+            await pool.query('UPDATE items SET quantity = $1 WHERE item_id = $2', [newqty, item.item_id]);
+        }
 
         await pool.query(
             'INSERT INTO orders (order_id, customer_id, artisan_id, item_id, quantity, day, time, state, address, civic_number, postal_code, city, province, country, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
@@ -1327,25 +1348,30 @@ app.post("/create-checkout-session", protect, hasPermission('place_order'), asyn
     const items = req.body.items;
 
     // Mappa gli articoli per Stripe
-    const line_items = items.map(item => ({
-      price_data: {
+   const line_items = items.map(item => {
+   const unitAmount = Math.round(item.price * 100); 
+
+    return {
+        price_data: {
         currency: "eur",
         product_data: {
-          name: item.name,
+            name: item.name,
         },
-        unit_amount: item.price, // in centesimi
-      },
-      quantity: item.quantity,
-    }));
+        unit_amount: unitAmount, // in centesimi
+        },
+        quantity: item.quantity,
+    };
+    });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: "https://res.cloudinary.com/dftu5zdbs/image/upload/v1746723876/test_upload/dwurd5vegcxqy4xgwfqb.jpg",//da cambiare
-      cancel_url: "https://tuosito.com/cancel",// da cambiare
+      success_url: "http://127.0.0.1:5500/frontend/TrueOrder.html",//da cambiare
+      cancel_url: "http://127.0.0.1:5500/frontend/index.html",// da cambiare
     });
     
+    console.log(session.url)
     res.json({ url: session.url, id: session.id, paymentStatus: session.payment_status });
   } catch (err) {
     console.error("Errore Stripe:", err);
