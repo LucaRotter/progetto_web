@@ -24,8 +24,7 @@ const token = localStorage.getItem("token")
       name.textContent += data.user.name
       surname.textContent += data.user.surname
       email.textContent += data.user.email
-      console.log(data.user.imageUrl)
-      img.src = data.user.imageUrl
+      img.src = data.user.image_url
 
     })
     .catch(error => {
