@@ -87,11 +87,11 @@ statusText.textContent = product.state ? "shipped" : "confirmed";
 statusWrapper.appendChild(statusText);
 
 if (product.state === "shipped") {
-  statusDot.className = "status-dot shipped";     // classe verde
-  statusText.textContent = "not shipped";
-} else {
-  statusDot.className = "status-dotnot not-shipped"; // classe rossa
+  statusDot.className = "status-dotnot not-shipped"; 
   statusText.textContent = "shipped";
+} else {
+  statusDot.className = "status-dot shipped"; 
+  statusText.textContent = "not shipped";
 }
 h3.appendChild(statusWrapper);
 
