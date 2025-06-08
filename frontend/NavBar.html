@@ -1,318 +1,337 @@
 <header>
-    <nav class="navbar navbar-expand-sm bd-navbar">
-        <div class="container-fluid flex-lg-row align-items-center m-3">
+  <nav class="navbar navbar-expand-sm bd-navbar">
+    <div class="container-fluid flex-lg-row align-items-center m-3">
 
-            <div class="collapse navbar-collapse">
+      <div class="collapse navbar-collapse">
 
-                <a class="navbar-brand mx-0 me-lg-3 d-none d-lg-block" href="index.html">ArtOfManual</a>
-                <a class="navbar-brand d-none d-sm-block d-lg-none " href="index.html"> <img class="" src="logoSito.png"
-                        alt="Logo" height=35> </a>
+        <a class="navbar-brand mx-0 me-lg-3 d-none d-lg-block" href="index.html">ArtOfManual</a>
+        <a class="navbar-brand d-none d-sm-block d-lg-none " href="index.html"> <img class="" src="logoSito.png"
+            alt="Logo" height=35> </a>
+
+      </div>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarSearch">
+        <form class="d-flex w-100 justify-content-center" id="primarysearchform" role="search">
+          <div class="d-flex align-items-stretch w-100 flex-wrap">
+
+
+            <div class="dropdown me-2 mb-2 mb-sm-0">
+              <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button" id="filterDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                Filtries
+              </button>
+
+              <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="min-width: 600px;margin-top:10px;">
+
+
+                <div class="row g-4">
+
+                  <div class="col-md-4">
+                    <h6>Categories</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                      <input type="radio" class="btn-check filters" id="catBooks" name="categories[]" value="books"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catBooks">Books</label>
+
+                      <input type="radio" class="btn-check filters" id="catElectronics" name="categories[]"
+                        value="electronics" autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catElectronics">Electronics</label>
+
+                      <input type="radio" class="btn-check filters" id="catClothing" name="categories[]"
+                        value="clothing" autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catClothing">Clothing</label>
+
+                      <input type="radio" class="btn-check filters" id="catHome" name="categories[]" value="home"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catHome">Home</label>
+
+                      <input type="radio" class="btn-check filters" id="catGarden" name="categories[]" value="garden"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catGarden">Garden</label>
+
+                      <input type="radio" class="btn-check filters" id="catTech" name="categories[]" value="tech"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catTech">Tech</label>
+
+                      <input type="radio" class="btn-check filters" id="catSports" name="categories[]" value="sports"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catSports">Sports</label>
+
+                      <input type="radio" class="btn-check filters" id="catBeauty" name="categories[]" value="beauty"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catBeauty">Beauty</label>
+
+                      <input type="radio" class="btn-check filters" id="catFood" name="categories[]" value="food"
+                        autocomplete="off">
+                      <label class="btn btn-outline-secondary btn-sm" for="catFood">Food</label>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-4">
+                    <h6>Price</h6>
+                    <div class="mb-2">
+                      <label for="minPrice" class="form-label">Min</label>
+                      <input type="number" class="form-control form-control-sm" id="minPrice" name="minPrice"
+                        placeholder="€ Min" min="0">
+                    </div>
+                    <div>
+                      <label for="maxPrice" class="form-label">Max</label>
+                      <input type="number" class="form-control form-control-sm" id="maxPrice" name="maxPrice"
+                        placeholder="€ Max" min="0">
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-4">
+                    <h6>Min Rating</h6>
+                    <select class="form-select form-select-sm" id="minRating" name="minEval">
+                      <option value="">Select</option>
+                      <option value="1">⭐ 1</option>
+                      <option value="2">⭐⭐ 2</option>
+                      <option value="3">⭐⭐⭐ 3</option>
+                      <option value="4">⭐⭐⭐⭐ 4</option>
+                      <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                    </select>
+                  </div>
+                </div>
+
+
+
+              </div>
 
             </div>
-<div class="collapse navbar-collapse justify-content-center" id="navbarSearch">
-  <form class="d-flex w-100 justify-content-center" id="primarysearchform" role="search">
-    <div class="d-flex align-items-stretch w-100 flex-wrap">
-      
-      
-   <div class="dropdown me-2 mb-2 mb-sm-0">
-  <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
-          id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-    Filtries
-  </button>
 
-  <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="min-width: 600px;margin-top:10px;">
-    
+            <div class="position-relative flex-grow-1 me-2 mb-2 mb-sm-0">
+              <input type="text" class="form-control w-100" id="searchfield" placeholder="Search" aria-label="Search"
+                autocomplete="off" name="search">
+              <ul class="list-group w-100 mt-1 shadow d-none" id="suggestionsList"></ul>
+            </div>
 
-      <div class="row g-4">
-        <!-- Colonna 1: Categorie -->
-        <div class="col-md-4">
-          <h6>Categories</h6>
-          <div class="d-flex flex-wrap gap-2">
-           <input type="radio" class="btn-check filters" id="catBooks" name="categories[]" value="books" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catBooks">Books</label>
+            <button type="submit" class="searchbtn btn btn-primary mb-2 mb-sm-0">
+              <i class="bi bi-search"></i>
+            </button>
 
-            <input type="radio" class="btn-check filters" id="catElectronics" name="categories[]" value="electronics" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catElectronics">Electronics</label>
-
-            <input type="radio" class="btn-check filters" id="catClothing" name="categories[]" value="clothing" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catClothing">Clothing</label>
-
-            <input type="radio" class="btn-check filters" id="catHome" name="categories[]" value="home" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catHome">Home</label>
-
-            <input type="radio" class="btn-check filters" id="catGarden" name="categories[]" value="garden" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catGarden">Garden</label>
-
-            <input type="radio" class="btn-check filters" id="catTech" name="categories[]" value="tech" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catTech">Tech</label>
-
-            <input type="radio" class="btn-check filters" id="catSports" name="categories[]" value="sports" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catSports">Sports</label>
-
-            <input type="radio" class="btn-check filters" id="catBeauty" name="categories[]" value="beauty" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catBeauty">Beauty</label>
-
-            <input type="radio" class="btn-check filters" id="catFood" name="categories[]" value="food" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-sm" for="catFood">Food</label>
           </div>
-        </div>
-
-        <!-- Colonna 2: Prezzo -->
-        <div class="col-md-4">
-          <h6>Price</h6>
-          <div class="mb-2">
-            <label for="minPrice" class="form-label">Min</label>
-            <input type="number" class="form-control form-control-sm" id="minPrice" name="minPrice"  placeholder="€ Min" min="0">
-          </div>
-          <div>
-            <label for="maxPrice" class="form-label">Max</label>
-            <input type="number" class="form-control form-control-sm" id="maxPrice"name="maxPrice" placeholder="€ Max" min="0">
-          </div>
-        </div>
-
-        <!-- Colonna 3: Rating -->
-        <div class="col-md-4">
-          <h6>Min Rating</h6>
-          <select class="form-select form-select-sm" id="minRating" name="minEval">
-            <option value="">Select</option>
-            <option value="1">⭐ 1</option>
-            <option value="2">⭐⭐ 2</option>
-            <option value="3">⭐⭐⭐ 3</option>
-            <option value="4">⭐⭐⭐⭐ 4</option>
-            <option value="5">⭐⭐⭐⭐⭐ 5</option>
-          </select>
-        </div>
+        </form>
       </div>
 
-      <!-- Pulsante applica -->
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
+          <li class=" nav-item me-3  d-none loggedUser" style="position: relative;">
+            <div class="cart-top-item">
+              <a class="nav-link link-navbar" href="cart.html">Cart</a>
+              <div class="cart-badged d-none">
+              </div>
+            </div>
+          </li>
+          <li class="nav-item"><a class="nav-link link-navbar loggedUser loggedArtisan d-none"
+              data-bs-toggle="offcanvas" href="#visProfile" aria-controls="offcanvasExample">Account</a>
+          </li>
+          <li class="nav-item"><a class="nav-link link-navbar notLogged" data-bs-toggle="offcanvas" href="#loggedCanvas"
+              aria-controls="offcanvasExample">Sing in</a></li>
+        </ul>
 
-    </div>
- 
-</div>
+        <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2 ">
+          <li class="nav-item d-none loggedUser" style="position: relative;">
+            <div class="cart-top-item">
+              <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
+              <div class="cart-badged d-none">
+              </div>
+            </div>
 
-      <div class="position-relative flex-grow-1 me-2 mb-2 mb-sm-0">
-        <input type="text" class="form-control w-100" id="searchfield" placeholder="Search"
-               aria-label="Search" autocomplete="off" name="search">
-        <ul class="list-group w-100 mt-1 shadow d-none" id="suggestionsList"></ul>
+          </li>
+          <li class="nav-item"><a class="nav-link link-navbar d-none loggedUser loggedArtisan" href="#visProfile"
+              data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
+          </li>
+          <li class="nav-item"><a class="nav-link link-navbar notLogged" href="#loggedCanvas" data-bs-toggle="offcanvas"
+              aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
+          </li>
+        </ul>
+
       </div>
 
-      <button type="submit" class="searchbtn btn btn-primary mb-2 mb-sm-0">
+
+      <div class="d-flex d-sm-none justify-content-center align-items-center" style="height: 40px; width: 40px;">
+        <a class="nav-link link-navbar notLogged" href="#loggedCanvas" data-bs-toggle="offcanvas"
+          aria-controls="loggedCanvas">
+          <i class="bi bi-person" style="font-size: 24px;"></i>
+        </a>
+
+        <a class="nav-link link-navbar d-none loggedUser loggedArtisan" href="#visProfile" data-bs-toggle="offcanvas"
+          aria-controls="offcanvasExample">
+          <i class="bi bi-person" style="font-size: 24px;"></i>
+        </a>
+
+      </div>
+      <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
+        <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
+          <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
+        </a>
+      </div>
+
+      <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
+        data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false" aria-controls="searchCollapse"
+        style="height: 40px;width: 40px; background: linear-gradient(145deg, #d17e02, #d17e02);">
         <i class="bi bi-search"></i>
       </button>
 
-    </div>
-  </form>
-</div>
-
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav d-none d-lg-flex justify-content-end " style="width: 100%;">
-                    <li class=" nav-item me-3  d-none loggedUser" style="position: relative;">
-                        <div class="cart-top-item">
-                        <a class="nav-link link-navbar" href="cart.html">Cart</a>
-                        <div class="cart-badged d-none">
-                            </div></div>
-                    </li>
-                    <li class="nav-item"><a class="nav-link link-navbar loggedUser loggedArtisan d-none"
-                            data-bs-toggle="offcanvas" href="#visProfile" aria-controls="offcanvasExample">Account</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link link-navbar notLogged" data-bs-toggle="offcanvas"
-                            href="#loggedCanvas" aria-controls="offcanvasExample">Sing in</a></li>
-                </ul>
-
-                <ul class="navbar-nav d-none d-sm-flex d-lg-none justify-content-end w-100 gap-2 ">
-                    <li class="nav-item d-none loggedUser" style="position: relative;">
-                        <div class="cart-top-item">
-                        <a class="nav-link link-navbar" href="cart.html"><i class="bi bi-cart"></i></a>
-                        <div class="cart-badged d-none">
-                        </div>
-                        </div>
-
-                    </li>
-                    <li class="nav-item"><a class="nav-link link-navbar d-none loggedUser loggedArtisan"
-                            href="#visProfile" data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i
-                                class="bi bi-person"></i></a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link link-navbar notLogged" href="#loggedCanvas"
-                            data-bs-toggle="offcanvas" aria-controls="offcanvasExample"><i class="bi bi-person"></i></a>
-                    </li>
-                </ul>
-                
-            </div>
 
 
-<div class="d-flex d-sm-none justify-content-center align-items-center" style="height: 40px; width: 40px;">
-  <a class="nav-link link-navbar notLogged" href="#loggedCanvas" data-bs-toggle="offcanvas" aria-controls="loggedCanvas">
-    <i class="bi bi-person" style="font-size: 24px;"></i>
-  </a>
- 
-    <a class="nav-link link-navbar d-none loggedUser loggedArtisan" href="#visProfile" data-bs-toggle="offcanvas" aria-controls="offcanvasExample">
-      <i class="bi bi-person" style="font-size: 24px;"></i>
-    </a>
- 
-</div>
-            <div class="d-sm-none d-flex justify-content-center align-items-center" style="height: 40px; width: 40px; ">
-                <a class="navbar-brand d-md-none p-0 m-0" href="#" style="height: 100%; width: 100%;">
-                    <img src="logoSito.png" alt="Logo" style="height: 100%; width: 100%; object-fit: cover;">
-                </a>
-            </div>
+      <div class="collapse d-sm-none" id="searchCollapse" style="background-color: #000;">
+        <div class="d-flex justify-content-center align-items-center search-control"
+          style="background-color: #000; padding-left: 20px;">
 
-            <button class="d-flex justify-content-center align-items-center navbar-toggler d-sm-none" type="button"
-                data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false"
-                aria-controls="searchCollapse" style="height: 40px;width: 40px; background: linear-gradient(145deg, #d17e02, #d17e02);">
+          <form id="mobileSearchForm" class="d-flex align-items-center flex-grow-1"
+            style="border-radius: 5px; width: 80%;" role="search">
+
+            <div class="d-flex align-items-center gap-2" style="width: 100%;">
+
+              <div class="dropdown me-2">
+                <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button" id="filterDropdownMobile"
+                  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                  Filtries
+                </button>
+                <div class="dropdown-menu p-3" id="mobileFiltersContainer">
+                </div>
+              </div>
+              <input type="text" name="search" class="form-control" style="border: none;" placeholder="Search"
+                aria-label="Search">
+              <button type="submit" style="background: none; border: none;">
                 <i class="bi bi-search"></i>
-            </button>
+              </button>
 
-  
-            
-<div class="collapse d-sm-none" id="searchCollapse" style="background-color: #000;">
-  <div class="d-flex justify-content-center align-items-center search-control" style="background-color: #000; padding-left: 20px;">
-    
-    <form id="mobileSearchForm" class="d-flex align-items-center flex-grow-1" style="border-radius: 5px; width: 80%;" role="search">
-      
-      <div class="d-flex align-items-center gap-2" style="width: 100%;">
-        
-        <div class="dropdown me-2">
-          <button class="btn btn-outline-secondary dropdown-toggle h-100" type="button"
-                  id="filterDropdownMobile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-            Filtries
+            </div>
+
+          </form>
+          <button class="mx-1 mx-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse"
+            aria-expanded="true"
+            style="background-color: #000000; border: 1px solid #000000; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+            <i class="bi bi-x" style="font-size: 24px; color: #d17e02;"></i>
           </button>
-          <div class="dropdown-menu p-3" id="mobileFiltersContainer">
-          </div>
+
         </div>
-        <input type="text" name="search" class="form-control" style="border: none;" placeholder="Search" aria-label="Search">
-        <button type="submit" style="background: none; border: none;">
-          <i class="bi bi-search"></i>
-        </button>
-
       </div>
-
-    </form>
-    <button class="mx-1 mx-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="true"
-      style="background-color: #000000; border: 1px solid #000000; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-      <i class="bi bi-x" style="font-size: 24px; color: #d17e02;"></i>
-    </button>
-
-  </div>
-</div>
-</div>
+    </div>
 
 
-    </nav>
+  </nav>
 </header>
 
 
 <div class="offcanvas offcanvas-end notLogged" tabindex="-1" id="loggedCanvas" aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header mb-3"
-        style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  <div class="offcanvas-header mb-3"
+    style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+
+    <div class="btn-group d-flex mb-5 mx-auto  " role="group" aria-label="Basic radio toggle button group"
+      style="max-width: 300px;">
+
+      <input type="radio" class="btn-check " name="ruolo" id="btnradio1" autocomplete="off" value="C" checked>
+      <label class="btn btn-outline-primary " for="btnradio1" style="width: 40px;">User</label>
+
+      <input type="radio" class="btn-check" name="ruolo" id="btnradio2" autocomplete="off" value="A">
+      <label class="btn btn-outline-primary" for="btnradio2" style="width: 40px;">Artisan</label>
+
     </div>
 
-    <div class="offcanvas-body">
 
-        <div class="btn-group d-flex mb-5 mx-auto  " role="group" aria-label="Basic radio toggle button group"
-            style="max-width: 300px;">
+    <div class="d-flex justify-content-center">
 
-            <input type="radio" class="btn-check " name="ruolo" id="btnradio1" autocomplete="off" value="C" checked>
-            <label class="btn btn-outline-primary " for="btnradio1" style="width: 40px;">User</label>
+      <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
+        <img src="golubirospiuniro.jpeg" alt="Icona" id="decorationImage"
+          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+      </button>
 
-            <input type="radio" class="btn-check" name="ruolo" id="btnradio2" autocomplete="off" value="A">
-            <label class="btn btn-outline-primary" for="btnradio2" style="width: 40px;">Artisan</label>
-
-        </div>
-
-
-        <div class="d-flex justify-content-center">
-
-            <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
-                <img src="golubirospiuniro.jpeg" alt="Icona" id="decorationImage" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" >
-            </button>
-
-        </div>
-
-        <div class="d-flex flex-column align-items-center mt-5 px-3 w-100">
-
-            <form class="d-flex flex-column align-items-center" style="width: 100%;" id="singform">
-                <input type="email" class="form-control mb-3" placeholder="Email" style="max-width: 250px;"
-                    id="emailfield" autocomplete="email">
-                <input type="password" class="form-control mb-3 " placeholder="Password" style="max-width: 250px;"
-                    id="passwordfield" autocomplete="current-password">
-
-                <a href="pw.html" class="text-decoration-none  mx-1 W-100" style="max-width: 250px;">Forgot password?</a>
-
-                <button type="submit" class="btn btn-primary w-100 mt-3 mb-5" style="max-width: 150px;"
-                    id="SingInButton" onclick="logged(event)">Sing up</button>
-            </form>
-
-            <p class="mt-1"> don't have an account?<a href="registration.html" class="text-decoration-none"
-                    id="linkreg" onclick="reg()"> register here</a></p>
-
-            <div class="d-flex justify-content-center align-items-center mt-3 text-center">
-                <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
-                <div class="vr"></div>
-                <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
-            </div>
-
-        </div>
     </div>
+
+    <div class="d-flex flex-column align-items-center mt-5 px-3 w-100">
+
+      <form class="d-flex flex-column align-items-center" style="width: 100%;" id="singform">
+        <input type="email" class="form-control mb-3" placeholder="Email" style="max-width: 250px;" id="emailfield"
+          autocomplete="email">
+        <input type="password" class="form-control mb-3 " placeholder="Password" style="max-width: 250px;"
+          id="passwordfield" autocomplete="current-password">
+
+        <a href="pw.html" class="text-decoration-none  mx-1 W-100" style="max-width: 250px;">Forgot password?</a>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3 mb-5" style="max-width: 150px;" id="SingInButton"
+          onclick="logged(event)">Sing up</button>
+      </form>
+
+      <p class="mt-1"> don't have an account?<a href="registration.html" class="text-decoration-none" id="linkreg"
+          onclick="reg()"> register here</a></p>
+
+      <div class="d-flex justify-content-center align-items-center mt-3 text-center">
+        <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
+        <div class="vr"></div>
+        <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <div class="offcanvas offcanvas-end loggedUser loggedArtisan" tabindex="-1" id="visProfile"
-    aria-labelledby="offcanvasExampleLabel">
+  aria-labelledby="offcanvasExampleLabel">
 
-    <div class="offcanvas-header mb-3"
-        style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  <div class="offcanvas-header mb-3"
+    style="background-image:url(golubirospiuniro.jpeg); background-size: cover;height: 100px;">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sing up</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+
+    <div class="d-flex flex-column justify-content-center h-100 gap-3">
+
+      <div class="d-flex justify-content-center">
+        <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
+          <img src="golubirospiuniro.jpeg" alt="Icona" id="decorationImage"
+            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+        </button>
+      </div>
+
+
+      <button class="btn button-logged mt-3" onclick="Userpage()">
+        <p>view profile</p>
+        <p>></p>
+      </button>
+
+      <button class="btn button-logged loggedUser" onclick="Cartpage()">
+        <p>cart</p>
+        <p>></p>
+      </button>
+
+      <button class="btn button-logged loggedArtisan" id="togglePageBtn" onclick="IndexPage()">
+        <p></p>
+        <p>></p>
+      </button>
+      <button class="btn button-logged loggedArtisan" onclick="ShipPage()">
+        <p>Manage Shipments</p>
+        <p>></p>
+
+        <button class="btn button-logged loggedUser" onclick="Orderspage()">
+          <p>Orders</p>
+          <p>></p>
+        </button>
+
+        <button class="btn button-logged" style="margin-top: auto;" onclick="logout()">
+          <p>Log out</p>
+          <p>></p>
+        </button>
+
+
+      </button>
+
+      <div class="d-flex justify-content-center align-items-center mt-3 text-center">
+        <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
+        <div class="vr"></div>
+        <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
+      </div>
     </div>
-
-    <div class="offcanvas-body">
-
-        <div class="d-flex flex-column justify-content-center h-100 gap-3">
-
-            <div class="d-flex justify-content-center">
-                <button class="btn rounded-circle p-0 overflow-hidden" style="width: 100px; height: 100px; ">
-                    <img src="golubirospiuniro.jpeg" alt="Icona" id="decorationImage" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                </button>
-            </div>
-
-
-            <button class="btn button-logged mt-3" onclick="Userpage()">
-                <p>view profile</p>
-                <p>></p>
-            </button>
-
-            <button class="btn button-logged loggedUser" onclick="Cartpage()">
-                <p>cart</p>
-                <p>></p>
-            </button>
-
-            <button class="btn button-logged loggedArtisan"  id="togglePageBtn" onclick="IndexPage()">
-                <p></p>
-                <p>></p>
-            </button>
-            <button class="btn button-logged loggedArtisan" onclick="ShipPage()">
-                <p>Manage Shipments</p>
-                <p>></p>
-
-            <button class="btn button-logged loggedUser" onclick="Orderspage()">
-                <p>Orders</p>
-                <p>></p>
-            </button>
-
-            <button class="btn button-logged" style="margin-top: auto;" onclick="logout()">
-                <p>Log out</p>
-                <p>></p>
-            </button>
-            
-            
-            </button>
-
-            <div class="d-flex justify-content-center align-items-center mt-3 text-center">
-                <p class="mx-3" style="width: 40px;"> <a href="Admin.html" class="text-decoration-none">Admin</a></p>
-                <div class="vr"></div>
-                <p class="mx-3" style="width: 40px;"> <a href="About.html" class="text-decoration-none">About</a></p>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
