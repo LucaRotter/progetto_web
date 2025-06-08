@@ -350,7 +350,7 @@ describe('POST /forgot-password and reset-password', () => {
   });
   const testUserPdw = {
     email: 'marketrader69@gmail.com',
-    newPassword: 'prova1',
+    newPassword: 'password1',
     role: 'C'
   };
   test('should reset password', async () => {
@@ -368,8 +368,8 @@ describe('POST /forgot-password and reset-password', () => {
       .put('/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        oldPassword: 'prova1',
-        newPassword: 'prova1'
+        oldPassword: 'password1',
+        newPassword: 'password1'
       });
 
     expect(response.body.message).toBe('Password updated');

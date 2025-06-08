@@ -149,14 +149,14 @@ INSERT INTO categories(category_id, name, image_url) VALUES
 ('2', 'electronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311031/eletronics_o6cym0.png'),
 ('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311257/clothes-rack_kpvqgz.png'),
 ('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311164/house_qbfgmk.png'),
-('5', 'gardern', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311112/park_jwmpi5.png'),
+('5', 'garden', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311112/park_jwmpi5.png'),
 ('6', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311071/digital_g10kgo.png'),
 ('7', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311203/balls-sports_kisyfh.png'),
 ('8', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749311171/cosmetics_micd5p.png'),
 ('9', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749310976/salad_ssrzpx.png');
 
 --INSERIMENTO UTENTI PER TEST
---la password è password123
+--la password è password1, anche dopo i test
 INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 ('5', 'prova', 'artigiano', 'marketrader69@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749223517/11062b_78c43fe155c041bca03b0c6e15b82110_mv2_plj72j.avif', 2),
 ('7', 'prova1', 'artigiano1', 'provaartigiano@gmail.com', '$2b$10$N7dSkM15kwW3pwm3KT5Yue0lO8rpviTnB/Dwv5sF5s0ZaKT1ujABi', 'https://res.cloudinary.com/dftu5zdbs/image/upload/v1749218011/prodotti/ptohefudfxvmdtdwmdr8.jpg', 2),
