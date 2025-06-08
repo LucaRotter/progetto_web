@@ -88,7 +88,7 @@ description text
 create table shuffled(
 item_index INTEGER primary key,
 item_id varchar(5) references items(item_id) on delete cascade on update cascade,
-user_key varchar(16) not null,
+user_key varchar(45) not null,
 category_id varchar(5) references categories(category_id) on delete cascade on update cascade
 );
 
