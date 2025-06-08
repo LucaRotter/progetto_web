@@ -63,19 +63,6 @@ jobs:
       - name: Avvia Docker Compose
         run: docker compose -f docker-compose.yml up -d
 
-      - name: Aspetta che il backend sia pronto
-        run: |
-          echo "Aspetto che il backend risponda..."
-          for i in {1..10}; do
-            if curl --fail http://localhost:8000/health; then
-              echo "Il backend è pronto!"
-              exit 0
-            fi
-            echo "Tentativo $i fallito, riprovo tra 3s..."
-            sleep 3
-          done
-          echo "Il backend non risponde dopo 10 tentativi!"
-          exit 1
       - name: Inizializza il database manualmente
         run: |
           PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h localhost -U postgres -d Progetto_web -f ./init/init_database.sql
