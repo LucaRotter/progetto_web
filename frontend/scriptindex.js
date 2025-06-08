@@ -3,13 +3,20 @@ let token = localStorage.getItem("token")
 console.log(localStorage.getItem("token"))
 
 
-//login function
+
+//funzione per mostrare l'elemento offcanvas al click del bottone
+function sing(){
+document.getElementById('singButton').addEventListener('click', function () {
+    
+    var offcanvasExample = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
+    offcanvasExample.show();
+});}
 
 function logged(event){
 
-    console.log("Login function")
-    
     event.preventDefault()
+    console.log("Login function")
+
     
     let email = document.getElementById("emailfield").value;
     let password = document.getElementById("passwordfield").value;
@@ -30,7 +37,7 @@ function logged(event){
       .then(Data => {
 
        if(Data.token == null){
-
+        
         alert("Credenziali non valide, riprova");
         return;
         
@@ -39,12 +46,14 @@ function logged(event){
        localStorage.setItem("modalità", ruolo)
        localStorage.setItem("token", Data.token)
        sessionStorage.setItem("loginSuccess", "true")
-      
+       console.log("urra")
        }
        
        if(ruolo=="C"){
-        window.location.href = "index.html"
-         return;
+       
+       window.location.href = "index.html"
+       return
+        
        }else if(ruolo== "A"){
         window.location.href = "ManageProduct.html"
          return;
@@ -56,20 +65,7 @@ function logged(event){
         alert("Si è verificato un errore durante il login");
     })
 
-}
-
-
-//funzione per mostrare l'elemento offcanvas al click del bottone
-function sing(){
-document.getElementById('singButton').addEventListener('click', function () {
-    
-    var offcanvasExample = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
-    offcanvasExample.show();
-});}
-
-     
-
-
+}     
 document.addEventListener('DOMContentLoaded', function () {
 
 
@@ -166,7 +162,7 @@ title.textContent = Data.name;
 
 const price = document.createElement('p');
 price.className = 'card-text Items price-Item';
-price.textContent = Data.price;
+price.textContent = "€ " + Data.price;
 
 // 2. Assembla la struttura
 cardBody.appendChild(title);

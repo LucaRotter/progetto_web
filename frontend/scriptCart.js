@@ -44,7 +44,7 @@ const token = localStorage.getItem("token");
 
 //crea i contenitori per il cart
 
-function createCartElement(CartContent) {
+function createCartElement(CartContent, maxQuantity,category) {
   console.log("sono qui");
   const container = document.getElementById("item-container");
 
@@ -54,7 +54,7 @@ function createCartElement(CartContent) {
 
   // Immagine
   const img = document.createElement("img");
-  img.src =  "golubirospiuniro.jpeg";
+  img.src = imgitem;
   img.classList.add("imgCart");
 
   // Div interno
@@ -135,10 +135,13 @@ function createCartElement(CartContent) {
 
   increaseBtn.addEventListener("click", function () {
     let value = parseInt(quantityInput.value, 10);
+    let max = maxQuantity
+   
+    if (value < max) {
     quantityInput.value = value + 1;
     const id = quantityInput.id
     const quantity = value+1
-   
+    
     fetch(`http://localhost:8000/cart/${id}`, {
       method: 'PUT',
       headers: {
@@ -163,6 +166,7 @@ function createCartElement(CartContent) {
     cart.items[itemIndex].quantity = quantity;
     localStorage.setItem("cart", JSON.stringify(cart));
       }
+    }
   });
 
   
@@ -170,7 +174,7 @@ function createCartElement(CartContent) {
 
   // Categoria
   const p = document.createElement("p");
-  p.textContent = CartContent.category_id;
+  p.textContent = category;
 
   // Prezzo
   const prezzo = document.createElement("p");
@@ -245,8 +249,12 @@ function getInfo(product) {
   .then(data => {
  
     elemento = data.item
+    category = data.category_name
     elementoPassed = elemento[0];
-  
+
+    
+    imgitem = elementoPassed.image_url
+    const maxQuantity = elementoPassed.quantity
     const { image_url, prezzo, ...rest } = elementoPassed;
 
     const itemWithQuantity = {
@@ -262,7 +270,7 @@ function getInfo(product) {
     
     console.log(cart)
 
-    createCartElement(itemWithQuantity);
+    createCartElement(itemWithQuantity,maxQuantity,category);
   });
 }
 
@@ -289,9 +297,11 @@ function updateCartReview() {
   });
 
   // Aggiorna l'interfaccia
-  document.getElementById("totalPrice").textContent = `€${total.toFixed(2)}`;
-  document.getElementById("itemCount").textContent = nitems;
-
+   document.getElementById("totalPrice").textContent = `€${total.toFixed(2)}`;
+  let totalP  = `€${total.toFixed(2)}`;
+   document.getElementById("itemCount").textContent =nitems
+  let nItemsP  =  nitems;
+  sessionStorage.setItem("recapP", JSON.stringify([totalP, nItemsP]));
   console.log("Totale articoli:", nitems, " - Prezzo totale:", total);
 }
 
