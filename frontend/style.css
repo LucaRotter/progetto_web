@@ -1420,6 +1420,13 @@ body.js-loading {
     white-space: nowrap;
   }
 }
-#UsefullButton{
-  background-color: grey;
+.UsefullButton{
+  background-color: #cccccc; 
+  color: #333333;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: default;
+  font-weight: bold;
 }

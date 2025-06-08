@@ -24,8 +24,8 @@ const token = localStorage.getItem("token")
       name.textContent += data.user.name
       surname.textContent += data.user.surname
       email.textContent += data.user.email
-      console.log(img)
-      img.src = data.user.image_url
+      console.log(data.user.imageUrl)
+      img.src = data.user.imageUrl
 
     })
     .catch(error => {
@@ -140,7 +140,7 @@ function saveChanges(event) {
     const formData = new FormData();
     formData.append('immagine', file); // 'immagine' deve corrispondere a uploadMiddleware.single('immagine')
 
-    previewImage.src = 'spinner.gif';
+   
     fetch('http://localhost:8000/profile-picture', {
       method: 'PUT',
       headers: {

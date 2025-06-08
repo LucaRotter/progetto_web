@@ -247,11 +247,13 @@ if(localStorage.getItem("Admin")== "true"){
     console.log(currentItem)
     appdateItem(data.item, data.category_name);
 
-    if(data.item.quantity == 0){
+    console.log(currentItem.quantity)
+    if(currentItem.quantity == 0){
      const button = document.getElementById("addedtoCart")
 
      button.classList.remove("shiny-blue-btn")
      button.classList.add("UsefullButton")
+     button.disabled= true
      
     }
     addToReview()

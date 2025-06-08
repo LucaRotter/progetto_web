@@ -41,7 +41,7 @@ function getInfo(product) {
   .then(response => response.json())
   .then(data => {
     elemento = data.item
-    
+    console.log(elemento[0])
     
     console.log("get info " + data)
     createCartElement(elemento[0], data.category_name, product);
@@ -62,7 +62,7 @@ function createCartElement(CartContent, Category,product) {
   
 
   const img = document.createElement("img");
-  img.src = "golubirospiuniro.jpeg";
+  img.src = CartContent.image_url;
   carItem.appendChild(img);
 
   const contentWrapper = document.createElement("div");
