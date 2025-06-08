@@ -529,8 +529,37 @@ DOMContentLoaded	Al caricamento della pagina esegue fetch per ottenere dati prod
 •	Garantire l’accessibilità, soprattutto per modali e pulsanti (focus management, ARIA).
 •	Ottimizzare le immagini per migliorare i tempi di caricamento e l’esperienza utente.
 
+---
 
+#AdminPage
+##Descrizione
+Per la gestione di un pannello di amministrazione web, permette di  gestire e visualizzare segnalazioni (report) ricevute e prese in carico, visualizzare, modificare ed eliminare utenti, effettuare logout 
+Funzioni / API
+Nome Funzione	Parametri	Descrizione	
+Nome Funzione	Parametri	Descrizione
+openModal	modalId (string), overlayId (string)	Mostra la modale di modifica specificata e l’overlay.
+closeModal	nessuno	Nasconde la modale e l’overlay.
+saveChanges	event (Event)	Valida i dati inseriti nel form, invia richiesta PUT per aggiornare dati utente.
+showSection	sectionId (string)	Mostra una sezione della pagina nascondendo le altre.
+deleteReport	id (number	Elimina i report
+takeCharge	id (number	Permette di prendere in carico un report
+creationReport	reports (Array)	Crea dinamicamente la lista di report ricevuti e li inserisce nel DOM.
+createMyReports	reports (Array)	Mostra i report presi in carico dall’admin nella propria lista.
+logout	nessuno	Effettua logout pulendo token e reindirizzando alla pagina principale.
+renderUsers	users (Array)	Popola la lista utenti con i dati ottenuti dal backend.
+modifyUser	user (Object)	Mostra il modal di modifica utente con dati precompilati.
+deleteUser	user (Object)	Elimina un utente dopo conferma e aggiorna la UI.
+toggleField	fieldId (string), button (Element)	Attiva/disattiva un campo input e modifica testo del bottone associato.
+Best Practices
 
+•	Autenticazione: Verifica sempre il token all’avvio e reindirizza se assente.
+•	Chiamate API: Sempre protette con token via header.
+•	Gestione errori: Implementare catch per tutte le promise e mostrare messaggi user-friendly.
+•	UI Update: Aggiornare il DOM dopo modifiche al backend per mantenere coerenza.
+•	Conferme: Usare confirm() per azioni distruttive come eliminazioni.
+•	Modularità: Funzioni specifiche per ogni tipo di operazione (CRUD utenti, report).
+•	Accessibilità: Focus sugli input abilitati per migliorare UX.
+•	Modalità disabilitata: I campi sono disabilitati di default per evitare modifiche accidentali.
 
 
 
