@@ -49,7 +49,7 @@ const token = localStorage.getItem("token")
     document.getElementById(modalId).style.display = "block";
     document.getElementById(overlayId).style.display = "block";
 
-      const inputIds = ["name", "surname", "oldpw", "newpw"];
+      const inputIds = ["name", "surname"];
   inputIds.forEach(id => {
     const input = document.getElementById(id);
     if (input) {

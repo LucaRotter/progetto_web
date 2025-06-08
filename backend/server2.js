@@ -365,7 +365,7 @@ app.put('/profile-picture', uploadMiddleware.single('immagine'), protect, hasPer
     const user_id = req.user.user_id;
     const result = await pool.query('UPDATE users SET image_url = $1 WHERE user_id = $2', [url, user_id]);
     if (result.rowCount > 0) {
-        res.json({ message: "Profile picture updated" });
+        res.json({ message: "Profile picture updated", imageUrl : url });
     } else {
         res.status(400).json({ message: "User not found" });
     }
@@ -379,7 +379,7 @@ app.get('/users', protect, hasPermission('manage_users'), async (req, res) => {
 //ricevi utente
 app.get('/user', protect, hasPermission('update_profile'), async (req, res) => {
     const user_id = req.user.user_id;
-    const result = await pool.query('SELECT user_id, name, surname, email FROM users WHERE user_id = $1', [user_id]);
+    const result = await pool.query('SELECT user_id, name, surname, email, image_url FROM users WHERE user_id = $1', [user_id]);
     if (result.rows.length > 0) {
         res.json({user: result.rows[0]});
     } else {
