@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="ProgettoEsame/img/png" href="logoSito.png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body class="js-loading">
+
+    <div id="header"></div>
+
+    <main class="container h-100 " style="padding-top: 90px;">
+        <div class="d-flex align-items-start justify-content-center h-100 w-100 " id="emptyCart">
+            <div class="d-flex justify-content-center align-items-center">
+                <p>Cart is Empty add something to it</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center d-none" style="margin-top: 40px;" id="fullCart">
+            <div class="col-12 col-lg-7 d-flex flex-column align-items-center p-3 gap-3 container-fluid box-cart mb-5 order-2 order-lg-1 "
+                style="background-color: rgb(255, 255, 255);border: 2px solid rgb(0, 0, 0); border-radius: 10px;"
+                id="item-container">
+                <h4>Your cart</h4>
+                <div id="button-container"></div>
+            </div>
+
+            <div class="col-12 col-lg-4 p-0 order-1 order-lg-2 mb-3 mb-lg-0 d-flex justify-content-center "
+                style="height: 300px; background-color: rgb(255, 255, 255);  ">
+
+                <div class="d-flex flex-column h-100 w-100 justify-content-start align-items-center p-3 "
+                    style="background-color: rgb(255, 255, 255);max-width: 300px;border: 2px solid rgb(0, 0, 0); border-radius: 10px;">
+                    <h4>Review </h4>
+                    <div class=" d-inline-flex  w-100 gap-2">
+                        <p class="product" style="margin-top: 15px;">N products</p>
+                        <p class="align-self-end product" style="margin-left: auto;" id="itemCount"></p>
+                    </div>
+                    <div class=" d-inline-flex  w-100 gap-2">
+                        <p class="align-self-start product">Total price</p>
+                        <p class="align-self-end product" style="margin-left: auto;" id="totalPrice"></p>
+                    </div>
+                    <button class="shiny-blue-btn w-100 " style="height: auto; margin-top:auto"
+                        onclick="buyCart()">Buy</button>
+                </div>
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <script src="scriptElement.js"></script>
+    <script src="scriptCart.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

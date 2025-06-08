@@ -1,0 +1,40 @@
+
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: progetto_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
+  backend:
+    build: ./backend
+    container_name: progetto_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./.env:/app/.env    
+    working_dir: /app
+
+  db:
+    image: postgres:15
+    container_name: progetto_db
+    restart: always
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust 
+      POSTGRES_USER: postgres
+      POSTGRES_DB: Progetto_web
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - /var/lib/postgresql/data
+
+volumes:
+  postgres-data:
