@@ -68,7 +68,7 @@ async function startServer() {
   }
 }
 
-//startServer();
+startServer();
 
 
 //JWT Token
