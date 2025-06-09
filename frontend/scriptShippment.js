@@ -64,6 +64,7 @@ function renderOrders(Order) {
 
       const detailsDiv = document.createElement("div");
       detailsDiv.className = "order-details mt-3";
+      detailsDiv.style.color="black"
 
       const orderProducts = Order.filter(o => o.order_id === order.order_id);
 
