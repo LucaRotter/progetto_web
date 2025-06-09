@@ -1,6 +1,5 @@
-import { checkAuthOrRedirect } from './auth.js';
 
-checkAuthOrRedirect();
+
 
 $('#formReg').on("submit", function (event) {
 
