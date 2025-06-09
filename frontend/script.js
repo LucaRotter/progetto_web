@@ -1,6 +1,3 @@
-import { checkAuthOrRedirect } from './auth.js';
-
-checkAuthOrRedirect();
 
 $('#formReg').on("submit", function (event) {
 
@@ -33,12 +30,14 @@ $('#formReg').on("submit", function (event) {
 
                 localStorage.setItem("modalità", Role)
                 localStorage.setItem("loginSuccess", "true")
+                localStorage.setItem("token", Data.token)
+                window.location.href = "index.html";
+
             })
             .catch(error => {
                 console.log("error 404" + error)
             })
-        window.location.href = "index.html";
-
+       
     }
 
 })

@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.body.classList.remove("js-loading")
-  }, 102);
+  }, 502);
 })
 
 function innerNumCarts() {

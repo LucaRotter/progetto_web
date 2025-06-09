@@ -114,6 +114,7 @@ function saveChanges(event) {
       console.log(Data)
 
       closeModal();
+      window.location.reload();
     })
 
     .catch(error => {

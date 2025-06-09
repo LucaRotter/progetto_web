@@ -70,7 +70,7 @@ function logged(event) {
 
       if (ruolo == "C") {
 
-        window.location.href = "index.html"
+        window.location.reload();
         return
 
       } else if (ruolo == "A") {

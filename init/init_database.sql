@@ -37,7 +37,7 @@ price DECIMAL(10, 2) not null,
 description text,
 quantity int not null,
 image_url text,
-category_id varchar(5) references categories(category_id),
+category_id varchar(5) references categories(category_id)on delete set null on update cascade,
 user_id varchar(5) references users(user_id) on delete cascade on update cascade
 );
 
@@ -45,8 +45,8 @@ create table orders(
 order_id varchar(5),
 item_id varchar(5) references items(item_id),
 primary key(order_id, item_id),
-customer_id varchar(5) references users(user_id),
-artisan_id varchar(5) references users(user_id),
+customer_id varchar(5) references users(user_id) on delete set null,
+artisan_id varchar(5) references users(user_id) on delete set null,
 quantity int not null,
 day date not null,
 time TIME not null,
