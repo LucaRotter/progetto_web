@@ -37,55 +37,7 @@ function sing() {
   });
 }
 
-//funzione per il login
-function logged(event) {
 
-  event.preventDefault()
-
-  let email = document.getElementById("emailfield").value;
-  let password = document.getElementById("passwordfield").value;
-  let ruolo = localStorage.getItem("ruolo")
-
-  fetch('http://localhost:8000/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email: email, pwd: password, role: ruolo })
-  })
-    .then(response => response.json())
-    .then(Data => {
-
-      if (Data.token == null) {
-
-        alert("Credenziali non valide, riprova");
-        return;
-
-      } else {
-
-        localStorage.setItem("modalità", ruolo)
-        localStorage.setItem("token", Data.token)
-
-      }
-
-      if (ruolo == "C") {
-
-        window.location.reload();
-        return
-
-      } else if (ruolo == "A") {
-        window.location.href = "ManageProduct.html"
-        return;
-      }
-
-
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert("Si è verificato un errore durante il login");
-    })
-
-}
 
 //eventListener resettare lo shuffled all'uscita della pagina 
 window.addEventListener("beforeunload", () => {

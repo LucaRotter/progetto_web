@@ -40,21 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-
-      updateNavbarLogoLink();
-      setupSearchForm()
-      innerNumCarts()
-      reg()
-      togglePage()
-
-
-    })
-    .catch(err => {
-      console.error("Errore nel caricamento della navbar:", err);
-    });
-
-  setTimeout(() => {
-
     const mod = localStorage.getItem("modalità")
     const token = localStorage.getItem("token")
 
@@ -90,8 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    document.body.classList.remove("js-loading")
-  }, 502);
+      updateNavbarLogoLink();
+      setupSearchForm()
+      innerNumCarts()
+      reg()
+      loggin()
+      togglePage()
+
+      document.body.classList.remove("js-loading")
+
+    })
+    .catch(err => {
+      console.error("Errore nel caricamento della navbar:", err);
+    });
+
 })
 
 function innerNumCarts() {
@@ -235,6 +232,57 @@ function setupSearchForm() {
   });
 }
 
+function logged() {
+
+  document.getElementById("singform").addEventListener("submit", (event)=>{
+
+  event.preventDefault()
+
+  let email = document.getElementById("emailfield").value;
+  let password = document.getElementById("passwordfield").value;
+  let ruolo = localStorage.getItem("ruolo")
+
+  fetch('http://localhost:8000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email: email, pwd: password, role: ruolo })
+  })
+    .then(response => response.json())
+    .then(Data => {
+
+      if (Data.token == null) {
+
+        alert("Credenziali non valide, riprova");
+        return;
+
+      } else {
+
+        localStorage.setItem("modalità", ruolo)
+        localStorage.setItem("token", Data.token)
+
+      }
+
+      if (ruolo == "C") {
+
+        window.location.reload();
+        return
+
+      } else if (ruolo == "A") {
+        window.location.href = "ManageProduct.html"
+        return;
+      }
+
+
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Si è verificato un errore durante il login");
+    })
+})
+}
+
 function reg() {
   document.getElementById('linkreg').addEventListener('click', function () {
 
@@ -259,6 +307,56 @@ function reg() {
   })
 }
 
+function loggin(){
+  document.getElementById("singform").addEventListener("submit", (event)=>{
+
+  event.preventDefault()
+
+  let email = document.getElementById("emailfield").value;
+  let password = document.getElementById("passwordfield").value;
+  let ruolo = localStorage.getItem("ruolo")
+
+  fetch('http://localhost:8000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email: email, pwd: password, role: ruolo })
+  })
+    .then(response => response.json())
+    .then(Data => {
+
+      if (Data.token == null) {
+
+        alert("Credenziali non valide, riprova");
+        return;
+
+      } else {
+
+        localStorage.setItem("modalità", ruolo)
+        localStorage.setItem("token", Data.token)
+
+      }
+
+      if (ruolo == "C") {
+
+        window.location.href= "index.html"
+        return
+
+      } else if (ruolo == "A") {
+        window.location.href = "ManageProduct.html"
+        return;
+      }
+
+
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Si è verificato un errore durante il login");
+    })
+})
+}
+
 function updateNavbarLogoLink() {
   const role = localStorage.getItem("modalità"); 
   const titleElement = document.querySelector(".navbar-brand");
@@ -277,3 +375,6 @@ function updateNavbarLogoLink() {
     titleElement.setAttribute("href", "index.html");
   }
 }
+
+//funzione per il login
+
