@@ -1,6 +1,7 @@
 const uploader = document.getElementById("imageUploader");
 const carouselInner = document.getElementById("carouselInner");
 const productList = document.getElementById("productList");
+let allFiles 
 let allImages = [];
 let productCounter = 0;
 
@@ -32,19 +33,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 uploader.addEventListener("change", function () {
-  const newFiles = Array.from(this.files);
-  if (newFiles.length > 1) {
+  const files = Array.from(this.files).slice(0, 1);
+
+  if (files.length > 1) {
     alert("Puoi caricare solo 1 immagine.");
   }
-  const filesToAdd = newFiles.slice(0, 1);
-  filesToAdd.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      allImages = [e.target.result];
-      renderCarousel(false);
-    };
-    reader.readAsDataURL(file);
-  });
+
+  // memorizzo sia il dataURL che il File
+  const file = files[0];
+  allFiles = [file];
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    allImages = [e.target.result];
+    renderCarousel(false);
+  };
+  reader.readAsDataURL(file);
+
   uploader.value = "";
 });
 
@@ -224,7 +229,11 @@ async function updateProduct(productId) {
   const prezzoVal = parseFloat(document.getElementById("Price").value);
   const quantitaVal = parseInt(document.getElementById("Quantity").value);
   const description = document.getElementById("Description").value;
-  const immagine = allImages[0];
+  const file = allFiles[0]
+
+  const formData = new FormData();
+  formData.append('immagine',file, file.name);
+
 
   const headers = {
     'Content-Type': 'application/json',
@@ -262,6 +271,13 @@ async function updateProduct(productId) {
       body: JSON.stringify({ description })
     });
 
+    fetch(`http://localhost:8000/update-image/${productId}`, {
+       method: 'PUT',
+       headers: {
+      'authorization': `Bearer ${token}`
+      },
+      body : formData
+  });
 
 
     // Aggiornamento DOM come prima
@@ -272,13 +288,13 @@ async function updateProduct(productId) {
     card.dataset.categoria = categoria;
     card.dataset.prezzo = prezzoVal.toFixed(2);
     card.dataset.quantita = quantitaVal;
-    card.dataset.immagini = JSON.stringify([immagine]);
+    card.dataset.immagini = allImages[0];
     card.dataset.description = description;
 
     card.innerHTML = `
       <div class="row g-0">
         <div class="col-md-4 d-flex align-items-center p-2">
-          <img src="${immagine}" class="d-block w-100" style="height: 150px; object-fit: contain;">
+          <img src="${allImages[0]}" class="d-block w-100" style="height: 150px; object-fit: contain;">
         </div>
         <div class="col-md-8">
           <div class="card-body">

@@ -132,6 +132,7 @@ function takeCharge(id) {
           console.log("Dati ricevuti:", data);
 
           createMyReports(data.reports)
+          alert(`Hai preso in carico il report #${selectedReport}`);
         })
         .catch(error => {
           console.error("Si è verificato un errore:", error);
@@ -227,9 +228,10 @@ function createMyReports(reports) {
     div.appendChild(buttonGroup);
 
     myReportsContainer.appendChild(div);
+    
   })
 
-  alert(`Hai preso in carico il report #${selectedReport}`);
+ 
 }
 
 function modifyUser(nome) {
