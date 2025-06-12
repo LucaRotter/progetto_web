@@ -266,7 +266,7 @@ function logged() {
 
       if (ruolo == "C") {
 
-        window.location.reload();
+        window.location.href = "index.html"
         return
 
       } else if (ruolo == "A") {

@@ -55,6 +55,7 @@ async function getRating() {
 function addToCart() {
 
   const token = localStorage.getItem("token");
+  if(token != "" && token!= null){
 
   fetch(`http://localhost:8000/cart`, {
 
@@ -79,6 +80,13 @@ function addToCart() {
       document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
     });
 
+  }else{
+
+     const not = document.getElementById("loggedCanvas")
+     const offcanvas = new bootstrap.Offcanvas(not);
+
+     offcanvas.show();
+  }
 }
 
 function addToReview() {
@@ -112,8 +120,16 @@ function addToReview() {
 }
 
 function openModal() {
+  if(token!="" && token!=null){
   document.getElementById("reportModal").style.display = "block";
   document.getElementById("modalOverlay").style.display = "block";
+  }else{
+  
+     const not = document.getElementById("loggedCanvas")
+     const offcanvas = new bootstrap.Offcanvas(not);
+
+     offcanvas.show();
+  }
 }
 
 
@@ -303,8 +319,6 @@ function sendToArtisan() {
 
   console.log(currentItem.user_id)
   window.location.href = `ArtisanCatalog.html?A=${currentItem.user_id}`
-
-
 
 }
 
