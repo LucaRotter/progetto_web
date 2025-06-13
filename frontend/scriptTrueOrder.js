@@ -1,7 +1,7 @@
 
 const token = localStorage.getItem("token")
 
-const parsed = JSON.parse(sessionStorage.getItem("infoClient"));
+const parsed = JSON.parse(localStorage.getItem("infoClient"));
 
 const itemsObj = JSON.parse(parsed.items);
 console.log("Items reali:", itemsObj.items);

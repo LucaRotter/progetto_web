@@ -140,7 +140,7 @@ function validateStep(step1) {
     let state = document.getElementById("stato").value
 
 
-    sessionStorage.setItem("infoClient", JSON.stringify({ items, address: address, civic_number: civic_number, postal_code: cap, province: province, country: state, phone_number: numero }))
+    localStorage.setItem("infoClient", JSON.stringify({ items, address: address, civic_number: civic_number, postal_code: cap, province: province, country: state, phone_number: numero }))
 
   });
 
