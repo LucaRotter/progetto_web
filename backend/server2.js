@@ -1421,6 +1421,15 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+
+//controllo della versione per eliminazione del localstorage nel frontend
+const appVersion = Date.now().toString();
+
+app.get('/version', (req, res) => {
+  res.json({ version: appVersion });
+});
+
+
 //chiusura connessione al database quando il server viene chiuso
 process.on('SIGINT', () => {
     pool.end(() => {

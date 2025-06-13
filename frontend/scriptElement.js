@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+  function checkAndClearStorage() {
+  fetch('/version')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Errore nella risposta dal server');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const currentVersion = data.version;
+      const savedVersion = localStorage.getItem('appVersion');
 
+      if (savedVersion !== currentVersion) {
+        localStorage.clear();
+        localStorage.setItem('appVersion', currentVersion);
+      }
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      // Qui puoi gestire errori di rete o di risposta
+    });
+}
+
+// Chiamala all'avvio del sito
+checkAndClearStorage();
   //fetch che recupera la navbar
   fetch('navbar.html')
     .then(response => response.text())

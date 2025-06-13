@@ -1,6 +1,6 @@
 
 const token = localStorage.getItem("token")
-
+console.log("Token: ", token);
 const parsed = JSON.parse(localStorage.getItem("infoClient"));
 
 const itemsObj = JSON.parse(parsed.items);

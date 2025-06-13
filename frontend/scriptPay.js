@@ -141,7 +141,7 @@ function validateStep(step1) {
 
     
     localStorage.setItem("infoClient", JSON.stringify({ items, address: address, civic_number: civic_number, postal_code: cap, province: province, country: state, phone_number: numero }))
-    console.log("info client", JSON.parse(localStorage.getItem("infoClient")));
+   
   });
 
   return isValid;
