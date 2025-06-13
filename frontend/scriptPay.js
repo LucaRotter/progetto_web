@@ -139,9 +139,9 @@ function validateStep(step1) {
     let province = document.getElementById("provincia").value
     let state = document.getElementById("stato").value
 
-
+    
     localStorage.setItem("infoClient", JSON.stringify({ items, address: address, civic_number: civic_number, postal_code: cap, province: province, country: state, phone_number: numero }))
-
+    console.log("info client", JSON.parse(localStorage.getItem("infoClient")));
   });
 
   return isValid;
