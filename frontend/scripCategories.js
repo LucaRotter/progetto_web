@@ -5,10 +5,12 @@ const product = params.get('id');
 
 document.addEventListener("DOMContentLoaded", () => {
   const initalNItems = getCardCountByScreenWidth();
+  console.log("davide gay")
 
   fetch(`http://localhost:8000/category-items/${product}?nItems=${initalNItems}`, {
     headers: {
       'Content-Type': 'application/json',
+      ...(token && { 'authorization': `Bearer ${token}` })
     }
   })
     .then(response => response.json())
@@ -126,7 +128,8 @@ function Loadingcard() {
 
   fetch(`http://localhost:8000/category-items/${product}?nItems=${nItems}`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...(token && { 'authorization': `Bearer ${token}` })
     }
   })
     .then(response => response.json())

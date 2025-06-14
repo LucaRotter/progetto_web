@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
  // verifica il primo avvio
- if (!localStorage.getItem("firstVisit")) {
-   localStorage.clear();
-    localStorage.setItem("firstVisit", "true");
+
+ console.log("davide gay")
+ if (!sessionStorage.getItem("firstVisit")) {
+    localStorage.clear();
+    sessionStorage.setItem("firstVisit", "true");
  }
+
+ for (let i = 0; i < localStorage.length; i++) {
+  const key = localStorage.key(i);
+  const value = localStorage.getItem(key);
+  console.log(`post clear :  ${key}: ${value}`);
+}
 
   //fetch che recupera la navbar
   fetch('navbar.html')

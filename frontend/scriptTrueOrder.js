@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded",()=>{
 
 const token = localStorage.getItem("token")
 console.log("Token: ", token);
@@ -45,7 +46,7 @@ fetch(`http://localhost:8000/add-order`, {
     console.error(error);
     document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
   });
-
+})
 
 
 
