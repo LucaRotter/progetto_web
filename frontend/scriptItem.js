@@ -223,6 +223,8 @@ function createReview(ReviewContent) {
   textarea.textContent = ReviewContent.description
   textarea.setAttribute("aria-label", "With textarea");
   textarea.disabled = true;
+  textarea.style.resize = 'none';
+
 
   // Aggiungi span e textarea al wrapper
   wrapper.appendChild(span);

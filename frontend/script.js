@@ -20,7 +20,7 @@ $('#formReg').on("submit", function (event) {
                 'Content-Type': 'application/json'
             },
 
-            body: JSON.stringify({ name: name, surname: surname, email: email, pwd: pwd, role: Role })
+            body: JSON.stringify({ name: name, surname: surname, email: email, pwd: pwd, role: Role})
 
         })
             .then(response => response.json())

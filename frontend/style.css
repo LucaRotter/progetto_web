@@ -6,6 +6,28 @@
   color: red;
 }
 
+.carousel-item-next, .carousel-item-prev, .carousel-item.active {
+    display: flex;
+    justify-content: center;
+}
+
+#carouselControls .card .card-img-top{
+
+  height:160px;
+  aspect-ratio:16/12;/*decidia*/
+
+}
+
+@media (max-width: 480px) {
+  
+  #carouselControls .card .card-img-top{
+  height: 120px;
+  }
+}
+
+#ProductList .card {
+  margin: 0px;
+}
 /*LOG IN*/
 .Userbutton {
   border-radius: 10px 0px 0px 10px;
@@ -164,13 +186,13 @@ body {
 
 }
 
-.box-cart {
+/*.box-cart {
   border: 2px solid rgb(0, 0, 0);
   border-radius: 8px;
   padding: 20px;
   background-color: white;
   box-sizing: border-box;
-}
+}*/
 
 .thumb-img {
   cursor: pointer;
@@ -215,6 +237,7 @@ body.js-loading {
   font-size: 0.9rem;
   color: #888;
 }
+
 
 
 .imgCart {
@@ -491,6 +514,7 @@ body.js-loading {
   }
 }
 
+
 .dropdown-menu[aria-labelledby="filterDropdown"] {
   min-width: 900px;
   max-width: 900px;
@@ -572,7 +596,7 @@ body.js-loading {
 /* */
 
 /*CONTAINER USER DETAILS*/
-.p-3 {
+.containerdetail {
   background: linear-gradient(145deg, #121212, #1c1c1c);
   border: 2px solid #444;
   border-radius: 12px;
@@ -581,20 +605,17 @@ body.js-loading {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.p-3:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(184, 83, 0, 0.7);
-}
 
-.p-3 h3 {
+
+.containerdetail h3 {
   font-weight: 700;
   font-size: 1.5rem;
-  color: #00d2ff;
+  color: #ffffff;
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 5px #ff5100aa;
+  
 }
 
-.p-3 span {
+.containerdetail span {
   font-size: 1.1rem;
   color: #ddd;
 }
@@ -795,8 +816,8 @@ body.js-loading {
 }
 
 .step {
-  background-color: #000000;
-  color: white;
+  background-color: #f2f0eb;
+  color: rgb(0, 0, 0);
   border-radius: 10px;
   padding: 1rem;
   min-height: 500px;
@@ -806,10 +827,7 @@ body.js-loading {
   border-radius: 10px;
 }
 
-.step .d-flex {
-  background-color: #000000;
-  color: white;
-}
+
 
 .step input.form-control,
 .step input.code-box {
@@ -828,7 +846,7 @@ body.js-loading {
 }
 
 .step form {
-  background-color: #000000;
+ 
   border-radius: 10px;
 }
 
@@ -875,22 +893,19 @@ body.js-loading {
 
 /*CONTAINER FULL CART*/
 #fullCart #item-container {
-  background-color: #111;
-  color: white;
+  background-color: #f2f0eb;
+  color: rgb(0, 0, 0);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
 }
 
-#fullCart h4 {
-  color: white;
-  margin: 0;
-}
+
 
 #fullCart input.form-control {
   background-color: #222;
   color: white;
-  border: 1px solid #444;
+ 
 }
 
 #fullCart input.form-control::placeholder {
@@ -939,26 +954,12 @@ body.js-loading {
 }
 
 /*CATEGORY AND PRODUCTS BAR*/
-.divisor {
-  height: 70px;
-  background: linear-gradient(90deg, #ffd102, #fe0000);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  position: relative;
-  overflow: hidden;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 0 20px rgba(255, 174, 0, 0.5);
-}
 
-/* */
+
 
 /*ORDER ITEM, IMAGE, MODAL REVIEW*/
 .carItem {
+  height: auto;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -975,6 +976,7 @@ body.js-loading {
 
 .carItem img {
   width: 60%;
+  aspect-ratio: 16/12;
   max-width: 100 px;
 
 }
@@ -1276,7 +1278,7 @@ body.js-loading {
   .input-group {
     margin-left: 0;
     margin-top: 10px;
-    max-width: 80px;
+ 
     align-self: flex-end;
   }
 
@@ -1356,6 +1358,7 @@ body.js-loading {
   color: #333;
   white-space: nowrap;
 }
+
 
 .status-dot {
   width: 10px;

@@ -178,7 +178,7 @@ function createCartElement(CartContent, maxQuantity, category) {
 
   // Prezzo
   const prezzo = document.createElement("p");
-  prezzo.textContent = CartContent.price;
+  prezzo.textContent = "€ " + CartContent.price;
 
   // Bottone elimina
   const button = document.createElement("button");

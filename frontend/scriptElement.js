@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mod = localStorage.getItem("modalità")
     const token = localStorage.getItem("token")
-
     let artisan = document.querySelectorAll('.loggedArtisan')
     let notlogged = document.querySelectorAll('.notLogged')
     let logged = document.querySelectorAll('.loggedUser')
@@ -90,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       updateNavbarLogoLink();
       setupSearchForm()
+      iniImg()
       innerNumCarts()
       reg()
       loggin()
@@ -210,13 +210,39 @@ function logout() {
 
 function setupSearchForm() {
   const form = document.getElementById("primarysearchform");
+  const formmobile = document.getElementById("mobileSearchForm")
 
-
-  if (!form) {
+  if (!formmobile) {
     console.error("Form non trovata!");
     return;
   }
-  console.log("Form trovata!", form);
+  console.log("Form trovata!", formmobile);
+
+  formmobile.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const search = document.getElementById("mobileSearch").value
+
+    const params = new URLSearchParams();
+    const formElements = formmobile.querySelectorAll("input, select");
+    console.log(formElements)
+    formElements.forEach(el => {
+      if (!el.name) return;
+
+      if (el.type === "radio" && el.checked) {
+        params.append(el.name, el.value, search);
+      } else if (el.type !== "radio" && el.value.trim() !== "") {
+        params.append(el.name, el.value, search);
+      }
+
+    });
+
+    const query = params.toString();
+    const targetUrl = "ricerca.html?" + query;
+    console.log(query)
+
+    console.log("Redirecting to: " + targetUrl);
+    window.location.href = targetUrl
+  });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -388,6 +414,32 @@ function updateNavbarLogoLink() {
     titleElement.setAttribute("href", "index.html");
   }
 }
+
+function iniImg(){
+const token = localStorage.getItem("token")
+imgElement = document.getElementById("decorationImage1")  
+fetch(`http://localhost:8000/user`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+
+      console.log(data)
+     
+      console.log(imgElement)
+      if(data.user.image_url){
+      imgElement.src = data.user.image_url
+      }
+
+    })
+    .catch(error => {
+      console.error("Si è verificato un errore:", error);
+    });
+  }
+ 
 
 //funzione per il login
 

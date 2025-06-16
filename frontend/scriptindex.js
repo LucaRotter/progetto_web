@@ -1,6 +1,6 @@
 let caricamentoInCorso = false
 let token = localStorage.getItem("token")
-console.log(localStorage.getItem("token"))
+console.log("oh")
 
 //inizializzazione elementi
 document.addEventListener('DOMContentLoaded', function () {
@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ...(token && { 'authorization': `Bearer ${token}` })
     }
   })
+
     .then(Response => Response.json())
     .then(Data => {
 
@@ -205,19 +206,7 @@ function Loadingcard() {
 }
 
 //inizializza una card-category 
-function initCardCategory(Data) {
 
-  const categoryCard = document.getElementsByClassName("category-card")
-
-  for (let i = 0; i < categoryCard.length; i++) {
-    categoryCard[i].getElementsByClassName('card-title')[0].textContent = Data[i].name;
-    categoryCard[i].getElementsByClassName('card-img-top')[0].src = Data[i].image_url;
-
-    categoryCard[i].setAttribute('onclick', `window.location.href='Categories.html?id=${Data[i].name}'`)
-
-
-  }
-}
 
 //funzione per stabilire le card da inserire in base alla dimensione dello schermo 
 
@@ -230,18 +219,73 @@ function getCardCountByScreenWidth() {
 }
 
 
-//inizializzazione delle categorie
+fetch(`http://localhost:8000/categories`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    .then(Response => Response.json())
+    .then(Data =>{
+
+       generateCarouselItems(Data);
+      console.log(Data)
+    })
+
+
+function createCard(card) {
+  return`
+    <div class="card category-card" onclick="window.location.href='Categories.html?id=${encodeURIComponent(card.name)}'" style="cursor:pointer;">
+      <img src="${card.image_url}" class="card-img-top" alt="${card.name}">
+      <div class="card-body">
+        <h5 class="card-title">${card.name}</h5>
+      </div>
+    </div>`
+  ;
+}
+
+function generateCarouselItems(cardsData) {
+  const container = document.getElementById('carouselInner');
+  container.innerHTML = '';
+  const isMobile = window.innerWidth < 600;
+
+  if (isMobile) {
+    cardsData.forEach((card, index) => {
+      container.innerHTML += 
+        `<div class="carousel-item ${index === 0 ? 'active' : ''}">
+          ${createCard(card)}
+        </div>`
+      ;
+    });
+  } else {
+    for (let i = 0; i < cardsData.length; i += 3) {
+      const group = cardsData.slice(i, i + 3).map(createCard).join('');
+      container.innerHTML += 
+        `<div class="carousel-item ${i === 0 ? 'active' : ''}">
+          <div class="cards-wrapper">${group}</div>
+        </div>`
+      ;
+    }
+  }
+}
+
+// Quando la finestra si ridimensiona, rigenera il carousel → serve salvare i dati
+let globalCardsData = [];
+
+window.addEventListener('resize', () => {
+  if (globalCardsData.length > 0) {
+    generateCarouselItems(globalCardsData);
+  }
+});
+
+// Aggiorno i dati globali dopo aver ricevuto il fetch
+
 fetch(`http://localhost:8000/categories`, {
   headers: {
     'Content-Type': 'application/json'
   }
 })
-  .then(Response => Response.json())
-  .then(Data => {
-
-    initCardCategory(Data)
-
-  })
-
-
-
+.then(response => response.json())
+.then(data => {
+  globalCardsData = data;
+  generateCarouselItems(globalCardsData);
+});

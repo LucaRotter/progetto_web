@@ -44,7 +44,7 @@ function getInfo(product) {
       console.log(elemento[0])
 
       console.log("get info " + data)
-      createCartElement(elemento[0], data.category_name, product);
+      createCartElement(elemento[0],  product);
 
     }).catch(error => {
       console.error("Si è verificato un errore:", error);
@@ -52,7 +52,7 @@ function getInfo(product) {
     });
 }
 
-function createCartElement(CartContent, Category, product) {
+function createCartElement(CartContent, product) {
   const container = document.getElementById("item-container");
 
 
@@ -72,7 +72,7 @@ function createCartElement(CartContent, Category, product) {
   topRow.className = "top-row";
 
   const h3 = document.createElement("h3");
-  h3.textContent = Category;
+ 
 
   const statusWrapper = document.createElement("div");
   statusWrapper.className = "status-wrapper";
@@ -93,16 +93,16 @@ function createCartElement(CartContent, Category, product) {
     statusDot.className = "status-dot shipped";
     statusText.textContent = "not shipped";
   }
-  h3.appendChild(statusWrapper);
+   
 
 
   const inputQty = document.createElement("input");
   inputQty.className = "input-qty";
-  inputQty.style.marginTop = "-5px";
+ 
   inputQty.value = product.quantity;
   inputQty.readOnly = true;
 
-  topRow.appendChild(h3);
+  topRow.appendChild(statusWrapper);
   topRow.appendChild(inputQty);
 
 
@@ -111,7 +111,7 @@ function createCartElement(CartContent, Category, product) {
 
 
   const price = document.createElement("p");
-  price.textContent = CartContent.price + "€";
+  price.textContent =  CartContent.price + " €" ;
 
   contentWrapper.appendChild(topRow);
   contentWrapper.appendChild(name);

@@ -24,7 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
       name.textContent += data.user.name
       surname.textContent += data.user.surname
       email.textContent += data.user.email
-      img.src = data.user.image_url
+
+      if(data.user.image_url){
+       img.src= data.user.image_url
+      }
+     
 
     })
     .catch(error => {
@@ -152,13 +156,14 @@ function previewImage(event) {
       .then(response => response.json())
       .then(data => {
         console.log("Upload riuscito:", data);
+
         imgElement.src = data.imageUrl;
+        
+
       })
       .catch(error => {
         console.error("Errore durante l'upload:", error);
       });
 
-  } else {
-    imgElement.src = DEFAULT_IMG;
-  }
+  } 
 }
