@@ -53,14 +53,14 @@ function sendReport() {
     .then(Data => {
 
       console.log(Data)
+      alert("Report inviato con successo");
+      closeModal();
 
     })
     .catch(error => {
       console.error("Si è verificato un errore:", error);
 
     });
-
-  closeModal();
 }
 
 // Crea per ogni reportTypes un'option che verra aggiunta alla select
