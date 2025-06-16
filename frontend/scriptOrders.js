@@ -182,27 +182,32 @@ function sendReview(event) {
 
   const numero = parseInt(evaluation.charAt(evaluation.length - 1), 10);
 
-  fetch(`http://localhost:8000/add-review`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ item_id: currentItem, description: description, evaluation: numero })
+fetch("http://localhost:8000/add-review", {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    item_id: currentItem,
+    description: description,
+    evaluation: numero
   })
-
-    .then(response => response.json())
-    .then(Data => {
-
-      console.log(Data)
-
-    })
-    .catch(error => {
-      console.error("Si è verificato un errore:", error);
-
-    });
-
+})
+.then(response => {
+  if (response.status === 400) {
+    alert("Hai già inserito una recensione per questo articolo.");
+    throw new Error("Recensione già esistente");
+  }
+  return response.json();
+})
+.then(data => {
+  console.log(data);
   closeModal();
+})
+.catch(error => {
+  console.error("Si è verificato un errore:", error);
+});
 }
 
 

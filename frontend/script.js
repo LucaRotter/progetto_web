@@ -19,25 +19,32 @@ $('#formReg').on("submit", function (event) {
             headers: {
                 'Content-Type': 'application/json'
             },
-
             body: JSON.stringify({ name: name, surname: surname, email: email, pwd: pwd, role: Role })
-
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        throw new Error("Utente già registrato.");
+                    } else {
+                        throw new Error("Errore generico: " + response.status);
+                    }
+                }
+                return response.json();
+            })
             .then(Data => {
-                console.log("sono dentro")
-                console.log(Data)
+                console.log("sono dentro");
+                console.log(Data);
 
-                localStorage.setItem("modalità", Role)
-                localStorage.setItem("loginSuccess", "true")
-                localStorage.setItem("token", Data.token)
+                localStorage.setItem("modalità", Role);
+                localStorage.setItem("loginSuccess", "true");
+                localStorage.setItem("token", Data.token);
                 window.location.href = "index.html";
-
             })
             .catch(error => {
-                console.log("error 404" + error)
-            })
-       
+                console.error("Errore:", error.message);
+                alert(error.message);  
+            });
+
     }
 
 })
