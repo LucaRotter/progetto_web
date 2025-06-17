@@ -24,15 +24,15 @@ function appdateItem(itemData, categoryData) {
   document.getElementById("Product-image").src = itemData[0].image_url;
   document.getElementById("Product-Category").textContent = categoryData[0].name;
 
-  getRating().then(average => {
-    const av = average;
-    document.getElementById("AverageRating").textContent = av + "/5";
+ getRating().then(average => {
+  const av = average;
+  document.getElementById("AverageRating").textContent = `⭐ ${av}/5`;
+});
 
-  });
-
-
-  document.body.classList.remove("js-loading");
+document.body.classList.remove("js-loading");
 }
+
+
 
 async function getRating() {
   try {
@@ -45,7 +45,8 @@ async function getRating() {
     const data = await response.json();
     console.log("Media ricevuta:", data.average);
 
-    return Number(parseFloat(data.average).toFixed(1));
+    const average = Number(parseFloat(data.average).toFixed(1));
+    return isNaN(average) ? 0 : average;
   } catch (error) {
     console.error("Errore nel recupero del rating:", error);
     return null;

@@ -1088,40 +1088,59 @@ describe('carts', () => {
 
 describe('report', () => {
   let reportId1;
-  let reportId2;
-  it('should create a report of an item reported by client', async () => {
-    userId = 6;
-    const token = generateToken(userId);
-    const response = await request(app)
-      .post('/create-report')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        item_id: 1,
-        category: 'test',
-        description: 'test'
-      });
-
-    expect(response.body).toHaveProperty('message', 'Report created');
-    expect(response.body).toHaveProperty( 'report');
-    reportId1 = response.body.report.report_id;
-    
-
-  });
-  it('should create a general report by artisan', async () => {
-    userId = 5;
-    const token = generateToken(userId);
-    const response = await request(app)
-      .post('/create-report')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        category: 'test artisan',
-        description: 'test artisan'
-      });
-
-    expect(response.body).toHaveProperty('message', 'Report created');
-    expect(response.body).toHaveProperty( 'report');
-    reportId2 = response.body.report.report_id;
-  });
+    let reportId2;
+  
+    it('should create a report of an item reported by client', async () => {
+      const userId = 6;
+      const token = generateToken(userId); // assicurati che includa anche role_id = 1
+  
+      const response = await request(app)
+        .post('/create-report')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          item_id: 1,
+          category: 'test',
+          description: 'test'
+        });
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty('message', 'Report created');
+      expect(response.body).toHaveProperty('report');
+      reportId1 = response.body.report.report_id;
+    });
+  
+    it('should create a general report by artisan', async () => {
+      const userId = 5;
+      const token = generateToken(userId); // assicurati che includa role_id diverso da 1 (es: 2)
+  
+      const response = await request(app)
+        .post('/create-report')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          category: 'test artisan',
+          description: 'test artisan'
+        });
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty('message', 'Report created');
+      expect(response.body).toHaveProperty('report');
+      reportId2 = response.body.report.report_id;
+    });
+  
+    it('should create a report anonymously (no token)', async () => {
+      const response = await request(app)
+        .post('/create-report')
+        .send({
+          category: 'anonymous',
+          description: 'anonymous description'
+        });
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty('message', 'Report created');
+      expect(response.body).toHaveProperty('report');
+      expect(response.body.report.customer_id).toBeNull();
+      expect(response.body.report.artisan_id).toBeNull();
+    });
   it('should add admin to the report', async () => {
     userId = 3;
     const reportId = reportId1;
@@ -1166,7 +1185,7 @@ describe('report', () => {
     expect(response.body).toHaveProperty('message', 'Report deleted');
   });
   afterAll(async () => {
-    await pool.query('DELETE FROM reports WHERE report_id = $1', [reportId2]);
+    await pool.query("DELETE FROM reports WHERE report_id = $1 AND report_id = '3'", [reportId2]);
   });
 
 });
