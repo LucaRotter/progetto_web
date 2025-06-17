@@ -1280,9 +1280,28 @@ app.delete('/delete-orders/:id', protect, hasPermission('view_manage_orders'), a
 //gestione segnalazioni
 
 //crea una segnalazione
-app.post('/create-report', protect, hasPermission('manage_report'), async (req, res) => {
+
+app.post('/create-report', async (req, res) => {
+  try {
     const { item_id, category, description } = req.body;
-    const user_id = req.user.user_id;
+
+    let user = null;
+
+    // Prova a leggere e decodificare il token JWT se presente
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        user = decoded;
+
+      } catch (err) {
+        // Token non valido → utente anonimo
+        user = null;
+      }
+    }
+
+    // Calcola report_id
     const maxResult = await pool.query('SELECT MAX(CAST(report_id AS INTEGER)) AS max_id FROM reports');
     const maxId = maxResult.rows[0].max_id;
     const nextId = (maxId !== null ? maxId : 0) + 1;
@@ -1290,18 +1309,34 @@ app.post('/create-report', protect, hasPermission('manage_report'), async (req, 
 
     let artisan_id = null;
     let customer_id = null;
+    //recupero ruolo user
+    if (user) {
+    const user_id= user.id;
+    console.log(user_id);
 
-    if (req.user.role_id == 1) {
+    const res=  await pool.query('SELECT role_id FROM users WHERE user_id = $1', [user_id]);
+    const role_id = res.rows[0].role_id;
+    console.log(role_id);
+    
+      if (role_id == 1) {
         customer_id = user_id;
-    } else {
+      } else {
         artisan_id = user_id;
-    } 
+      }
+    }
 
     const result = await pool.query(
-        'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [report_id, customer_id, artisan_id, item_id, category, description]);
+      'INSERT INTO reports (report_id, customer_id, artisan_id, item_id, category, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [report_id, customer_id, artisan_id, item_id, category, description]
+    );
+
     res.json({ message: "Report created", report: result.rows[0] });
+  } catch (error) {
+    console.error('Errore nella creazione del report:', error);
+    res.status(500).json({ message: 'Errore nella creazione del report' });
+  }
 });
+
 
 //aggiunta admin nella segnalazione, da fare dopo che l'admin recupera le free-reports
 app.put('/add-admin-report/:id', protect, hasPermission('moderate_reports'), async (req, res) => {
