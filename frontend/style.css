@@ -524,6 +524,12 @@ body.js-loading {
 
 }
 
+ .dropdown-menu[aria-labelledby="filterDropdown"] h6, label{
+
+  color: #ffffff;
+ }
+
+
 @media (max-width: 1200px) {
   .dropdown-menu[aria-labelledby="filterDropdown"] {
     min-width: 600% !important;
@@ -544,7 +550,7 @@ body.js-loading {
     border-radius: 0 !important;
     box-shadow: none !important;
     z-index: 1050;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
   }
 }
 
@@ -1385,7 +1391,7 @@ body.js-loading {
 @media (min-width: 901px) {
   .top-row {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
   }
 
@@ -1400,22 +1406,13 @@ body.js-loading {
 }
 
 @media (max-width: 450px) {
-  .top-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: nowrap;
-  }
 
   .input-qty {
-    margin-left: auto;
+    margin-left: 0;
     flex-shrink: 0;
   }
 
-  .content-wrapper button {
-    margin-left: 10px;
-    white-space: nowrap;
-  }
+
 }
 #UsefullButton{
   background-color: grey;
@@ -1423,16 +1420,12 @@ body.js-loading {
 
 
 .sidebar {
-      height: 100vh;
+      height: auto;
       background-color: #0c0d0e;
       padding-top: 1rem;
     }
 
-    @media (max-width: 800px) {
-      .sidebar {
-        height: auto;
-      }
-    }
+   
 
     @media (max-width: 345px) {
       .button-group-responsive {

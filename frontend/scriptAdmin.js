@@ -58,7 +58,7 @@ function CodeControl(event) {
   if (number == Codice) {
 
     sessionStorage.setItem('loginSuccess', 'Aleksandar');
-    window.location.href = 'aa.html';
+    window.location.href = 'AdminPage.html';
 
   } else {
     alert("Codice non corretto!")
