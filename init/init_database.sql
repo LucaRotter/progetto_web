@@ -145,15 +145,15 @@ INSERT INTO users(user_id, name, surname, email, pwd, image_url, role_id) VALUES
 
 --CATEGORIE
 INSERT INTO categories(category_id, name, image_url) VALUES
-('1', 'BOOKS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757188/catlibri_vdv8sj.jpg'),
-('2', 'ELECTRONICS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757185/elecat_sisk9w.webp'),
-('3', 'CLOTHING', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083125/clothing_hsza83.jpg'),
-('4', 'HOME', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757174/casa_avcjko.jpg'),
-('5', 'GARDEN', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083005/giarinaggio_vcrkza.webp'),
-('6', 'TECH', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757175/cattech_d3cwnf.avif'),
-('7', 'SPORTS', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083006/sports_bgnbgq.png'),
-('8', 'BEAUTY', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083804/catbeaty_f4bvln_smypdx.png'),
-('9', 'FOOD', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083005/food_mbjbyh.jpg');
+('1', 'books', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757188/catlibri_vdv8sj.jpg'),
+('2', 'electronics', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757185/elecat_sisk9w.webp'),
+('3', 'clothing', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083125/clothing_hsza83.jpg'),
+('4', 'home', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757174/casa_avcjko.jpg'),
+('5', 'garden', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083005/giarinaggio_vcrkza.webp'),
+('6', 'tech', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1749757175/cattech_d3cwnf.avif'),
+('7', 'sports', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083006/sports_bgnbgq.png'),
+('8', 'beauty', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083804/catbeaty_f4bvln_smypdx.png'),
+('9', 'food', 'https://res.cloudinary.com/dftu5zdbs/image/upload/t_catbeaty/v1750083005/food_mbjbyh.jpg');
 
 --INSERIMENTO UTENTI PER TEST
 --la password è password1, anche dopo i test

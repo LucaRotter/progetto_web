@@ -479,30 +479,27 @@ describe('items', () => {
       // Setta la chiave segreta per JWT
       process.env.JWT_SECRET = 'progetto_web_AbcDe1234';
     });
-    let itemId;
+let itemId; 
+it('should add an item', async () => {
+  const userId = '5';
+  const token = generateToken(userId);
+  const imagePath = path.join(__dirname, 'test.jpeg');
 
-    it('should add an item', async () => {
-      const userId = '5';
-      const token = generateToken(userId);
-      const response = await request(app)
-        .post('/add-item')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          name: 'libroProva',
-          category: 'books',
-          description: 'This is a test item',
-          price: 10.99,
-          quantity: 5,
-          image_url: null,
-        });
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toHaveProperty('message', 'Item added');
-      expect(response.body).toHaveProperty('item');
-      itemId = response.body.item.item_id;
-      console.log(itemId);
+  const response = await request(app)
+    .post('/add-item')
+    .set('Authorization', `Bearer ${token}`)
+    .attach('immagine', imagePath)
+    .field('name', 'libroProva')
+    .field('category', 'books')
+    .field('description', 'This is a test item')
+    .field('price', 10.99)
+    .field('quantity', 5);
 
-
-    });
+  expect(response.statusCode).toBe(200);
+  expect(response.body).toHaveProperty('message', 'Item added');
+  expect(response.body).toHaveProperty('item');
+  itemId = response.body.item.item_id;
+});
 
     it('update price of an item', async () => {
       const userId = '5';
