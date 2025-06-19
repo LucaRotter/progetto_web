@@ -35,10 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 uploader.addEventListener("change", function () {
   const files = Array.from(this.files).slice(0, 1);
 
-  if (files.length > 1) {
-    alert("Puoi caricare solo 1 immagine.");
-  }
-
   // memorizzo sia il dataURL che il File
   const file = files[0];
   allFiles = [file];
@@ -289,10 +285,10 @@ async function updateProduct(productId) {
         <div class="col-md-8">
           <div class="card-body">
             <h5 class="card-title">${nome}</h5>
-            <p class="card-text mb-1">Categoria: <strong>${categoria}</strong></p>
-            <p class="card-text mb-1">Prezzo: ${prezzoVal.toFixed(2)} €</p>
-            <p class="card-text mb-0">Quantità: ${quantitaVal}</p>
-            <p class="card-text mb-0 d-none">descrizione:<em>${description}</em></p>
+            <p class="card-text mb-1">Category: <strong>${categoria}</strong></p>
+            <p class="card-text mb-1">Price: ${prezzoVal.toFixed(2)} €</p>
+            <p class="card-text mb-0">Quantity: ${quantitaVal}</p>
+            <p class="card-text mb-0 d-none">Desctiption:<em>${description}</em></p>
           </div>
         </div>
       </div>
@@ -375,10 +371,10 @@ function renderProductCard(productData) {
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">${productData.name}</h5>
-          <p class="card-text mb-1">Categoria: <strong>${productData.category}</strong></p>
-          <p class="card-text mb-1">Prezzo: ${parseFloat(productData.price).toFixed(2)} €</p>
-          <p class="card-text mb-0">Quantità: ${productData.quantity}</p>
-          <p class="card-text mb-0 d-none">descrizione:<em>${productData.description}</em></p>
+          <p class="card-text mb-1">Category: <strong>${productData.category}</strong></p>
+          <p class="card-text mb-1">Price: ${parseFloat(productData.price).toFixed(2)} €</p>
+          <p class="card-text mb-0">Quantity: ${productData.quantity}</p>
+          <p class="card-text mb-0 d-none">Description:<em>${productData.description}</em></p>
         </div>
       </div>
     </div>

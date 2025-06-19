@@ -6,6 +6,21 @@
   color: red;
 }
 
+.UsefullButton{
+  background-color: #b0b0b0;  
+  color: white;              
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;        
+  opacity: 0.7;               
+  transition: background-color 0.3s ease;
+}
+
+#productForm label{
+  color: #000;
+}
+
 .carousel-item-next, .carousel-item-prev, .carousel-item.active {
     display: flex;
     justify-content: center;
@@ -355,7 +370,7 @@ body.js-loading {
 
 /*BUTTON*/
 .shiny-blue-btn {
-  padding: 12px 24px;
+  padding: 12px 20px;
   font-size: 16px;
   font-weight: bold;
   color: white;

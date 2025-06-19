@@ -192,12 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!product) {
     product = sessionStorage.getItem("pendingProductView");
   }
-  if (localStorage.getItem("Admin") == "true") {
-    adminView = document.getElementsByClassName("Admin")
-    Array.from(adminView).forEach(element => {
-      element.classList.remove("d-none");
-    });
-  }
 
   fetch(`http://localhost:8000/item/${product}`, {
     headers: {
@@ -210,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentItem = selectedProduct[0]
       appdateItem(data.item, data.category_name);
 
-      if (currentItem.quantity == 0) {
+      if (currentItem.quantity == 0 || localStorage.getItem("modalità") == "A") {
         const button = document.getElementById("addedtoCart")
         button.classList.remove("shiny-blue-btn")
         button.classList.add("UsefullButton")

@@ -10,9 +10,7 @@ $('#formReg').on("submit", function (event) {
     let confpwd = $("#confirmpwdfield").val();
     let Role = localStorage.getItem("ruolo")
 
-
-
-    if (pwd == confpwd) {
+    if (pwd == confpwd && name && surname && email && pwd && confpwd) {
 
         fetch('http://localhost:8000/register', {
             method: 'POST',
