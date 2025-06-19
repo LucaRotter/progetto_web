@@ -20,7 +20,6 @@ function closeModal() {
 
 function sendReport() {
   // Manda il report se la descrizione è stata scritta 
-  console.log("Invio del report");
   let description = document.getElementById("description")
   let category = document.getElementById("type").value
 
@@ -49,22 +48,21 @@ function sendReport() {
     body: JSON.stringify({ item_id: null, category: category, description: description })
   })
 
-   .then(response => {
-    if (!response.ok) {
-      // Risposta non valida (es. 400 o 500)
-      throw new Error(`Errore server: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(Data => {
-    console.log(Data);
-    alert("Report inviato con successo");
-    closeModal();
-  })
-  .catch(error => {
-    console.error("Si è verificato un errore:", error);
-    alert("Errore durante l'invio del report. Riprova più tardi.");
-  });
+    .then(response => {
+      if (!response.ok) {
+        // Risposta non valida (es. 400 o 500)
+        throw new Error(`Errore server: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(Data => {
+      alert("Report inviato con successo");
+      closeModal();
+    })
+    .catch(error => {
+      console.error("Si è verificato un errore:", error);
+      alert("Errore durante l'invio del report. Riprova più tardi.");
+    });
 }
 
 // Crea per ogni reportTypes un'option che verra aggiunta alla select

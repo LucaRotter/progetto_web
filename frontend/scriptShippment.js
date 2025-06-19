@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 function getStatusClass(purchased) {
   return purchased ? 'purchased' : 'shipped';
 }
@@ -30,7 +29,6 @@ function getStatusText(purchased) {
 function getStatusIcon(purchased) {
   return purchased ? '🛒' : '📦';
 }
-
 
 function renderOrders(Order) {
   const container = document.getElementById("orders-container");
@@ -44,7 +42,6 @@ function renderOrders(Order) {
       const card = document.createElement("div");
       card.className = "order-card border rounded p-3 mb-4";
 
-     
       const header = document.createElement("div");
       header.className = "order-header d-flex justify-content-between align-items-center";
 
@@ -87,7 +84,7 @@ function renderOrders(Order) {
             quantity.textContent = `Quantità: ${p.quantity}`;
 
             const price = document.createElement("p");
-            price.textContent = `Prezzo: ${parseFloat(item.price).toFixed(2)}` +  " €";
+            price.textContent = `Prezzo: ${parseFloat(item.price).toFixed(2)}` + " €";
 
             productDiv.appendChild(name);
             productDiv.appendChild(quantity);
@@ -98,7 +95,6 @@ function renderOrders(Order) {
           .catch(error => {
             console.error("Errore nel fetch dell'item:", error);
           });
-
         fetches.push(fetchPromise);
       });
 
@@ -129,13 +125,11 @@ function renderOrders(Order) {
                 console.error("Errore nella conferma ordine:", error);
               });
           };
-
           const btnWrapper = document.createElement("div");
           btnWrapper.className = "text-center text-md-end mt-3";
           btnWrapper.appendChild(shipButton);
           card.appendChild(btnWrapper);
         }
-
         container.appendChild(card);
       });
     }

@@ -10,7 +10,7 @@ $('#formReg').on("submit", function (event) {
     let confpwd = $("#confirmpwdfield").val();
     let Role = localStorage.getItem("ruolo")
 
-    console.log(name, surname, email, pwd, confpwd, Role)
+
 
     if (pwd == confpwd) {
 
@@ -20,7 +20,7 @@ $('#formReg').on("submit", function (event) {
                 'Content-Type': 'application/json'
             },
 
-            body: JSON.stringify({ name: name, surname: surname, email: email, pwd: pwd, role: Role})
+            body: JSON.stringify({ name: name, surname: surname, email: email, pwd: pwd, role: Role })
 
         })
             .then(response => {
@@ -41,17 +41,17 @@ $('#formReg').on("submit", function (event) {
                 localStorage.setItem("loginSuccess", "true");
                 localStorage.setItem("token", Data.token);
 
-                if(Role == "C"){
-                window.location.href = "index.html";
+                if (Role == "C") {
+                    window.location.href = "index.html";
 
-                }else if(Role == "A"){
+                } else if (Role == "A") {
 
-                window.location.href = "ManageProduct.html"
+                    window.location.href = "ManageProduct.html"
                 }
             })
             .catch(error => {
                 console.error("Errore:", error.message);
-                alert(error.message);  
+                alert(error.message);
             });
 
     }
@@ -60,7 +60,7 @@ $('#formReg').on("submit", function (event) {
 
 $(document).ready(function () {
     const msg = localStorage.getItem("registrationMsg");
-    console.log(msg)
+
     if (msg) {
 
         $("#Welcomep").html(msg);

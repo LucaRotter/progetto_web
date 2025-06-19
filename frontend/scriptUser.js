@@ -2,14 +2,11 @@ const detailsBtn = document.getElementById("details");
 const passwordBtn = document.getElementById("password");
 const token = localStorage.getItem("token")
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
   const name = document.getElementById("nameUser")
   const surname = document.getElementById("surnameUser")
   const email = document.getElementById("emailUser")
   const img = document.getElementById("profilePic")
-
 
   fetch(`http://localhost:8000/user`, {
     headers: {
@@ -19,36 +16,26 @@ document.addEventListener("DOMContentLoaded", () => {
   })
     .then(response => response.json())
     .then(data => {
-
-      console.log(data)
       name.textContent += data.user.name
       surname.textContent += data.user.surname
       email.textContent += data.user.email
 
-      if(data.user.image_url){
-       img.src= data.user.image_url
+      if (data.user.image_url) {
+        img.src = data.user.image_url
       }
-     
-
     })
     .catch(error => {
       console.error("Si è verificato un errore:", error);
     });
-
 })
-
-
 
 detailsBtn.addEventListener("click", function () {
   openModal("modifyModal1", "modalOverlay");
 });
 
-
 function openModal(modalId, overlayId) {
   document.getElementById("modifyModal1").style.display = "none";
   document.getElementById("modalOverlay").style.display = "none";
-
-
   document.getElementById(modalId).style.display = "block";
   document.getElementById(overlayId).style.display = "block";
 
@@ -65,18 +52,13 @@ function closeModal() {
   document.getElementById("modifyModal1").style.display = "none";
   document.getElementById("modalOverlay").style.display = "none";
 }
-
 document.getElementById("modalOverlay").addEventListener("click", closeModal);
-
 
 function saveChanges(event) {
   event.preventDefault();
-
   const modal1 = document.getElementById("modifyModal1");
-
   const name = document.getElementById("name");
   const surname = document.getElementById("surname");
-
   const passedname = name.value
   const passedsurname = surname.value
 
@@ -87,8 +69,6 @@ function saveChanges(event) {
   const nameValid = /[a-zA-Z]/.test(name.value.trim());
   const surnameValid = /[a-zA-Z]/.test(surname.value.trim());
 
-
-
   if (!nameValid) {
     name.style.border = "2px solid red";
     valid = false;
@@ -97,12 +77,9 @@ function saveChanges(event) {
     surname.style.border = "2px solid red";
     valid = false;
   }
-
   if (!valid) return;
-
   name.value = "";
   surname.value = "";
-
 
   fetch(`http://localhost:8000/update-name`, {
     method: 'PUT',
@@ -114,17 +91,12 @@ function saveChanges(event) {
   })
     .then(response => response.json())
     .then(Data => {
-
-      console.log(Data)
-
       closeModal();
       window.location.reload();
     })
-
     .catch(error => {
       console.error("Errore nella modifica del prodotto:", error);
     });
-
 }
 
 function previewImage(event) {
@@ -139,11 +111,9 @@ function previewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 
-
     // crea file img non passabile tramite json
     const formData = new FormData();
     formData.append('immagine', file);
-
 
     fetch('http://localhost:8000/profile-picture', {
       method: 'PUT',
@@ -151,19 +121,13 @@ function previewImage(event) {
         'authorization': `Bearer ${token}`
       },
       body: formData
-
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Upload riuscito:", data);
-
         imgElement.src = data.imageUrl;
-        
-
       })
       .catch(error => {
         console.error("Errore durante l'upload:", error);
       });
-
-  } 
+  }
 }

@@ -1,7 +1,7 @@
 const uploader = document.getElementById("imageUploader");
 const carouselInner = document.getElementById("carouselInner");
 const productList = document.getElementById("productList");
-let allFiles 
+let allFiles
 let allImages = [];
 let productCounter = 0;
 
@@ -42,14 +42,12 @@ uploader.addEventListener("change", function () {
   // memorizzo sia il dataURL che il File
   const file = files[0];
   allFiles = [file];
-
   const reader = new FileReader();
   reader.onload = function (e) {
     allImages = [e.target.result];
     renderCarousel(false);
   };
   reader.readAsDataURL(file);
-
   uploader.value = "";
 });
 
@@ -91,10 +89,8 @@ function renderCarousel(isEditing = false) {
       allImages = [];
       renderCarousel(true);
     });
-
     imgWrapper.appendChild(removeBtn);
   }
-
   item.appendChild(imgWrapper);
   carouselInner.appendChild(item);
 }
@@ -164,7 +160,6 @@ document.getElementById("productForm").addEventListener("submit", function (even
   } else {
     uploader.classList.remove("is-invalid");
   }
-
   if (!valid) return;
 
   const form = this;
@@ -191,7 +186,7 @@ function addNewProduct() {
   formData.append('price', prezzoVal);
   formData.append('quantity', quantitaVal);
   formData.append('description', description);
-  formData.append('immagine',file, file.name);
+  formData.append('immagine', file, file.name);
 
   fetch("http://localhost:8000/add-item", {
     method: 'POST',
@@ -229,10 +224,8 @@ async function updateProduct(productId) {
   const quantitaVal = parseInt(document.getElementById("Quantity").value);
   const description = document.getElementById("Description").value;
   const file = allFiles[0]
-
   const formData = new FormData();
-  formData.append('immagine',file, file.name);
-
+  formData.append('immagine', file, file.name);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -271,18 +264,16 @@ async function updateProduct(productId) {
     });
 
     fetch(`http://localhost:8000/update-image/${productId}`, {
-       method: 'PUT',
-       headers: {
-      'authorization': `Bearer ${token}`
+      method: 'PUT',
+      headers: {
+        'authorization': `Bearer ${token}`
       },
-      body : formData
-  });
-
+      body: formData
+    });
 
     // Aggiornamento DOM come prima
     const card = document.querySelector(`[data-product-id="${productId}"]`);
     if (!card) return;
-
     card.dataset.nome = nome;
     card.dataset.categoria = categoria;
     card.dataset.prezzo = prezzoVal.toFixed(2);
@@ -306,13 +297,10 @@ async function updateProduct(productId) {
         </div>
       </div>
     `;
-
     resetFormAndCarousel();
     delete document.getElementById("productForm").dataset.editingId;
-
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalView"));
     if (modal) modal.hide();
-
   } catch (error) {
     console.error("Errore nell'aggiornamento del prodotto:", error);
   }
@@ -321,7 +309,6 @@ async function updateProduct(productId) {
 function openModalForEdit(productId) {
   const card = document.querySelector(`[data-product-id="${productId}"]`);
   if (!card) return;
-
   document.getElementById("Name Product").value = card.dataset.nome;
   document.getElementById("Category").value = card.dataset.categoria;
   document.getElementById("Price").value = card.dataset.prezzo;
@@ -389,7 +376,7 @@ function renderProductCard(productData) {
         <div class="card-body">
           <h5 class="card-title">${productData.name}</h5>
           <p class="card-text mb-1">Categoria: <strong>${productData.category}</strong></p>
-          <p class="card-text mb-1">Prezzo: ${parseFloat(productData.price ).toFixed(2)} €</p>
+          <p class="card-text mb-1">Prezzo: ${parseFloat(productData.price).toFixed(2)} €</p>
           <p class="card-text mb-0">Quantità: ${productData.quantity}</p>
           <p class="card-text mb-0 d-none">descrizione:<em>${productData.description}</em></p>
         </div>

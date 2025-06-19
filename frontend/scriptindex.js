@@ -1,6 +1,5 @@
 let caricamentoInCorso = false
 let token = localStorage.getItem("token")
-console.log("oh")
 
 //inizializzazione elementi
 document.addEventListener('DOMContentLoaded', function () {
@@ -16,23 +15,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     .then(Response => Response.json())
     .then(Data => {
-
       for (let i = 0; i < initalNItems; i++) {
-
         const list = document.getElementById("ProductList")
         list.appendChild(ProductCreation(Data.selectedItems[i]))
-
       }
-
-
     })
-
 });
 
 //funzione per mostrare l'elemento offcanvas al click del bottone
 function sing() {
   document.getElementById('singButton').addEventListener('click', function () {
-
     var offcanvasExample = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
     offcanvasExample.show();
   });
@@ -57,7 +49,6 @@ window.addEventListener("beforeunload", () => {
 //funzione che seleziona l'ultima card di quelle displayed
 function onScrollHandler() {
   if (caricamentoInCorso) return;
-
   const last = document.querySelector('#ProductList .col:last-child');
   if (!last) return;
   const rect = last.getBoundingClientRect();
@@ -69,9 +60,7 @@ window.addEventListener("scroll", onScrollHandler);
 
 //creazione prodotto da inserire nella row
 function ProductCreation(Data) {
-
   caricamentoInCorso = false
-
   const card = document.createElement('div');
   card.className = 'col';
   card.id = Data.item_id;
@@ -84,7 +73,6 @@ function ProductCreation(Data) {
   img.src = Data.image_url;
   img.className = 'card-img-top img-card';
 
-
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body d-flex-column w-100 p-2';
 
@@ -94,7 +82,7 @@ function ProductCreation(Data) {
 
   const price = document.createElement('p');
   price.className = 'card-text Items price-Item';
-  price.textContent = Data.price +  " €"  ;
+  price.textContent = Data.price + " €";
 
   cardBody.appendChild(title);
   cardBody.appendChild(price);
@@ -141,12 +129,9 @@ function CardPlaceholderCreation() {
 
   body.appendChild(title);
   body.appendChild(text);
-
   cardStructure.appendChild(img);
   cardStructure.appendChild(body);
-
   card.appendChild(cardStructure)
-
   return card;
 }
 
@@ -157,15 +142,13 @@ function Loadingcard() {
   caricamentoInCorso = true;
   const contenitore = document.getElementById('ProductList');
   const nItems = getCardCountByScreenWidth();
-
   const placeholders = [];
+
   for (let i = 0; i < nItems; i++) {
     const placeholder = CardPlaceholderCreation();
     contenitore.appendChild(placeholder);
     placeholders.push(placeholder);
   }
-
-
   const NItems = getCardCountByScreenWidth();
   //fetch per il caricamento dei prodotti
 
@@ -177,9 +160,7 @@ function Loadingcard() {
   })
     .then(Response => Response.json())
     .then(Data => {
-
       const items = Data.selectedItems;
-
       placeholders.forEach((ph, index) => {
         if (index < items.length) {
           const card = ProductCreation(items[index]);
@@ -187,15 +168,12 @@ function Loadingcard() {
         } else {
           ph.remove();
         }
-
-
       });
 
       // Se non ci sono più articoli da caricare, rimuove il listener
       if (items.length < nItems) {
         window.removeEventListener("scroll", onScrollHandler);
       }
-
       caricamentoInCorso = false;
     })
     .catch(err => {
@@ -206,64 +184,55 @@ function Loadingcard() {
 }
 
 //inizializza una card-category 
-
-
 //funzione per stabilire le card da inserire in base alla dimensione dello schermo 
-
 function getCardCountByScreenWidth() {
   const width = window.innerWidth;
   if (width < 600) return 4;
   else if (width < 800) return 9;
   else return 12;
-
 }
 
-
 fetch(`http://localhost:8000/categories`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    .then(Response => Response.json())
-    .then(Data =>{
-
-       generateCarouselItems(Data);
-      console.log(Data)
-    })
-
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+  .then(Response => Response.json())
+  .then(Data => {
+    generateCarouselItems(Data);
+  })
 
 function createCard(card) {
-  return`
+  return `
     <div class="card category-card" onclick="window.location.href='Categories.html?id=${encodeURIComponent(card.name)}'" style="cursor:pointer;">
       <img src="${card.image_url}" class="card-img-top" alt="${card.name}">
       <div class="card-body">
         <h5 class="card-title">${card.name}</h5>
       </div>
     </div>`
-  ;
+    ;
 }
 
 function generateCarouselItems(cardsData) {
   const container = document.getElementById('carouselInner');
   container.innerHTML = '';
   const isMobile = window.innerWidth < 600;
-
   if (isMobile) {
     cardsData.forEach((card, index) => {
-      container.innerHTML += 
+      container.innerHTML +=
         `<div class="carousel-item ${index === 0 ? 'active' : ''}">
           ${createCard(card)}
         </div>`
-      ;
+        ;
     });
   } else {
     for (let i = 0; i < cardsData.length; i += 3) {
       const group = cardsData.slice(i, i + 3).map(createCard).join('');
-      container.innerHTML += 
+      container.innerHTML +=
         `<div class="carousel-item ${i === 0 ? 'active' : ''}">
           <div class="cards-wrapper">${group}</div>
         </div>`
-      ;
+        ;
     }
   }
 }
@@ -284,8 +253,8 @@ fetch(`http://localhost:8000/categories`, {
     'Content-Type': 'application/json'
   }
 })
-.then(response => response.json())
-.then(data => {
-  globalCardsData = data;
-  generateCarouselItems(globalCardsData);
-});
+  .then(response => response.json())
+  .then(data => {
+    globalCardsData = data;
+    generateCarouselItems(globalCardsData);
+  });

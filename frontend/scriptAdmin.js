@@ -9,7 +9,7 @@ function nextStep(event, step) {
 
   if (email || pwd) {
 
-    console.log(email, pwd, role)
+
     fetch('http://localhost:8000/login', {
       method: 'POST',
       headers: {
@@ -19,10 +19,8 @@ function nextStep(event, step) {
     })
       .then(response => response.json())
       .then(Data => {
-        console.log(Data)
         Codice = Data.number
         const token = Data.token
-        console.log(token)
         sessionStorage.setItem("tmptoken", token)
       })
       .catch(error => {
@@ -37,8 +35,6 @@ function nextStep(event, step) {
     document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
 
     const tab = document.getElementById(`step${step}-tab`);
-    console.log(tab)
-
     tab.classList.add('active');
     tab.classList.remove('disabled');
     const steps = ['1', '2'];
@@ -58,7 +54,7 @@ function CodeControl(event) {
   if (number == Codice) {
 
     tk = sessionStorage.getItem("tmptoken")
-    localStorage.setItem("token",tk)
+    localStorage.setItem("token", tk)
     window.location.href = 'AdminPage.html';
 
   } else {

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   name.textContent = product
 
   const initalNItems = getCardCountByScreenWidth();
-  console.log("davide gay")
+
 
   fetch(`http://localhost:8000/category-items/${product}?nItems=${initalNItems}`, {
     headers: {
@@ -64,7 +64,7 @@ function ProductCreation(Data) {
 
   const price = document.createElement('p');
   price.className = 'card-text Items price-Item';
-  price.textContent = Data.price +  " €";
+  price.textContent = Data.price + " €";
 
   cardBody.appendChild(title);
   cardBody.appendChild(price);

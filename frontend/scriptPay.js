@@ -1,16 +1,13 @@
 items = localStorage.getItem("cart")
-console.log(items)
 
 function nextStep(step) {
   const currentStep = document.getElementById(`step${step - 1}`);
-
   const token = localStorage.getItem("token");
 
-  // 1. PRIMA validiamo
+  // Validazione
   if (validateStep(step - 1)) {
     if (step === 2) {
 
-      console.log("sto pagando")
       fetch('http://localhost:8000/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -21,28 +18,21 @@ function nextStep(step) {
       })
         .then(response => response.json())
         .then(Data => {
-
-          console.log(Data.url)
           window.location.href = Data.url;
-
         })
         .catch(error => {
           console.log(error)
         })
 
     } else {
-
       document.getElementById('DataInserment').classList.add('d.none');
       document.getElementById(`step${step}`).classList.remove('d-none');
-
-
       document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
       const tab = document.getElementById(`step${step}-tab`);
       if (tab) {
         tab.classList.add('active');
         tab.classList.remove('disabled');
       }
-
 
       const breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
       breadcrumbItems.forEach((item, index) => {
@@ -56,25 +46,22 @@ function nextStep(step) {
         }
       });
     }
-  } else {
-
-
-  }
+  } else { }
 }
 
 function validateStep(step1) {
   let isValid = true;
   let numero
   const currentStep = document.getElementById(`step${step1}`);
-  const inputs = currentStep.querySelectorAll('input, select, textarea');
 
+  const inputs = currentStep.querySelectorAll('input, select, textarea');
   inputs.forEach(input => {
     input.classList.remove('is-invalid');
-
     if (!input.checkValidity()) {
       input.classList.add('is-invalid');
       isValid = false;
     } else {
+
       // Validazione personalizzata per civico
       if (input.name === "civico") {
         const civicoRegex = /^[A-Za-z]?\d+[A-Za-z]?$/;
@@ -88,8 +75,8 @@ function validateStep(step1) {
         const countryName = document.getElementById('stato').value;
         const countryCode = countryNameToCode(countryName);
         const capValue = input.value.trim();
-        if (!countryCode) {
 
+        if (!countryCode) {
           input.classList.remove('is-invalid');
         } else {
           if (!validatePostalCode(capValue, countryCode)) {
@@ -103,7 +90,6 @@ function validateStep(step1) {
 
       const prefissoSelect = document.getElementById("prefisso");
       const telefonoInput = document.getElementById("telefono");
-
       const prefisso = prefissoSelect.value;
       const telefono = telefonoInput.value.trim();
 
@@ -125,6 +111,7 @@ function validateStep(step1) {
         telefonoInput.classList.add("is-invalid");
         isValid = false;
       } else if (prefisso && phoneLengths[prefisso]) {
+
         // controllo lunghezza numero
         const { min, max } = phoneLengths[prefisso];
         if (telefono.length < min || telefono.length > max) {
@@ -139,14 +126,11 @@ function validateStep(step1) {
     let province = document.getElementById("provincia").value
     let state = document.getElementById("stato").value
 
-    
     localStorage.setItem("infoClient", JSON.stringify({ items, address: address, civic_number: civic_number, postal_code: cap, province: province, country: state, phone_number: numero }))
-   
-  });
 
+  });
   return isValid;
 }
-
 
 const form = document.querySelector("form");
 form.addEventListener("submit", function (e) {
@@ -317,19 +301,16 @@ countries.forEach(country => {
   statoSelect.appendChild(option);
 });
 
-
 statoSelect.addEventListener("change", () => {
   const selectedCountry = statoSelect.value;
   const countryCode = countryNameToCode(selectedCountry);
   const capInput = document.getElementById("cap");
   const capValue = capInput.value.trim();
 
-
   if (capValue.length === 0) {
     capInput.classList.remove("is-invalid");
     return;
   }
-
 
   if (!countryCode) {
     capInput.classList.remove("is-invalid");
@@ -342,8 +323,6 @@ statoSelect.addEventListener("change", () => {
     capInput.classList.remove("is-invalid");
   }
 });
-
-
 
 const capInput = document.getElementById("cap");
 capInput.addEventListener("input", () => {
@@ -363,7 +342,6 @@ capInput.addEventListener("input", () => {
   }
 });
 
-console.log(sessionStorage.getItem("recapP"))
 const [totalPrice, itemCount] = JSON.parse(sessionStorage.getItem("recapP"))
 document.getElementById("itemNumber").textContent = "total " + itemCount
 document.getElementById("totalPrice").textContent = "total product " + totalPrice 

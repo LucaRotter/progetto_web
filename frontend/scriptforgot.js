@@ -2,8 +2,7 @@ const emailForm = document.getElementById('emailForm');
 const newPasswordInput = document.getElementById("newPassword");
 
 // Recupera ruolo dal localStorage
-const ruolo = localStorage.getItem("ruolo") 
-console.log(ruolo)
+const ruolo = localStorage.getItem("ruolo")
 
 // Rileva step attuale basandosi su .reset
 let stepElement = document.getElementsByClassName("reset")[0];
@@ -20,17 +19,13 @@ if (emailFromUrl) {
   localStorage.setItem("email", emailFromUrl); // Salva per step2
 }
 
-console.log("Step:", step);
-console.log("Email attuale:", email);
-
 // -step 1 invio email
 if (step === "step1") {
   emailForm.addEventListener('submit', function (event) {
     event.preventDefault();
-
     const emailInput = document.getElementById('email').value;
     localStorage.setItem("email", emailInput); // salva per step 2
-    console.log(localStorage.getItem("ruolo"))
+
     fetch('http://localhost:8000/forgot-password', {
       method: 'POST',
       headers: {
@@ -40,8 +35,6 @@ if (step === "step1") {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Dati ricevuti (email inviata):", data);
-        
       })
       .catch(error => {
         console.error("Errore invio email:", error);
@@ -54,10 +47,10 @@ if (step === "step2") {
   document.getElementById("formReset").addEventListener("submit", function (event) {
     event.preventDefault();
 
-   const newPassword = newPasswordInput.value;
-   const urlParams = new URLSearchParams(window.location.search);
-   const emailFromUrl = urlParams.get("email");
-   const ruoloFromUrl = urlParams.get("role");
+    const newPassword = newPasswordInput.value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailFromUrl = urlParams.get("email");
+    const ruoloFromUrl = urlParams.get("role");
 
 
     fetch('http://localhost:8000/reset-password', {
@@ -69,7 +62,6 @@ if (step === "step2") {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Password aggiornata con successo:", data);
         localStorage.removeItem("email");
         window.location.href = "index.html";
       })
@@ -78,8 +70,7 @@ if (step === "step2") {
       });
   });
 }
-    
 
 
 
-    
+

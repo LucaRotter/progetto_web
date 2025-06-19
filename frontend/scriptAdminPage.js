@@ -1,5 +1,4 @@
 const token = localStorage.getItem('token');
-console.log("Token:", token);
 localStorage.setItem("Admin", "true")
 let selectedReport
 
@@ -112,9 +111,6 @@ function takeCharge(id) {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
-
-
       const reportEl = document.getElementById(id);
       if (reportEl) reportEl.remove();
 
@@ -126,11 +122,8 @@ function takeCharge(id) {
       })
         .then(response => response.json())
         .then(data => {
-
           const container = document.getElementById('my-reports-container');
           container.innerHTML = "";
-          console.log("Dati ricevuti:", data);
-
           createMyReports(data.reports)
           alert(`Hai preso in carico il report #${selectedReport}`);
         })
@@ -228,10 +221,10 @@ function createMyReports(reports) {
     div.appendChild(buttonGroup);
 
     myReportsContainer.appendChild(div);
-    
+
   })
 
- 
+
 }
 
 function modifyUser(nome) {
@@ -266,7 +259,6 @@ function renderUsers(users) {
     const modifyBtn = document.createElement('button');
     modifyBtn.classList.add('btn', 'btn-sm', 'btn-outline-warning');
     modifyBtn.innerHTML = `<i class="bi bi-pencil"></i> Modify`;
-    console.log(user)
     modifyBtn.addEventListener('click', () => modifyUser(user));
 
     const deleteBtn = document.createElement('button');
@@ -286,7 +278,6 @@ function renderUsers(users) {
 
 function deleteUser(user) {
   if (!confirm(`Sei sicuro di voler eliminare ${user.name}?`)) return;
-  console.log(user.user_id)
 
   fetch(`http://localhost:8000/user/${user.user_id}`, {
     method: 'DELETE',
@@ -297,12 +288,8 @@ function deleteUser(user) {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("Utente eliminato:", data);
-
-
       const div = document.getElementById(user.id);
       if (div) div.remove();
-
       alert(`Utente ${user.name} eliminato con successo`);
     })
     .catch(error => {
@@ -375,7 +362,6 @@ document.getElementById("editUserForm").addEventListener("submit", function (e) 
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("Nome aggiornato:", data);
         });
     }
     return Promise.resolve();
@@ -393,7 +379,6 @@ document.getElementById("editUserForm").addEventListener("submit", function (e) 
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("Email aggiornata:", data);
         });
     }
     return Promise.resolve();
@@ -411,7 +396,6 @@ document.getElementById("editUserForm").addEventListener("submit", function (e) 
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("Password aggiornata:", data);
         });
     }
     return Promise.resolve();

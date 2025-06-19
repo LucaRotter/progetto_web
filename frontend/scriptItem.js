@@ -4,18 +4,12 @@ const btn = document.getElementById('searchBtn');
 const token = localStorage.getItem("token")
 let currentItem
 let expanded = false;
-
-
 const params = new URLSearchParams(window.location.search);
 const product = params.get('id');
 if (product) {
   sessionStorage.setItem("pendingProductView", product);
 }
-
 let selectedProduct;
-console.log(selectedProduct)
-console.log("ID ricevuto:", product);
-
 
 function appdateItem(itemData, categoryData) {
   document.getElementById("Product-Name").textContent = itemData[0].name;
@@ -24,15 +18,12 @@ function appdateItem(itemData, categoryData) {
   document.getElementById("Product-image").src = itemData[0].image_url;
   document.getElementById("Product-Category").textContent = categoryData[0].name;
 
- getRating().then(average => {
-  const av = average;
-  document.getElementById("AverageRating").textContent = `⭐ ${av}/5`;
-});
-
-document.body.classList.remove("js-loading");
+  getRating().then(average => {
+    const av = average;
+    document.getElementById("AverageRating").textContent = `⭐ ${av}/5`;
+  });
+  document.body.classList.remove("js-loading");
 }
-
-
 
 async function getRating() {
   try {
@@ -41,10 +32,7 @@ async function getRating() {
         'Content-Type': 'application/json',
       }
     });
-
     const data = await response.json();
-    console.log("Media ricevuta:", data.average);
-
     const average = Number(parseFloat(data.average).toFixed(1));
     return isNaN(average) ? 0 : average;
   } catch (error) {
@@ -54,65 +42,46 @@ async function getRating() {
 }
 
 function addToCart() {
-
   const token = localStorage.getItem("token");
-  if(token != "" && token!= null){
+  if (token != "" && token != null) {
 
-  fetch(`http://localhost:8000/cart`, {
-
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ item_id: product, quantity: 1 })
-  })
-
-    .then(response => response.json())
-    .then(Data => {
-
-      console.log(Data)
-      innerNumCarts()
-
-
+    fetch(`http://localhost:8000/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ item_id: product, quantity: 1 })
     })
-    .catch(error => {
-      console.error(error);
-      document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
-    });
-
-  }else{
-
-     const not = document.getElementById("loggedCanvas")
-     const offcanvas = new bootstrap.Offcanvas(not);
-
-     offcanvas.show();
+      .then(response => response.json())
+      .then(Data => {
+        innerNumCarts()
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById("contenuto").textContent = "Errore: prodotto non trovato.";
+      });
+  } else {
+    const not = document.getElementById("loggedCanvas")
+    const offcanvas = new bootstrap.Offcanvas(not);
+    offcanvas.show();
   }
 }
 
 function addToReview() {
-
-  console.log(currentItem)
-
   const token = localStorage.getItem("token");
   fetch(`http://localhost:8000/reviews/${currentItem.item_id}`, {
-
     headers: {
       'Content-Type': 'application/json',
       'authorization': `Bearer ${token}`
     },
-
   })
-
     .then(response => response.json())
     .then(Data => {
-
-      console.log(Data.reviews)
       const reviews = Data.reviews
       reviews.forEach(review => {
         createReview(review)
       })
-
     })
     .catch(error => {
       console.error(error);
@@ -121,18 +90,15 @@ function addToReview() {
 }
 
 function openModal() {
-  if(token!="" && token!=null){
-  document.getElementById("reportModal").style.display = "block";
-  document.getElementById("modalOverlay").style.display = "block";
-  }else{
-  
-     const not = document.getElementById("loggedCanvas")
-     const offcanvas = new bootstrap.Offcanvas(not);
-
-     offcanvas.show();
+  if (token != "" && token != null) {
+    document.getElementById("reportModal").style.display = "block";
+    document.getElementById("modalOverlay").style.display = "block";
+  } else {
+    const not = document.getElementById("loggedCanvas")
+    const offcanvas = new bootstrap.Offcanvas(not);
+    offcanvas.show();
   }
 }
-
 
 // Chiude la finestra del report
 function closeModal() {
@@ -140,15 +106,12 @@ function closeModal() {
   document.getElementById("modalOverlay").style.display = "none";
 }
 
-
 // Manda il report se la descrizione è stata scritta 
 function sendReport() {
-
   const selection = document.getElementById("type").value
   description = document.getElementById("description")
-  console.log("Invio del report");
-  // Previene il comportamento predefinito del form
 
+  // Previene il comportamento predefinito del form
   let valid = true;
   description.style.border = "";
 
@@ -160,13 +123,8 @@ function sendReport() {
     return;
   }
   description = description.value;
-
   const token = localStorage.getItem("token");
-  console.log("Token:", token);
-
   const product = selectedProduct[0].item_id;
-
-
 
   fetch(`http://localhost:8000/create-report`, {
     method: 'POST',
@@ -179,24 +137,15 @@ function sendReport() {
 
     .then(response => response.json())
     .then(Data => {
-
-      console.log(Data)
-
-
     })
     .catch(error => {
       console.error("Si è verificato un errore:", error);
-
     });
-
   closeModal();
 }
 
-
 function createReview(ReviewContent) {
-
   const container = document.getElementById("rowContainer");
-
   const wrapper = document.createElement("div");
   wrapper.className = "w-100 position-relative review-card mb-3";
   wrapper.style.backgroundColor = "#2c2c2c";
@@ -226,7 +175,6 @@ function createReview(ReviewContent) {
   textarea.disabled = true;
   textarea.style.resize = 'none';
 
-
   // Aggiungi span e textarea al wrapper
   wrapper.appendChild(span);
   wrapper.appendChild(textarea);
@@ -244,9 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!product) {
     product = sessionStorage.getItem("pendingProductView");
   }
-
   if (localStorage.getItem("Admin") == "true") {
-
     adminView = document.getElementsByClassName("Admin")
     Array.from(adminView).forEach(element => {
       element.classList.remove("d-none");
@@ -260,23 +206,18 @@ document.addEventListener("DOMContentLoaded", () => {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("Dati ricevuti:", data);
       selectedProduct = data.item
       currentItem = selectedProduct[0]
-      console.log(currentItem)
       appdateItem(data.item, data.category_name);
 
-      console.log(currentItem.quantity)
       if (currentItem.quantity == 0) {
         const button = document.getElementById("addedtoCart")
-
         button.classList.remove("shiny-blue-btn")
         button.classList.add("UsefullButton")
         button.disabled = true
 
       }
       addToReview()
-
       return fetch(`http://localhost:8000/userby/${currentItem.user_id}`, {
         headers: {
           'Content-Type': 'application/json'
@@ -285,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log("Dati utente ricevuti:", data);
       initProfile(data.user);
     })
     .catch(error => {
@@ -304,9 +244,6 @@ const reportTypes = [
   "Other (general report)"
 ];
 
-
-
-
 const selectType = document.getElementById("type");
 selectType.innerHTML = "";
 
@@ -317,43 +254,31 @@ reportTypes.forEach(type => {
   selectType.appendChild(option);
 });
 
-
 function sendToArtisan() {
-
-  console.log(currentItem.user_id)
   window.location.href = `ArtisanCatalog.html?A=${currentItem.user_id}`
-
 }
 
 function initProfile(profile) {
   const nome = document.getElementById("nomeArtisan");
   const image = document.getElementById("imageprofile")
-
   nome.textContent = profile.name + " " + profile.surname
   image.src = profile.image_url
-
 }
-
 
 function deleteProduct() {
   if (confirm("Are you sure you want to delete this product?")) {
 
-    console.log(currentItem)
     fetch(`http://localhost:8000/delete-item/${currentItem.item_id}`, {
-
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'authorization': `Bearer ${token}`
       }
     })
-
       .then(response => response.json())
       .then(Data => {
-
         alert("Product deleted (demo)");
         window.location.href = "index.html";
-
       })
       .catch(error => {
         console.error(error);
@@ -385,19 +310,15 @@ function deleteSelectedReviews() {
       deleted++;
 
       fetch(`http://localhost:8000/delete-review/${idReview}`, {
-
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'authorization': `Bearer ${token}`
         }
       })
-
         .then(response => response.json())
         .then(Data => {
-
           alert("Product deleted (demo)");
-
         })
         .catch(error => {
           console.error(error);

@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
         .then(response => response.json())
         .then(data => {
-
             data.items.forEach(element => {
                 ProductCreation(element)
             })
@@ -30,9 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
         .then(response => response.json())
         .then(data => {
-
-            console.log("Dati ricevuti:", data);
-
             initProfile(data.user)
         })
         .catch(error => {
@@ -48,8 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
         .then(Response => Response.json())
         .then(Data => {
-
-            console.log(Data)
             for (let i = 0; i < initalNItems; i++) {
 
                 const list = document.getElementById("ProductList")
@@ -77,7 +71,6 @@ function ProductCreation(Data) {
     const card = document.createElement('div');
     card.className = 'col';
     card.id = Data.item_id;
-    console.log(Data.id)
     card.setAttribute('onclick', `window.location.href='ViewProduct.html?id=${Data.item_id}'`);
 
     const cardStructure = document.createElement('div');
@@ -96,9 +89,9 @@ function ProductCreation(Data) {
 
     const price = document.createElement('p');
     price.className = 'card-text Items price-Item';
-    price.textContent = Data.price +  " €";
+    price.textContent = Data.price + " €";
 
-    // 2. Assembla la struttura
+    // Assembla la struttura
     cardBody.appendChild(title);
     cardBody.appendChild(price);
 
