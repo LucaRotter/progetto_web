@@ -1,6 +1,6 @@
 // Importa le librerie necessarie
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
@@ -828,9 +828,11 @@ app.delete('/delete-category/:id', protect, hasPermission('manage_categories'), 
 //CRUD PER LA GESTIONE DEGLI ARTICOLI
 
 //aggiungi articolo
-app.post('/add-item', protect, hasPermission('update_item'), async (req, res) => {
+app.post('/add-item', protect, hasPermission('update_item'),uploadMiddleware.single('immagine'), async (req, res) => {
     console.log('qui1');
-    const { name, category, description, price, quantity, image_url } = req.body;
+    const { name, category, description, price, quantity} = req.body;
+    const response = await uploadToCloudinary(req.file.path);
+    const image_url = response.url;
     const user_id = req.user.user_id;
     const maxResult = await pool.query('SELECT MAX(CAST(item_id AS INTEGER)) AS max_id FROM items');
     const maxId = maxResult.rows[0].max_id;

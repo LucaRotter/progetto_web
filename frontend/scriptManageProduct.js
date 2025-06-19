@@ -184,32 +184,31 @@ function addNewProduct() {
   const prezzoVal = parseFloat(document.getElementById("Price").value);
   const quantitaVal = parseInt(document.getElementById("Quantity").value);
   const description = document.getElementById("Description").value;
-  const immagine = allImages[0];
+  const file = allFiles[0];
+  const formData = new FormData();
+  formData.append('name', nome);
+  formData.append('category', categoria);
+  formData.append('price', prezzoVal);
+  formData.append('quantity', quantitaVal);
+  formData.append('description', description);
+  formData.append('immagine',file, file.name);
 
   fetch("http://localhost:8000/add-item", {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({
-      name: nome,
-      category: categoria,
-      description: description,
-      price: prezzoVal,
-      quantity: quantitaVal,
-      image_url: immagine
-    })
+    body: formData
   })
     .then(response => response.json())
     .then(Data => {
       renderProductCard({
-        item_id: Data.item_id || `local-${productCounter++}`,
+        item_id: Data.item.item_id || `local-${productCounter++}`,
         name: nome,
         category: categoria,
         price: prezzoVal,
         quantity: quantitaVal,
-        image_url: immagine,
+        image_url: Data.item.image_url,
         description: description
       });
     })
