@@ -417,6 +417,8 @@ function updateNavbarLogoLink() {
 
 function iniImg(){
 const token = localStorage.getItem("token")
+
+if(token!="" && token != null){
 imgElement = document.getElementById("decorationImage1")  
 fetch(`http://localhost:8000/user`, {
     headers: {
@@ -439,6 +441,7 @@ fetch(`http://localhost:8000/user`, {
       console.error("Si è verificato un errore:", error);
     });
   }
+}
  
 
 //funzione per il login

@@ -300,7 +300,7 @@ async function updateProduct(productId) {
           <div class="card-body">
             <h5 class="card-title">${nome}</h5>
             <p class="card-text mb-1">Categoria: <strong>${categoria}</strong></p>
-            <p class="card-text mb-1">Prezzo: €${prezzoVal.toFixed(2)}</p>
+            <p class="card-text mb-1">Prezzo: ${prezzoVal.toFixed(2)} €</p>
             <p class="card-text mb-0">Quantità: ${quantitaVal}</p>
             <p class="card-text mb-0 d-none">descrizione:<em>${description}</em></p>
           </div>
@@ -390,7 +390,7 @@ function renderProductCard(productData) {
         <div class="card-body">
           <h5 class="card-title">${productData.name}</h5>
           <p class="card-text mb-1">Categoria: <strong>${productData.category}</strong></p>
-          <p class="card-text mb-1">Prezzo: €${parseFloat(productData.price).toFixed(2)}</p>
+          <p class="card-text mb-1">Prezzo: ${parseFloat(productData.price ).toFixed(2)} €</p>
           <p class="card-text mb-0">Quantità: ${productData.quantity}</p>
           <p class="card-text mb-0 d-none">descrizione:<em>${productData.description}</em></p>
         </div>

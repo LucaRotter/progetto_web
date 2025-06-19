@@ -96,7 +96,7 @@ function ProductCreation(Data) {
 
     const price = document.createElement('p');
     price.className = 'card-text Items price-Item';
-    price.textContent = "€ " + Data.price;
+    price.textContent = Data.price +  " €";
 
     // 2. Assembla la struttura
     cardBody.appendChild(title);

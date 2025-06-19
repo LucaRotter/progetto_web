@@ -23,7 +23,7 @@ function nextStep(event, step) {
         Codice = Data.number
         const token = Data.token
         console.log(token)
-        localStorage.setItem("token", token)
+        sessionStorage.setItem("tmptoken", token)
       })
       .catch(error => {
         console.log(error)
@@ -57,7 +57,8 @@ function CodeControl(event) {
 
   if (number == Codice) {
 
-    sessionStorage.setItem('loginSuccess', 'Aleksandar');
+    tk = sessionStorage.getItem("tmptoken")
+    localStorage.setItem("token",tk)
     window.location.href = 'AdminPage.html';
 
   } else {

@@ -363,7 +363,7 @@ capInput.addEventListener("input", () => {
   }
 });
 
-
+console.log(sessionStorage.getItem("recapP"))
 const [totalPrice, itemCount] = JSON.parse(sessionStorage.getItem("recapP"))
 document.getElementById("itemNumber").textContent = "total " + itemCount
-document.getElementById("totalPrice").textContent = "total product " + totalPrice
+document.getElementById("totalPrice").textContent = "total product " + totalPrice 

@@ -4,6 +4,10 @@ const params = new URLSearchParams(window.location.search);
 const product = params.get('id');
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  let name = document.getElementById("category-NAME")
+  name.textContent = product
+
   const initalNItems = getCardCountByScreenWidth();
   console.log("davide gay")
 
@@ -60,7 +64,7 @@ function ProductCreation(Data) {
 
   const price = document.createElement('p');
   price.className = 'card-text Items price-Item';
-  price.textContent = "€ " + Data.price;
+  price.textContent = Data.price +  " €";
 
   cardBody.appendChild(title);
   cardBody.appendChild(price);

@@ -833,18 +833,17 @@ body.js-loading {
   border-radius: 10px;
 }
 
+.step label{
+  color: rgb(0, 0, 0);
+}
 
-
-.step input.form-control,
 .step input.code-box {
   background-color: #ffffff;
   color: rgb(0, 0, 0);
   border: 1px solid #555;
 }
 
-.step input.form-control::placeholder {
-  color: #000000;
-}
+
 
 .nav-pills .nav-link {
   background: none;
@@ -1394,10 +1393,6 @@ body.js-loading {
     align-items: flex-end;
     justify-content: space-between;
   }
-
-  .input-qty {
-    margin-left: 10px;
-  }
 }
 
 .content-wrapper button {
@@ -1495,3 +1490,5 @@ body.js-loading {
     .site-link {
       margin-bottom: 10px;
     }
+
+    

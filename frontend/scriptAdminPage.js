@@ -156,7 +156,7 @@ function creationReport(reports) {
 
     const header = document.createElement('div');
     header.classList.add('report-header');
-    header.textContent = `Segnalazione da: ${report.category}`;
+    header.textContent = `report: ${report.category}`;
 
     const body = document.createElement('div');
     body.classList.add('report-body', 'mb-2');
@@ -208,7 +208,7 @@ function createMyReports(reports) {
 
     const header = document.createElement('div');
     header.classList.add('report-header');
-    header.textContent = `Segnalazione da: ${report.report_id}`;
+    header.textContent = `report: ${report.report_id}`;
 
     const body = document.createElement('div');
     body.classList.add('report-body', 'mb-2');

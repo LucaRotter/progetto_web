@@ -40,7 +40,14 @@ $('#formReg').on("submit", function (event) {
                 localStorage.setItem("modalità", Role);
                 localStorage.setItem("loginSuccess", "true");
                 localStorage.setItem("token", Data.token);
+
+                if(Role == "C"){
                 window.location.href = "index.html";
+
+                }else if(Role == "A"){
+
+                window.location.href = "ManageProduct.html"
+                }
             })
             .catch(error => {
                 console.error("Errore:", error.message);

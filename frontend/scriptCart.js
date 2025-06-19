@@ -94,6 +94,14 @@ function createCartElement(CartContent, maxQuantity, category) {
   increaseBtn.type = "button";
   increaseBtn.className = "btn btn-outline-secondary btn-sm incdec";
 
+  if (parseInt(quantityInput.value, 10) == 1) {
+  decreaseBtn.disabled = true
+  }
+
+  if (parseInt(quantityInput.value, 10) == maxQuantity) {
+  increaseBtn.disabled = true
+  }
+
   quantitySelector.appendChild(decreaseBtn);
   quantitySelector.appendChild(quantityInput);
   quantitySelector.appendChild(increaseBtn);
@@ -103,6 +111,7 @@ function createCartElement(CartContent, maxQuantity, category) {
   decreaseBtn.addEventListener("click", function () {
     let value = parseInt(quantityInput.value, 10);
     if (value > 1) {
+      increaseBtn.disabled = false
       quantityInput.value = value - 1;
       const id = quantityInput.id
       const quantity = value - 1
@@ -130,6 +139,9 @@ function createCartElement(CartContent, maxQuantity, category) {
         cart.items[itemIndex].quantity = quantity;
         localStorage.setItem("cart", JSON.stringify(cart));
       }
+    } else {
+      decreaseBtn.disabled = true
+      
     }
   });
 
@@ -138,6 +150,7 @@ function createCartElement(CartContent, maxQuantity, category) {
     let max = maxQuantity
 
     if (value < max) {
+      decreaseBtn.disabled = false
       quantityInput.value = value + 1;
       const id = quantityInput.id
       const quantity = value + 1
@@ -166,6 +179,8 @@ function createCartElement(CartContent, maxQuantity, category) {
         cart.items[itemIndex].quantity = quantity;
         localStorage.setItem("cart", JSON.stringify(cart));
       }
+    }else{
+      increaseBtn.disabled = true
     }
   });
 
@@ -178,7 +193,7 @@ function createCartElement(CartContent, maxQuantity, category) {
 
   // Prezzo
   const prezzo = document.createElement("p");
-  prezzo.textContent = "€ " + CartContent.price;
+  prezzo.textContent = CartContent.price +  " €";
 
   // Bottone elimina
   const button = document.createElement("button");
@@ -297,8 +312,8 @@ function updateCartReview() {
   });
 
   // Aggiorna l'interfaccia
-  document.getElementById("totalPrice").textContent = `€${total.toFixed(2)}`;
-  let totalP = `€${total.toFixed(2)}`;
+  document.getElementById("totalPrice").textContent = `${total.toFixed(2)}` +  " €";
+  let totalP = `${total.toFixed(2)}€`;
   document.getElementById("itemCount").textContent = nitems
   let nItemsP = nitems;
   sessionStorage.setItem("recapP", JSON.stringify([totalP, nItemsP]));
