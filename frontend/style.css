@@ -539,7 +539,7 @@ body.js-loading {
 
 }
 
- .dropdown-menu[aria-labelledby="filterDropdown"] h6, label{
+ .dropdown-menu[aria-labelledby="filterDropdown"] h6, .dropdown-menu[aria-labelledby="filterDropdown"] label{
 
   color: #ffffff;
  }

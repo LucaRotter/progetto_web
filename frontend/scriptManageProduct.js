@@ -219,9 +219,10 @@ async function updateProduct(productId) {
   const prezzoVal = parseFloat(document.getElementById("Price").value);
   const quantitaVal = parseInt(document.getElementById("Quantity").value);
   const description = document.getElementById("Description").value;
-  const file = allFiles[0]
-  const formData = new FormData();
-  formData.append('immagine', file, file.name);
+
+  
+
+  
 
   const headers = {
     'Content-Type': 'application/json',
@@ -259,6 +260,12 @@ async function updateProduct(productId) {
       body: JSON.stringify({ description })
     });
 
+    
+    if(allFiles){
+        const file = allFiles[0]
+        const formData = new FormData();
+        formData.append('immagine', file, file.name);
+ 
     fetch(`http://localhost:8000/update-image/${productId}`, {
       method: 'PUT',
       headers: {
@@ -266,7 +273,7 @@ async function updateProduct(productId) {
       },
       body: formData
     });
-
+ }
     // Aggiornamento DOM come prima
     const card = document.querySelector(`[data-product-id="${productId}"]`);
     if (!card) return;
