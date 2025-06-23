@@ -3,7 +3,10 @@ const params = new URLSearchParams(window.location.search);
 const product = params.get('id');
 
 document.addEventListener("DOMContentLoaded", () => {
+  
+
   Loadingcard()
+  
 })
 
 //creazione prodotto
@@ -75,7 +78,15 @@ function Loadingcard() {
   })
     .then(Response => Response.json())
     .then(Data => {
+
+        if (Data.items.length === 0) {
+        document.getElementById("emptyCart").classList.remove("d-none");
+        document.getElementById("labelP").classList.add("d-none");
+
+        return;
+      }
       Data.items.forEach(item => {
+        
         ProductCreation(item);
       })
     })

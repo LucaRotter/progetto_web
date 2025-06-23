@@ -47,7 +47,7 @@ function renderOrders(Order) {
 
       const orderTitle = document.createElement("div");
       orderTitle.className = "order-id fw-bold";
-      orderTitle.textContent = `Ordine #${order.order_id}`;
+      orderTitle.textContent = `Order #${order.order_id}`;
 
       const purchased = order.state === "confirmed";
 
@@ -78,13 +78,15 @@ function renderOrders(Order) {
             productDiv.className = "product-row mb-2";
 
             const name = document.createElement("p");
-            name.textContent = `Prodotto: ${item.name}`;
+            name.textContent = `Product: ${item.name}`;
 
             const quantity = document.createElement("p");
-            quantity.textContent = `Quantità: ${p.quantity}`;
+            quantity.textContent = `Quantity: ${p.quantity}`;
 
             const price = document.createElement("p");
-            price.textContent = `Prezzo: ${parseFloat(item.price).toFixed(2)}` + " €";
+            pricetotla=item.price*p.quantity
+            
+            price.textContent = `Price: ${parseFloat(pricetotla).toFixed(2)}` + " €";
 
             productDiv.appendChild(name);
             productDiv.appendChild(quantity);

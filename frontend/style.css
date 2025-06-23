@@ -190,6 +190,8 @@ body {
   text-align: center;
 }
 
+
+
 .code-box {
 
   max-width: 60px;
@@ -539,7 +541,7 @@ body.js-loading {
 
 }
 
- .dropdown-menu[aria-labelledby="filterDropdown"] h6, label{
+ .dropdown-menu[aria-labelledby="filterDropdown"] h6, .dropdown-menu[aria-labelledby="filterDropdown"] label{
 
   color: #ffffff;
  }
@@ -1325,6 +1327,7 @@ body.js-loading {
   max-width: none;
   min-width: 80px;
   flex-shrink: 0;
+  aspect-ratio: 16/12
 }
 
 .d-flex-column {
