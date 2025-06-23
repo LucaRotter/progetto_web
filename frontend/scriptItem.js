@@ -256,7 +256,9 @@ function initProfile(profile) {
   const nome = document.getElementById("nomeArtisan");
   const image = document.getElementById("imageprofile")
   nome.textContent = profile.name + " " + profile.surname
-  image.src = profile.image_url
+    if(profile.image_url != null){
+    image.src = profile.image_url
+}
 }
 
 function deleteProduct() {

@@ -60,7 +60,10 @@ function initProfile(profile) {
     const image = document.getElementById("imageprofile")
 
     nome.textContent = profile.name
+
+    if(profile.image_url != null){
     image.src = profile.image_url
+}
 
 }
 

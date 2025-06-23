@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },Data.items.length);
 
       });
+      updateLayout();
     })
     .catch(error => {
       console.error("Si è verificato un errore:", error);
