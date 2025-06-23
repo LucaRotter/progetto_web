@@ -190,6 +190,8 @@ body {
   text-align: center;
 }
 
+
+
 .code-box {
 
   max-width: 60px;
@@ -1325,6 +1327,7 @@ body.js-loading {
   max-width: none;
   min-width: 80px;
   flex-shrink: 0;
+  aspect-ratio: 16/12
 }
 
 .d-flex-column {

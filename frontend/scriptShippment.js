@@ -84,7 +84,8 @@ function renderOrders(Order) {
             quantity.textContent = `Quantity: ${p.quantity}`;
 
             const price = document.createElement("p");
-            pricetotla=item.price*item.quantity
+            pricetotla=item.price*p.quantity
+            
             price.textContent = `Price: ${parseFloat(pricetotla).toFixed(2)}` + " €";
 
             productDiv.appendChild(name);

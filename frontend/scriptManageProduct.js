@@ -144,7 +144,7 @@ document.getElementById("productForm").addEventListener("submit", function (even
     prezzo.classList.remove("is-invalid");
   }
   const quantitaVal = parseInt(quantita.value);
-  if (isNaN(quantitaVal) || quantitaVal < 1) {
+  if (isNaN(quantitaVal) || quantitaVal < 0) {
     quantita.classList.add("is-invalid");
     valid = false;
   } else {
@@ -303,10 +303,13 @@ async function updateProduct(productId) {
     resetFormAndCarousel();
     delete document.getElementById("productForm").dataset.editingId;
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalView"));
+
     if (modal) modal.hide();
   } catch (error) {
     console.error("Errore nell'aggiornamento del prodotto:", error);
   }
+
+  
 }
 
 function openModalForEdit(productId) {
@@ -323,6 +326,23 @@ function openModalForEdit(productId) {
 
   document.getElementById("titleModal").textContent = "update Product";
   document.getElementById("ModalButton").textContent = "update";
+  const deleteButton = document.getElementById("ModalDelete")
+  deleteButton.classList.remove("d-none")
+
+  deleteButton.addEventListener("click",()=>{
+    card.remove()
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8000/delete-item/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${token}`
+      }
+    }).then(response => {
+      location.reload()
+    });
+  })
+
   const form = document.getElementById("productForm");
   form.dataset.editingId = productId;
 
