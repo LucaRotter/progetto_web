@@ -43,7 +43,7 @@ user_id varchar(5) references users(user_id) on delete cascade on update cascade
 
 create table orders(
 order_id varchar(5),
-item_id varchar(5) references items(item_id)on delete set null,
+item_id varchar(5) references items(item_id)on delete cascade,
 primary key(order_id, item_id),
 customer_id varchar(5) references users(user_id) on delete set null,
 artisan_id varchar(5) references users(user_id) on delete set null,

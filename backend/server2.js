@@ -541,7 +541,7 @@ app.post('/forgot-password', async (req, res) => {
         sendEmail(
             email,
             'Recupero Password',
-            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n http://127.0.0.1:5500/prova/resetPWD.html?email=${email}&role=${role} \n\nGrazie!`
+            `Ciao ${user.name},\n\nPer favore clicca sul seguente link per reimpostare la tua password:\n\n http://localhost:3000/resetPWD.html?email=${email}&role=${role} \n\nGrazie!`
         );
 
         res.json({ message: "Email sent"});
