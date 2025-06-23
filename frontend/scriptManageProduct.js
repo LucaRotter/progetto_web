@@ -203,6 +203,7 @@ function addNewProduct() {
         image_url: Data.item.image_url,
         description: description
       });
+      updateLayout();
     })
     .catch(error => {
       console.error("Si è verificato un errore:", error);
@@ -211,6 +212,27 @@ function addNewProduct() {
   resetFormAndCarousel();
   const modal = bootstrap.Modal.getInstance(document.getElementById("modalView"));
   if (modal) modal.hide();
+  
+}
+function updateLayout() {
+  // Controlla quanti prodotti sono attualmente nel contesto
+  const currentCount = productList.querySelectorAll(".col").length;
+
+  // Se ci sono 2 o più prodotti, metti il layout su due per riga (col-md-6)
+  if (currentCount > 1) {
+    productList.querySelectorAll(".col").forEach(container => {
+      container.classList.remove("col-12");
+      container.classList.add("col-md-6");
+    });
+  }
+
+  // Se c'è solo un prodotto, usa `col-12` (occupando tutta la riga)
+  if (currentCount === 1) {
+    productList.querySelectorAll(".col").forEach(container => {
+      container.classList.remove("col-md-6");
+      container.classList.add("col-12");
+    });
+  }
 }
 
 async function updateProduct(productId) {
@@ -376,11 +398,8 @@ categories.forEach(category => {
   selectElement.appendChild(option);
 });
 
-function renderProductCard(productData, length) {
+function renderProductCard(productData) {
   const container = document.createElement("div");
-  if(length==1){
-    container.style.width = "100%";
-  }
   container.classList.add("col");
   const prodottoCard = document.createElement("div");
   prodottoCard.classList.add("card", "mb-4", "shadow");
