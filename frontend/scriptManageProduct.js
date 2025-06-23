@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
           quantity: element.quantity,
           image_url: element.image_url,
           description: element.description
-        });
+        },Data.items.length);
+
       });
     })
     .catch(error => {
@@ -375,8 +376,11 @@ categories.forEach(category => {
   selectElement.appendChild(option);
 });
 
-function renderProductCard(productData) {
+function renderProductCard(productData, length) {
   const container = document.createElement("div");
+  if(length==1){
+    container.style.width = "100%";
+  }
   container.classList.add("col");
   const prodottoCard = document.createElement("div");
   prodottoCard.classList.add("card", "mb-4", "shadow");
