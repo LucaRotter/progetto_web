@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body class="js-loading">
+
+  <div id="header"></div>
+
+
+  <main class="d-flex h-100 w-100 justify-content-center align-items-center">
+
+    <div class="container-fluid px-3">
+      <div class="row justify-content-center gy-4">
+
+
+        <div class="text-center pb-0 pb-sm-4">
+          <input type="file" id="profilePicInput" accept="image/*" class="d-none" onchange="previewImage(event)">
+          <div class="position-relative d-inline-block" style="cursor: pointer;"
+            onclick="document.getElementById('profilePicInput').click()">
+            <img id="profilePic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Picture"
+              class="rounded-circle border" style="width: 120px; height: 120px; object-fit: cover;">
+            <i class="bi bi-camera-fill position-absolute bottom-0 end-0 translate-middle p-1 bg-white rounded-circle"
+              style="font-size: 1.2rem;"></i>
+          </div>
+          <small class="d-block mt-2 text-muted">Click to change</small>
+        </div>
+
+
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+          <div class="containerdetail p-3 d-flex flex-column gap-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3 class="m-0">Details</h3>
+              <button class="shiny-blue-btn" id="details" onclick="openModal()">Edit</button>
+            </div>
+            <div><span id="nameUser">Name: </span></div>
+            <div><span id="surnameUser">Surname: </span></div>
+          </div>
+        </div>
+
+
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+          <div class="containerdetail d-flex flex-column p-3 gap-3">
+            <div>
+              <h3 class="m-0">Email</h3>
+            </div>
+            <div><span id="emailUser">Email: </span></div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </main>
+
+
+  <div id="modifyModal1" class="report-inline">
+    <div class="modal-content">
+      <h4>Change Data</h4>
+      <form onsubmit="saveChanges(event)">
+        <div class="NameD">
+          <label>Name</label>
+          <input type="text" id="name" placeholder="enter your name">
+        </div>
+        <div class="Surname">
+          <label>Surname</label>
+          <input type="text" id="surname" placeholder="enter your surname">
+        </div>
+        <button class="shiny-blue-btn">Save Changes </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+  <footer class="bg-dark text-white text-center w-100">
+    <p class="mb-0">© 2025&nbsp;&nbsp;&nbsp;ArtOfManual.&nbsp;&nbsp;All rights reserved</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+  <script src="scriptElement.js"></script>
+  <script src="scriptUser.js"></script>
+</body>
+
+
+
+</html>
